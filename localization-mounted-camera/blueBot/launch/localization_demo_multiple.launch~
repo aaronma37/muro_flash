@@ -1,0 +1,12 @@
+<launch>
+
+  <!-- Camera -->
+  <include file="$(find blueBot)/launch/uvcCameraLaunch.launch"/>
+
+  <!-- Localization -->
+    <node pkg="blueBot" type="blueBot"
+          args="/boticellibot" name="localization_bbot" />
+    <node pkg="blueBot" type="blueBot"
+          args="/titian" name="localization_tbot" />
+
+</launch>

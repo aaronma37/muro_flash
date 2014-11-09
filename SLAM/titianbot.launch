@@ -1,0 +1,8 @@
+<launch>
+  <group ns="titianbot">
+
+    <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+    <include file="$(find turtlebot_bringup)/launch/3dsensor.launch"/>
+
+  </group>
+</launch>

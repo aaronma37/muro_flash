@@ -1,0 +1,9 @@
+<launch>
+
+  <!-- Camera -->
+  <include file="$(find blueBot)/launch/uvcCameraLaunch.launch"/>
+
+  <!-- Localization -->
+  <node name="blueBot" pkg="blueBot" type="blueBot"/>
+
+</launch>

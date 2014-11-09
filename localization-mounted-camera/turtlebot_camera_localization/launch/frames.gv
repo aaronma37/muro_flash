@@ -1,0 +1,3 @@
+digraph G {
+"map" -> "odom"[label="Broadcaster: /blueBot\nAverage rate: 12.224 Hz\nMost recent transform: 1399916953.064 \nBuffer length: 4.908 sec\n"];
+}

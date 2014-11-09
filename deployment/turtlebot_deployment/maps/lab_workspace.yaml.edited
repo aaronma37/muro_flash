@@ -1,0 +1,11 @@
+<<<<<<< .mine
+image: /home/kliu/catkin_ws/src/lab/in-progress/deployment/turtlebot_deployment/maps/lab_workspace.pgm
+=======
+image: lab_workspace.pgm
+>>>>>>> .r60948
+resolution: 0.1
+origin: [-1.1, -1.1, 0.0]
+negate: 0
+occupied_thresh: 0.65
+free_thresh: 0.196
+

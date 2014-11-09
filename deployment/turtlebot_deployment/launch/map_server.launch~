@@ -1,0 +1,10 @@
+<launch>
+
+<arg name="map_file" default="$(find gazebo_map_spawner)/maps/lab_workspace.yaml"/>
+
+<remap from="map" to="all/map"/>
+
+<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+</launch>
+

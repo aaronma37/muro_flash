@@ -1,0 +1,9 @@
+<launch>
+  <node pkg="turtlebot_test_daniel" name="boticelli_circle" type="circle">
+    <remap from="/mobile_base/commands/velocity" to="/boticellibot/mobile_base/commands/velocity"/>
+  </node>
+
+  <node pkg="turtlebot_test_daniel" name="giottobot_circle" type="circle">
+    <remap from="/mobile_base/commands/velocity" to="giottobot/mobile_base/commands/velocity"/>
+  </node>
+</launch>
