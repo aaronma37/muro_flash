@@ -7,7 +7,7 @@
 <arg name="drive_speed" 	default="0.2"/>
 <arg name="angle_tolerance" 	default="0.5"/>
 <arg name="distance_tolerance" 	default="0.10"/>
-<arg name="show_cells"         default="false"/>
+<arg name="show_cells_"         default="false"/>
 
 <group ns="$(arg robot)">
     <param name="tf_prefix" value="$(arg robot)"/>
@@ -28,7 +28,7 @@
         <param name="robot_name" 	value="$(arg robot)"/>
         <param name="hold_time" 	value="$(arg hold_time)"/>
         <param name="resolution" 	value="$(arg resolution)"/>
-	<param name="show_cells" 	value="$(arg show_cells)"/>
+	<param name="show_cells_" 	value="$(arg show_cells_)"/>
     </node>  
 
     <!-- Navigation -->

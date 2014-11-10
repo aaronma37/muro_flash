@@ -95,7 +95,7 @@ SimpleDeployment::SimpleDeployment():
     ph_.param("hold_time", hold_time_, hold_time_ );                // Time to hold peer agents in agent catalog
     ph_.param("resolution", resolution_, resolution_ );             // Resolution of the voronoi image (in m/px)
     ph_.param("period", period_, period_);                          // Period of execution for the publish method
-    ph_.param("show_cells", show_cells_, show_cells_);		    // Determines whether agent will attempt to port visualization 
+    ph_.param("show_cells_", show_cells_, show_cells_);		    // Determines whether agent will attempt to port visualization 
     this_agent_.setName(temp_name);
 
     if (this_agent_.getName() == "not defined") {
