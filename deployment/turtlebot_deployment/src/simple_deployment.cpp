@@ -150,7 +150,7 @@ void SimpleDeployment::positionsCallback(const turtlebot_deployment::PoseWithNam
             agent_catalog_.push_back( agent );
         }
         else {
-            ROS_DEBUG("SimpleDeployment: Robot is me! Updating position and adding to database");
+            ROS_ERROR("SimpleDeployment: Robot is me! Updating position and adding to database");
             this_agent_.setPose(posePtr->pose);
             got_me_ = true;
 
@@ -288,7 +288,7 @@ void SimpleDeployment::publish()
         }
 
         cv::circle( totalImg, seedPt, 3, WHITE, -1, 8);
-        cv::circle( totalImg, centroid, 2, WHITE, -1, 8);
+        cv::circle( totalImg, centroid, 2, WHITE, -1, 8);			//where centroid is the goal position
 	
 	// Due to bandwidth issues, only display this image if requested
 	if (show_cells_) {
@@ -329,7 +329,7 @@ void SimpleDeployment::publish()
 
 cv::Mat SimpleDeployment::drawMap()
 {
-    ROS_ERROR("Drawing map");
+    ROS_DEBUG("Drawing map");
     cv::Mat src = cv::Mat::zeros(map_.info.height,map_.info.width,CV_8UC1);
 
     // Copy map values to image
