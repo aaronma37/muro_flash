@@ -33,28 +33,13 @@ static const int _RAPHAEL = 4;
 static const int _DONATELLO = 6;
 static const int _TITIAN = 7;
 static const int _MASACCIO = 3;
+static const int _MICHELANGELO = 15;
+static const int _GHIBERTI = 80;
+
 
 //Try maps
-std::map<int, std::string> odom_header_map;
-/*
-odom_header_map[_BOTICELLI]="boticelli/odom";
-odom_header_map[_LEONARDO]="leonardo/odom";
-odom_header_map[_RAPHAEL]="raphael/odom";
-odom_header_map[_DONATELLO]="donatello/odom";
-odom_header_map[_TITIAN]="titian/odom";
-odom_header_map[_MASACCIO]="masaccio/odom"; */
-
-std::map<int, std::string> pose_header_map;
-/*
-pose_header_map[_BOTICELLI]="boticelli/pose";
-pose_header_map[_LEONARDO]="leonardo/pose";
-pose_header_map[_RAPHAEL]="raphael/pose";
-pose_header_map[_DONATELLO]="donatello/pose";
-pose_header_map[_TITIAN]="titian/pose";
-pose_header_map[_MASACCIO]="masaccio/pose"; */
 
 std::map<int, std::string> robot_name_map;
-
 std::map<int, ros::Publisher> odom_pub_map;
 std::map<int, ros::Publisher> camPose_pub_map;
 std::map<int, ros::Publisher> particleCloudPub_map;
@@ -79,6 +64,12 @@ ros::Publisher particleCloudPub_leonardo;
 ros::Publisher odom_pub_masaccio;
 ros::Publisher camPose_pub_masaccio;
 ros::Publisher particleCloudPub_masaccio;
+ros::Publisher odom_pub_michelangelo;
+ros::Publisher camPose_pub_michelangelo;
+ros::Publisher particleCloudPub_michelangelo;
+ros::Publisher odom_pub_ghiberti;
+ros::Publisher camPose_pub_ghiberti;
+ros::Publisher particleCloudPub_ghiberti;
 tf::TransformBroadcaster *odom_broadcaster = NULL;
 
 //Store all constants for image encodings in the enc namespace to be used later.
@@ -209,68 +200,6 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom_broadcaster->sendTransform(odom_trans);
 		particleCloudPub_map[Markers[i].id].publish(particleCloud); 
 		cv::putText(cv_ptr->image,robot_name_map[Markers[i].id],cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		/*
-		if (Markers[i].id == _BOTICELLI) {
-			odom.header.frame_id = "boticelli/odom";
-			camPose.header.frame_id = "boticelli/pose"; 
-			odom_trans.child_frame_id = "boticelli/odom";
-			odom_pub_boti.publish(odom);
-			camPose_pub_boti.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_boti.publish(particleCloud); 
-			cv::putText(cv_ptr->image,"boticelli",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		} 
-		else if (Markers[i].id == _TITIAN) { 
-			odom.header.frame_id = "titian/odom";
-			camPose.header.frame_id = "titian/pose"; 
-			odom_trans.child_frame_id = "titian/odom";
-			odom_pub_titian.publish(odom);
-			camPose_pub_titian.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_titian.publish(particleCloud);
-			cv::putText(cv_ptr->image,"titian",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		}
-		else if (Markers[i].id == _RAPHAEL) { 
-			odom.header.frame_id = "raphael/odom";
-			camPose.header.frame_id = "raphael/pose"; 
-			odom_trans.child_frame_id = "raphael/odom";
-			odom_pub_raphael.publish(odom);
-			camPose_pub_raphael.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_raphael.publish(particleCloud);
-			cv::putText(cv_ptr->image,"raphael",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		}
-		else if (Markers[i].id == _DONATELLO) { 
-			odom.header.frame_id = "donatello/odom";
-			camPose.header.frame_id = "donatello/pose"; 
-			odom_trans.child_frame_id = "donatello/odom";
-			odom_pub_donatello.publish(odom);
-			camPose_pub_donatello.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_donatello.publish(particleCloud);
-			cv::putText(cv_ptr->image,"donatello",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		}
-		else if (Markers[i].id == _LEONARDO) { 
-			odom.header.frame_id = "leonardo/odom";
-			camPose.header.frame_id = "leonardo/pose"; 
-			odom_trans.child_frame_id = "leonardo/odom";
-			odom_pub_leonardo.publish(odom);
-			camPose_pub_leonardo.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_leonardo.publish(particleCloud);
-			cv::putText(cv_ptr->image,"leonardo",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		}
-		else if (Markers[i].id == _MASACCIO) { 
-			odom.header.frame_id = "masaccio/odom";
-			camPose.header.frame_id = "masaccio/pose"; 
-			odom_trans.child_frame_id = "masaccio/odom";
-			odom_pub_masaccio.publish(odom);
-			camPose_pub_masaccio.publish(camPose);
-			odom_broadcaster->sendTransform(odom_trans);
-			particleCloudPub_masaccio.publish(particleCloud);
-			cv::putText(cv_ptr->image,"masaccio",cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
-		}
-*/
              }
 	}
     //Display the tracked robots
@@ -302,7 +231,8 @@ int main(int argc, char **argv)
 	robot_name_map[_RAPHAEL]="raphael";
 	robot_name_map[_DONATELLO]="donatello";
 	robot_name_map[_TITIAN]="titian";
-	robot_name_map[_MASACCIO]="masaccio";   
+	robot_name_map[_MASACCIO]="masaccio"; 
+	robot_name_map[_MICHELANGELO]="michelangelo";   
 
 	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 10);
 	camPose_pub_map[_BOTICELLI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("boticelli/amcl_pose", 1, true);
@@ -328,7 +258,15 @@ int main(int argc, char **argv)
 	odom_pub_map[_MASACCIO] = nh.advertise<nav_msgs::Odometry>("masaccio/odom", 10);
 	camPose_pub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("masaccio/amcl_pose", 1, true);
 	particleCloudPub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseArray>("masaccio/particlecloud",1,true);
-   
+
+	odom_pub_map[_MICHELANGELO] = nh.advertise<nav_msgs::Odometry>("michelangelo/odom", 10);
+	camPose_pub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("michelangelo/amcl_pose", 1, true);
+	particleCloudPub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseArray>("michelangelo/particlecloud",1,true);   
+
+	odom_pub_map[_GHIBERTI] = nh.advertise<nav_msgs::Odometry>("ghiberti/odom", 10);
+	camPose_pub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("ghiberti/amcl_pose", 1, true);
+	particleCloudPub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseArray>("ghiberti/particlecloud",1,true);  
+
         pub = it.advertise("camera/image_processed", 1);
 
 	CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
