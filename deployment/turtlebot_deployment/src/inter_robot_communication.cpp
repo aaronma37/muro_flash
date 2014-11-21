@@ -37,7 +37,8 @@ Communication::Communication():
         ROS_ERROR("Communication: Robot name not set");
     }
     else {
-        pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
+        //pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
+	pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
         sub_ = nh_.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 10, &Communication::positionCallback, this);
     }
 }
@@ -47,6 +48,7 @@ void Communication::positionCallback(const geometry_msgs::PoseWithCovarianceStam
     pose_with_name_.pose = position->pose.pose;
     pose_with_name_.name = name_;
     pub_.publish(pose_with_name_);
+    std::cout<<"yes"<<"\n";
 }
 
 int main(int argc, char** argv)

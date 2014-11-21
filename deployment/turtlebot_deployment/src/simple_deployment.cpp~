@@ -105,7 +105,7 @@ SimpleDeployment::SimpleDeployment():
         ROS_ERROR("SimpleDeployment: Hold time invalid or not set");
     }
     else if (resolution_ <= 0.0) {
-        ROS_ERROR("SimpleDeployment: Resph_olution invalid or not set");
+        ROS_ERROR("SimpleDeployment: Resolution invalid or not set");
     }
     else if (period_ <= 0.0) {
         ROS_ERROR("SimpleDeployment: Period not valid");
@@ -118,7 +118,11 @@ SimpleDeployment::SimpleDeployment():
 
         timer_ = nh_.createTimer(ros::Duration(period_), boost::bind(&SimpleDeployment::publish, this));
 	if (show_cells_) {
+		ROS_ERROR("show_cells is true");
         	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );
+	}
+	else {
+		ROS_ERROR("show_cells is false");
 	}
     }
     ROS_DEBUG("SimpleDeployment: SimpleDeployment object constructed");
@@ -150,7 +154,7 @@ void SimpleDeployment::positionsCallback(const turtlebot_deployment::PoseWithNam
             agent_catalog_.push_back( agent );
         }
         else {
-            ROS_DEBUG("SimpleDeployment: Robot is me! Updating position and adding to database");
+            ROS_ERROR("SimpleDeployment: Robot is me! Updating position and adding to database");
             this_agent_.setPose(posePtr->pose);
             got_me_ = true;
 
@@ -178,7 +182,7 @@ void SimpleDeployment::publish()
     if ( got_map_ && got_me_ ) {
         double factor = map_.info.resolution / resolution_; // zoom factor for openCV visualization
 
-        ROS_DEBUG("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
+        ROS_ERROR("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
 
         removeOldAgents();
 
@@ -288,11 +292,15 @@ void SimpleDeployment::publish()
         }
 
         cv::circle( totalImg, seedPt, 3, WHITE, -1, 8);
-        cv::circle( totalImg, centroid, 2, WHITE, -1, 8);
+        cv::circle( totalImg, centroid, 2, WHITE, -1, 8);			//where centroid is the goal position
 	
 	// Due to bandwidth issues, only display this image if requested
 	if (show_cells_) {
 	        cv::imshow( "Display window", totalImg );
+		ROS_ERROR("Displaying image");
+	}
+	else {
+		ROS_ERROR("Not showing cells");
 	}
         cv::waitKey(3);
 
