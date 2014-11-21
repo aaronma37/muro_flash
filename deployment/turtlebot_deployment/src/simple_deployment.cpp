@@ -105,7 +105,7 @@ SimpleDeployment::SimpleDeployment():
         ROS_ERROR("SimpleDeployment: Hold time invalid or not set");
     }
     else if (resolution_ <= 0.0) {
-        ROS_ERROR("SimpleDeployment: Resph_olution invalid or not set");
+        ROS_ERROR("SimpleDeployment: Resolution invalid or not set");
     }
     else if (period_ <= 0.0) {
         ROS_ERROR("SimpleDeployment: Period not valid");
