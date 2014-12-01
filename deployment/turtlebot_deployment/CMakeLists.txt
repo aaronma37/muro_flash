@@ -66,6 +66,13 @@ target_link_libraries(inter_robot_communication
   ${catkin_LIBRARIES}
 )
 
+add_executable(simple_deployment_dummy src/simple_deployment_dummy.cpp src/agent.cpp src/VoronoiDiagramGenerator.cpp ${HEADER_FILES})
+add_dependencies(simple_deployment_dummy turtlebot_deployment_gencpp)
+target_link_libraries(simple_deployment_dummy
+  ${OpenCV_LIBS}
+  ${catkin_LIBRARIES}
+)
+
 #######################
 add_executable(Kalmanfilter src/Kalmanfilter.cpp)
 add_dependencies(Kalmanfilter ${catkin_EXPORTED_TARGETS})

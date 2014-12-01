@@ -298,8 +298,10 @@ void SimpleDeployment::publish()
 
         // Scale goal position in map back to true goal position
         geometry_msgs::Pose goalPose;
-        goalPose.position.x = centroid.x * map_.info.resolution / factor + map_.info.origin.position.x;
-        goalPose.position.y = (map_.info.height - centroid.y / factor) * map_.info.resolution + map_.info.origin.position.y;
+//        goalPose.position.x = centroid.x * map_.info.resolution / factor + map_.info.origin.position.x;
+        goalPose.position.x = centroid.x / factor + map_.info.origin.position.x;
+//        goalPose.position.y = (map_.info.height - centroid.y / factor) * map_.info.resolution + map_.info.origin.position.y;
+        goalPose.position.y = (map_.info.height - centroid.y / factor) + map_.info.origin.position.y;
         double phi = atan2( seedPt.y - centroid.y, centroid.x - seedPt.x );
         goalPose.orientation = tf::createQuaternionMsgFromYaw(phi);
 
