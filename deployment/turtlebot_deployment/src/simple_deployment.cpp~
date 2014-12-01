@@ -118,7 +118,7 @@ SimpleDeployment::SimpleDeployment():
 
         timer_ = nh_.createTimer(ros::Duration(period_), boost::bind(&SimpleDeployment::publish, this));
 	if (show_cells_) {
-        	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );
+        	cv::namedWindow( "Voronoi Cells", cv::WINDOW_AUTOSIZE );
 	}
     }
     ROS_DEBUG("SimpleDeployment: SimpleDeployment object constructed");
@@ -292,7 +292,7 @@ void SimpleDeployment::publish()
 	
 	// Due to bandwidth issues, only display this image if requested
 	if (show_cells_) {
-	        cv::imshow( "Display window", totalImg );
+	        cv::imshow( "Voronoi Cells", totalImg );
 	}
         cv::waitKey(3);
 
