@@ -4,12 +4,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/OccupancyGrid.h>
-//#include <move_base_msgs/MoveBaseAction.h>
-//#include <actionlib/client/simple_action_client.h>
 #include <tf/tf.h>
-
 #include <turtlebot_deployment/PoseWithName.h>
-
 #include "agent.h"
 #include "VoronoiDiagramGenerator.h"
 
@@ -38,11 +34,11 @@ struct SortAgentsOnDistance
 };
 
 /// Class definition
-class SimpleDeployment
+class SimpleDeploymentDummy
 {
 public:
     // Constructor and destructor
-    SimpleDeployment();
+    SimpleDeploymentDummy();
 
 private:
 
@@ -79,7 +75,7 @@ private:
 };
 
 /// Method bodies
-SimpleDeployment::SimpleDeployment():
+SimpleDeploymentDummy::SimpleDeploymentDummy():
     ph_("~"),
     this_agent_(),
     got_map_(false),
@@ -105,26 +101,26 @@ SimpleDeployment::SimpleDeployment():
         ROS_ERROR("SimpleDeployment: Hold time invalid or not set");
     }
     else if (resolution_ <= 0.0) {
-        ROS_ERROR("SimpleDeployment: Resolution invalid or not set");
+        ROS_ERROR("SimpleDeployment: Resph_olution invalid or not set");
     }
     else if (period_ <= 0.0) {
         ROS_ERROR("SimpleDeployment: Period not valid");
     }
     else {
 
-        pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1, &SimpleDeployment::positionsCallback, this);
-        map_sub_ = nh_.subscribe<nav_msgs::OccupancyGrid>("/map",1, &SimpleDeployment::mapCallback, this);
+        pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1, &SimpleDeploymentDummy::positionsCallback, this);
+        map_sub_ = nh_.subscribe<nav_msgs::OccupancyGrid>("/map",1, &SimpleDeploymentDummy::mapCallback, this);
         goal_pub_ = nh_.advertise<geometry_msgs::PoseStamped>("move_base_simple/goal", 1, true);
 
-        timer_ = nh_.createTimer(ros::Duration(period_), boost::bind(&SimpleDeployment::publish, this));
+        timer_ = nh_.createTimer(ros::Duration(period_), boost::bind(&SimpleDeploymentDummy::publish, this));
 	if (show_cells_) {
-        	cv::namedWindow( "Voronoi Cells", cv::WINDOW_AUTOSIZE );
+        	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );
 	}
     }
     ROS_DEBUG("SimpleDeployment: SimpleDeployment object constructed");
 }
 
-void SimpleDeployment::positionsCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
+void SimpleDeploymentDummy::positionsCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
     ROS_DEBUG("SimpleDeployment: Positions received, finding robot in database");
     // Search for agent in the catalog using functor that compares the name to an input string
@@ -166,19 +162,19 @@ void SimpleDeployment::positionsCallback(const turtlebot_deployment::PoseWithNam
 }
 
 // Function to retreive and store map information.
-void SimpleDeployment::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& mapPtr)
+void SimpleDeploymentDummy::mapCallback(const nav_msgs::OccupancyGrid::ConstPtr& mapPtr)
 {
     map_ = *mapPtr;
     got_map_ = true;
 }
 
-// In this function, the Voronoi cell is calculated, integrated and the new goal point is calculated and published.
-void SimpleDeployment::publish()
+// In this function, the Voronoi cell is calculated, integrated. A new goal IS NOT published, as this node should only be used with integration of teleop. 
+void SimpleDeploymentDummy::publish()
 {
     if ( got_map_ && got_me_ ) {
         double factor = map_.info.resolution / resolution_; // zoom factor for openCV visualization
 
-        ROS_DEBUG("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
+        ROS_DEBUG("SimpleDeployment: Map received, determining Voronoi cells");
 
         removeOldAgents();
 
@@ -292,33 +288,10 @@ void SimpleDeployment::publish()
 	
 	// Due to bandwidth issues, only display this image if requested
 	if (show_cells_) {
-	        cv::imshow( "Voronoi Cells", totalImg );
+	        cv::imshow( "Display window", totalImg );
 	}
         cv::waitKey(3);
 
-        // Scale goal position in map back to true goal position
-        geometry_msgs::Pose goalPose;
-//        goalPose.position.x = centroid.x * map_.info.resolution / factor + map_.info.origin.position.x;
-        goalPose.position.x = centroid.x / factor + map_.info.origin.position.x;
-//        goalPose.position.y = (map_.info.height - centroid.y / factor) * map_.info.resolution + map_.info.origin.position.y;
-        goalPose.position.y = (map_.info.height - centroid.y / factor) + map_.info.origin.position.y;
-        double phi = atan2( seedPt.y - centroid.y, centroid.x - seedPt.x );
-        goalPose.orientation = tf::createQuaternionMsgFromYaw(phi);
-
-        goal_.pose = goalPose;
-        goal_.header.frame_id = "map";
-        goal_.header.stamp = ros::Time::now();
-
-        goal_pub_.publish(goal_);
-
-//        move_base_msgs::MoveBaseGoal goal;
-
-//        goal.target_pose.header.frame_id = "map";
-//        goal.target_pose.header.stamp = ros::Time::now();
-
-//        goal.target_pose.pose = goalPose;
-
-//        ac_.sendGoal(goal);
     }
     else {
         ROS_DEBUG("SimpleDeployment: No map received");
@@ -329,7 +302,7 @@ void SimpleDeployment::publish()
 
 /// Function definitions
 
-cv::Mat SimpleDeployment::drawMap()
+cv::Mat SimpleDeploymentDummy::drawMap()
 {
     ROS_DEBUG("Drawing map");
     cv::Mat src = cv::Mat::zeros(map_.info.height,map_.info.width,CV_8UC1);
@@ -349,7 +322,7 @@ cv::Mat SimpleDeployment::drawMap()
     return src;
 }
 
-double SimpleDeployment::distance(geometry_msgs::Pose pose2, geometry_msgs::Pose pose1)
+double SimpleDeploymentDummy::distance(geometry_msgs::Pose pose2, geometry_msgs::Pose pose1)
 {
     double dx = pose2.position.x - pose1.position.x;
     dx = dx*dx;
@@ -364,7 +337,7 @@ double SimpleDeployment::distance(geometry_msgs::Pose pose2, geometry_msgs::Pose
     return /*sqrt(dx+dy+dz);*/ dx+dy+dz;
 }
 
-void SimpleDeployment::removeOldAgents(){
+void SimpleDeploymentDummy::removeOldAgents(){
     for( std::vector<Agent>::iterator it = agent_catalog_.begin(); it != agent_catalog_.end(); ++it) {
         if ( it->getAge().toSec() > hold_time_ ) {
             agent_catalog_.erase( it );
@@ -378,8 +351,8 @@ void SimpleDeployment::removeOldAgents(){
 /// Main
 int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "simple_deployment");
-    SimpleDeployment simple_deployment;
+    ros::init(argc, argv, "simple_deployment_dummy");
+    SimpleDeploymentDummy simple_deployment_dummy;
 
     ros::spin();
 }

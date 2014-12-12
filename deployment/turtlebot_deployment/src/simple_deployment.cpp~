@@ -95,7 +95,7 @@ SimpleDeployment::SimpleDeployment():
     ph_.param("hold_time", hold_time_, hold_time_ );                // Time to hold peer agents in agent catalog
     ph_.param("resolution", resolution_, resolution_ );             // Resolution of the voronoi image (in m/px)
     ph_.param("period", period_, period_);                          // Period of execution for the publish method
-    ph_.param("show_cells", show_cells_, show_cells_);		    // Determines whether agent will attempt to port visualization 
+    ph_.param("show_cells_", show_cells_, show_cells_);		    // Determines whether agent will attempt to port visualization 
     this_agent_.setName(temp_name);
 
     if (this_agent_.getName() == "not defined") {
@@ -105,7 +105,7 @@ SimpleDeployment::SimpleDeployment():
         ROS_ERROR("SimpleDeployment: Hold time invalid or not set");
     }
     else if (resolution_ <= 0.0) {
-        ROS_ERROR("SimpleDeployment: Resolution invalid or not set");
+        ROS_ERROR("SimpleDeployment: Resph_olution invalid or not set");
     }
     else if (period_ <= 0.0) {
         ROS_ERROR("SimpleDeployment: Period not valid");
@@ -118,11 +118,7 @@ SimpleDeployment::SimpleDeployment():
 
         timer_ = nh_.createTimer(ros::Duration(period_), boost::bind(&SimpleDeployment::publish, this));
 	if (show_cells_) {
-		ROS_ERROR("show_cells is true");
-        	cv::namedWindow( "Display window", cv::WINDOW_AUTOSIZE );
-	}
-	else {
-		ROS_ERROR("show_cells is false");
+        	cv::namedWindow( "Voronoi Cells", cv::WINDOW_AUTOSIZE );
 	}
     }
     ROS_DEBUG("SimpleDeployment: SimpleDeployment object constructed");
@@ -182,7 +178,7 @@ void SimpleDeployment::publish()
     if ( got_map_ && got_me_ ) {
         double factor = map_.info.resolution / resolution_; // zoom factor for openCV visualization
 
-        ROS_ERROR("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
+        ROS_DEBUG("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
 
         removeOldAgents();
 
@@ -296,18 +292,16 @@ void SimpleDeployment::publish()
 	
 	// Due to bandwidth issues, only display this image if requested
 	if (show_cells_) {
-	        cv::imshow( "Display window", totalImg );
-		ROS_ERROR("Displaying image");
-	}
-	else {
-		ROS_ERROR("Not showing cells");
+	        cv::imshow( "Voronoi Cells", totalImg );
 	}
         cv::waitKey(3);
 
         // Scale goal position in map back to true goal position
         geometry_msgs::Pose goalPose;
-        goalPose.position.x = centroid.x * map_.info.resolution / factor + map_.info.origin.position.x;
-        goalPose.position.y = (map_.info.height - centroid.y / factor) * map_.info.resolution + map_.info.origin.position.y;
+//        goalPose.position.x = centroid.x * map_.info.resolution / factor + map_.info.origin.position.x;
+        goalPose.position.x = centroid.x / factor + map_.info.origin.position.x;
+//        goalPose.position.y = (map_.info.height - centroid.y / factor) * map_.info.resolution + map_.info.origin.position.y;
+        goalPose.position.y = (map_.info.height - centroid.y / factor) + map_.info.origin.position.y;
         double phi = atan2( seedPt.y - centroid.y, centroid.x - seedPt.x );
         goalPose.orientation = tf::createQuaternionMsgFromYaw(phi);
 
@@ -337,7 +331,7 @@ void SimpleDeployment::publish()
 
 cv::Mat SimpleDeployment::drawMap()
 {
-    ROS_ERROR("Drawing map");
+    ROS_DEBUG("Drawing map");
     cv::Mat src = cv::Mat::zeros(map_.info.height,map_.info.width,CV_8UC1);
 
     // Copy map values to image

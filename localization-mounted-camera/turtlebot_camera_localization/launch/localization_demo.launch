@@ -4,6 +4,6 @@
   <include file="$(find blueBot)/launch/uvcCameraLaunch.launch"/>
 
   <!-- Localization -->
-  <node name="blueBot" pkg="blueBot" type="blueBot"/>
+  <node name="localization" pkg="turtlebot_camera_localization" type="camera_localization"/>
 
 </launch>

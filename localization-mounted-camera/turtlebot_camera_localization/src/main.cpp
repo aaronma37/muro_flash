@@ -38,7 +38,6 @@ static const int _GHIBERTI = 80;
 
 
 //Try maps
-
 std::map<int, std::string> robot_name_map;
 std::map<int, ros::Publisher> odom_pub_map;
 std::map<int, ros::Publisher> camPose_pub_map;
@@ -83,8 +82,10 @@ aruco::CameraParameters CParam;
 //Scaling factoring 
 const double PIXEL_X = 640;
 const double PIXEL_Y = 480;
-const double SCALING_FACTOR_X = 3.35/PIXEL_X;
-const double SCALING_FACTOR_Y = 2.44/PIXEL_Y;
+//const double SCALING_FACTOR_X = 3.35/PIXEL_X;
+//const double SCALING_FACTOR_Y = 2.44/PIXEL_Y;
+const double SCALING_FACTOR_X = 1.0;
+const double SCALING_FACTOR_Y = 1.0;
 const double PI = 3.14159265;
 
 //Declare a string with the name of the window that we will create using OpenCV where processed images will be displayed.
@@ -209,7 +210,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
     cv::waitKey(3);
 
     //Convert the CvImage to a ROS image message and publish it on the "camera/image_processed" topic.
-    pub.publish(cv_ptr->toImageMsg());
+    //pub.publish(cv_ptr->toImageMsg());
 }
 
 int main(int argc, char **argv)
