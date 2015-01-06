@@ -235,36 +235,36 @@ int main(int argc, char **argv)
 	robot_name_map[_MASACCIO]="masaccio"; 
 	robot_name_map[_MICHELANGELO]="michelangelo";   
 
-	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 10);
+	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 2);
 	camPose_pub_map[_BOTICELLI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("boticelli/amcl_pose", 1, true);
 	particleCloudPub_map[_BOTICELLI] = nh.advertise<geometry_msgs::PoseArray>("boticelli/particlecloud",1,true);
 	particleCloud.poses.resize(1);
 
-	odom_pub_map[_TITIAN] = nh.advertise<nav_msgs::Odometry>("titian/odom", 10);
+	odom_pub_map[_TITIAN] = nh.advertise<nav_msgs::Odometry>("titian/odom", 2);
 	camPose_pub_map[_TITIAN] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("titian/amcl_pose", 1, true);
 	particleCloudPub_map[_TITIAN] = nh.advertise<geometry_msgs::PoseArray>("titian/particlecloud",1,true);
 
-	odom_pub_map[_RAPHAEL] = nh.advertise<nav_msgs::Odometry>("raphael/odom", 10);
+	odom_pub_map[_RAPHAEL] = nh.advertise<nav_msgs::Odometry>("raphael/odom", 2);
 	camPose_pub_map[_RAPHAEL] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("raphael/amcl_pose", 1, true);
 	particleCloudPub_map[_RAPHAEL] = nh.advertise<geometry_msgs::PoseArray>("raphael/particlecloud",1,true);
 
-	odom_pub_map[_DONATELLO] = nh.advertise<nav_msgs::Odometry>("donatello/odom", 10);
+	odom_pub_map[_DONATELLO] = nh.advertise<nav_msgs::Odometry>("donatello/odom", 2);
 	camPose_pub_map[_DONATELLO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("donatello/amcl_pose", 1, true);
 	particleCloudPub_map[_DONATELLO] = nh.advertise<geometry_msgs::PoseArray>("donatello/particlecloud",1,true);
 
-	odom_pub_map[_LEONARDO] = nh.advertise<nav_msgs::Odometry>("leonardo/odom", 10);
+	odom_pub_map[_LEONARDO] = nh.advertise<nav_msgs::Odometry>("leonardo/odom", 2);
 	camPose_pub_map[_LEONARDO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("leonardo/amcl_pose", 1, true);
 	particleCloudPub_map[_LEONARDO] = nh.advertise<geometry_msgs::PoseArray>("leonardo/particlecloud",1,true);
 
-	odom_pub_map[_MASACCIO] = nh.advertise<nav_msgs::Odometry>("masaccio/odom", 10);
+	odom_pub_map[_MASACCIO] = nh.advertise<nav_msgs::Odometry>("masaccio/odom", 2);
 	camPose_pub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("masaccio/amcl_pose", 1, true);
 	particleCloudPub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseArray>("masaccio/particlecloud",1,true);
 
-	odom_pub_map[_MICHELANGELO] = nh.advertise<nav_msgs::Odometry>("michelangelo/odom", 10);
+	odom_pub_map[_MICHELANGELO] = nh.advertise<nav_msgs::Odometry>("michelangelo/odom", 2);
 	camPose_pub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("michelangelo/amcl_pose", 1, true);
 	particleCloudPub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseArray>("michelangelo/particlecloud",1,true);   
 
-	odom_pub_map[_GHIBERTI] = nh.advertise<nav_msgs::Odometry>("ghiberti/odom", 10);
+	odom_pub_map[_GHIBERTI] = nh.advertise<nav_msgs::Odometry>("ghiberti/odom", 2);
 	camPose_pub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("ghiberti/amcl_pose", 1, true);
 	particleCloudPub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseArray>("ghiberti/particlecloud",1,true);  
 
