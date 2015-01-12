@@ -1,7 +1,7 @@
 <launch>
 
   <!-- Camera -->
-  <include file="$(find blueBot)/launch/uvcCameraLaunch.launch"/>
+  <include file="$(find turtlebot_camera_localization)/launch/uvcCameraLaunch.launch"/>
 
   <!-- Localization -->
   <node name="localization" pkg="turtlebot_camera_localization" type="camera_localization"/>
