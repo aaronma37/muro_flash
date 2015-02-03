@@ -38,12 +38,13 @@ double velocity;
 cyclicPursuit::cyclicPursuit()
 {
 pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("/position", 1, &cyclicPursuit::poseCallback, this);
-vel_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
+vel_pub_ = nh_.advertise<geometry_msgs::Twist>("/velocity", 1, true);
 }
 
 
 void cyclicPursuit::poseCallback(const geometry_msgs::Pose::ConstPtr& pose)
 {
+//THIS IS WHERE CYCLIC PURSUIT ALGORITHM GOES
 cmd_vel_.linear.x=.1;
 	vel_pub_.publish(cmd_vel_);
 }
