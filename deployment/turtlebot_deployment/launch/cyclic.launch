@@ -18,19 +18,19 @@
 <node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
 <param name="robot_name" value="$(arg robot)"/>
 </node>
-<!-- Deployment node -->
-<node pkg="turtlebot_deployment" type="simple_deployment" name="deployment" output="screen">
+<!--Cyclic Pursuit-->
+<node pkg="cyclic_pursuit" type="cyclic_pursuit" name="cyclic_pursuit" output="screen">
 <param name="robot_name" value="$(arg robot)"/>
 <param name="hold_time" value="$(arg hold_time)"/>
 <param name="resolution" value="$(arg resolution)"/>
 <param name="show_cells_" value="$(arg show_cells_)"/>
 </node>
-<!-- Navigation -->
-<include file="$(find turtlebot_move_to_goal)/launch/turtlebot_move_to_goal.launch">
-<arg name="turn_speed" value="$(arg turn_speed)"/>
-<arg name="drive_speed" value="$(arg drive_speed)"/>
-<arg name="angle_tolerance" value="$(arg angle_tolerance)"/>
-<arg name="distance_tolerance" value="$(arg distance_tolerance)"/>
-</include>
+<!--PathFollowing-->
+<node pkg="PathFollowing" type="pathFollowing" name="PathFollowing" output="PathFollowing">
+<param name="robot_name" value="$(arg robot)"/>
+<param name="hold_time" value="$(arg hold_time)"/>
+<param name="resolution" value="$(arg resolution)"/>
+<param name="show_cells_" value="$(arg show_cells_)"/>
+</node>
 </group>
 </launch>
