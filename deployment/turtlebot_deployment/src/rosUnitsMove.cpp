@@ -19,5 +19,5 @@ geometry_msgs::TwistPtr cmd_vel_;
   cmd_vel_->linear.x = 1;
 
 vel_pub_.publish(cmd_vel_);
-return 0;
+ros::spin();
 }
