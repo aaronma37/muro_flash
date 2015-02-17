@@ -10,7 +10,7 @@
 int main(int argc, char **argv)
 {
   
-ros::init(argc, argv, "rosUnitMove");
+ros::init(argc, argv, "rosUnitsMove");
 geometry_msgs::TwistPtr cmd_vel_;
   ros::NodeHandle ph_, nh_;
   ros::Publisher vel_pub_;
