@@ -80,8 +80,8 @@ target_link_libraries(Kalmanfilter
   ${catkin_LIBRARIES}
 )
 
-add_executable(rosUnitMove src/rosUnitMove.cpp)
-add_dependencies(rosUnitMove ${catkin_EXPORTED_TARGETS})
-target_link_libraries(rosUnitMove
+add_executable(rosUnitsMove src/rosUnitsMove.cpp)
+add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
+target_link_libraries(rosUnitsMove
 ${catkin_LIBRARIES}
 )
