@@ -11,6 +11,7 @@ int main(int argc, char **argv)
 {
   
 ros::init(argc, argv, "rosUnitMove");
+geometry_msgs::Twist cmd_vel_;
   ros::NodeHandle ph_, nh_;
   ros::Publisher vel_pub_;
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
