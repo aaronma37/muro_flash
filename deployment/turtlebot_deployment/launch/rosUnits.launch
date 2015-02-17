@@ -16,6 +16,7 @@
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
 <!--Move for 5 seconds-->
-
+<node pkg="rosUnitMove" type="rosUnitMove" name="rosUnitMove" output="screen">
+</node>
 </group>
 </launch>
