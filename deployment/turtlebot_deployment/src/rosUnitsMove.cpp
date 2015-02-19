@@ -23,7 +23,7 @@ geometry_msgs::Twist cmd_vel_;
   //cmd_vel_.angular.z = 0.0;
   //cmd_vel_.linear.x = .1;
   
-  cmd_vel_.angular.z = 0.1;
+  cmd_vel_.angular.z = 1;
   cmd_vel_.linear.x = 0;
   int x=1;
   time(&begin);
