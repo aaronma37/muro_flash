@@ -24,7 +24,7 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.linear.x = .1;
   int x=1;
   time(&begin);
-  while (difftime(time(&timer);,begin)<5){
+  while (difftime(time(&timer),begin)<5){
 vel_pub_.publish(cmd_vel_);
 }
 /*sleep(5);
