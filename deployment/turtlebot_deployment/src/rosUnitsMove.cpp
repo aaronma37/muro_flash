@@ -7,11 +7,13 @@
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
 #include <stdlib.h> 
+#include <time.h>   
 
 int main(int argc, char **argv)
 {
   
 ros::init(argc, argv, "rosUnitsMove");
+time_t timer,begin;
 
 std::cout<<"Checkpoint";
 geometry_msgs::Twist cmd_vel_;
@@ -21,10 +23,9 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.angular.z = 0.0;
   cmd_vel_.linear.x = .1;
   int x=1;
-  while (x>0){
+  time(&begin);
+  while (difftime(timer,begin)<5){
 vel_pub_.publish(cmd_vel_);
-x=x+1;
-//sleep();
 }
 /*sleep(5);
 cmd_vel_.angular.z=0;
