@@ -6,6 +6,7 @@
 #include <nav_msgs/Odometry.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
+#include <stdlib.h> 
 
 int main(int argc, char **argv)
 {
@@ -19,5 +20,10 @@ geometry_msgs::TwistPtr cmd_vel_;
   cmd_vel_->linear.x = 1;
 
 vel_pub_.publish(cmd_vel_);
-ros::spin();
+sleep(5000);
+cmd_vel_->angular.z=0;
+cmd_vel_->linear.x=0;
+vel_pub_.publish(cmd_vel_);
+return 0;
+
 }
