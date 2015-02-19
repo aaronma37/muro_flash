@@ -21,10 +21,10 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.angular.z = 0.0;
   cmd_vel_.linear.x = .1;
   int x=1;
-  while (x<5000){
+  while (x>0){
 vel_pub_.publish(cmd_vel_);
 x=x+1;
-//usleep(100);
+//sleep();
 }
 /*sleep(5);
 cmd_vel_.angular.z=0;
