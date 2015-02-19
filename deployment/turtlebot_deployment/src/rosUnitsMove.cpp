@@ -20,11 +20,11 @@ geometry_msgs::Twist cmd_vel_;
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
   cmd_vel_.angular.z = 0.0;
   cmd_vel_.linear.x = .1;
-  int x=4;
-  while (x<5){
+  int x=1;
+  while (x<5000){
 vel_pub_.publish(cmd_vel_);
 x=x+1;
-sleep(5);
+usleep(1);
 }
 /*sleep(5);
 cmd_vel_.angular.z=0;
