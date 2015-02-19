@@ -24,7 +24,7 @@ geometry_msgs::Twist cmd_vel_;
   while (x<5000){
 vel_pub_.publish(cmd_vel_);
 x=x+1;
-usleep(500);
+//usleep(100);
 }
 /*sleep(5);
 cmd_vel_.angular.z=0;
