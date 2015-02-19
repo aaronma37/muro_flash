@@ -22,7 +22,7 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.linear.x = 1;
 
 vel_pub_.publish(cmd_vel_);
-sleep(5000);
+sleep(5);
 cmd_vel_.angular.z=0;
 cmd_vel_.linear.x=0;
 vel_pub_.publish(cmd_vel_);
