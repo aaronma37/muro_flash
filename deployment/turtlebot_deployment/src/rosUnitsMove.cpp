@@ -26,7 +26,7 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.angular.z = .5;
   cmd_vel_.linear.x = 0;
   int x=1;
-  time(&end)
+  time(&end);
   while(1==1){
     time(&begin);
     if(difftime(time(&begin),end>15){
