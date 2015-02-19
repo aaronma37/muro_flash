@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 {
   
 ros::init(argc, argv, "rosUnitsMove");
-time_t timer,begin;
+time_t timer,begin,end;
 
 std::cout<<"Checkpoint";
 geometry_msgs::Twist cmd_vel_;
@@ -26,12 +26,15 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.angular.z = .5;
   cmd_vel_.linear.x = 0;
   int x=1;
-  
+  time(&end)
   while(1==1){
     time(&begin);
+    if(difftime(time(&begin),end>15){
+      time(&end);
+    
   while (difftime(time(&timer),begin)<5){
 vel_pub_.publish(cmd_vel_);
-}sleep(5)}
+}}}
 /*sleep(5);
 cmd_vel_.angular.z=0;
 cmd_vel_.linear.x=0;
