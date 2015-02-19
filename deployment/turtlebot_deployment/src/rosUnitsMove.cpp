@@ -29,7 +29,7 @@ geometry_msgs::Twist cmd_vel_;
   time(&end);
   while(1==1){
     time(&begin);
-    if(difftime(time(&begin),end>15){
+    if(difftime(time(&begin),end)>15){
       time(&end);
     
   while (difftime(time(&timer),begin)<5){
