@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 {
   
 ros::init(argc, argv, "rosUnitsMove");
+std::cout<<"Checkpoint";
 geometry_msgs::TwistPtr cmd_vel_;
   ros::NodeHandle ph_, nh_;
   ros::Publisher vel_pub_;
