@@ -13,7 +13,7 @@ int main(int argc, char **argv)
   
 ros::init(argc, argv, "rosUnitsMove");
 std::cout<<"Checkpoint";
-geometry_msgs::TwistPtr cmd_vel_;
+/*geometry_msgs::TwistPtr cmd_vel_;
   ros::NodeHandle ph_, nh_;
   ros::Publisher vel_pub_;
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
@@ -25,6 +25,6 @@ sleep(5000);
 cmd_vel_->angular.z=0;
 cmd_vel_->linear.x=0;
 vel_pub_.publish(cmd_vel_);
-return 0;
+*/return 0;
 
 }
