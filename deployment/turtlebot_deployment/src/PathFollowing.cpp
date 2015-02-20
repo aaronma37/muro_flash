@@ -86,7 +86,7 @@ time(&end);
 
 while(1==1){
 	
-		while ((time(&begin)-end)>.2){
+		while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 		        double r=50;
 			double k=1;
