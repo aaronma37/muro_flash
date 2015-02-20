@@ -66,8 +66,8 @@ if (got_vel_==true){
 	
 	*/
 	double orientation = tf::getYaw(pose->orientation);
-	double x1=pose->(position.x-250);
-	double x2=pose->(position.y-250); //centered
+	double x1=pose->position.x;
+	double x2=pose->position.y; //centered
 	double r=100;
 	double k=1;
 	double u1=robVel_;
