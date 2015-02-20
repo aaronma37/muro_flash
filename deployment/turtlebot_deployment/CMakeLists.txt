@@ -80,5 +80,10 @@ target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
 
+add_executable(cyclic_pursuit src/cyclic_pursuit.cpp)
+add_dependencies(cyclic_pursuit ${catkin_EXPORTED_TARGETS})
+target_link_libraries(cyclic_pursuit
+${catkin_LIBRARIES}
+)
 
 
