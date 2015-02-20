@@ -77,14 +77,14 @@ if (got_vel_==true){
 	double x2=Pose->pose.position.y; //centered
 	x2=x2-200;
 	double r=50;
-	double k=1;
+	double k=10;
 	double u1=robVel_;
 	double u2=robVel_/r;
 	std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
 	u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 	std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
 	cmd_vel_.linear.x=(u1/167);
-	cmd_vel_.angular.z=(u2*1.3);
+	cmd_vel_.angular.z=(u2*1.45);
 	u_pub_.publish(cmd_vel_);
 //	got_vel_=false; *Delete
 	}
