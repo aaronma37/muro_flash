@@ -56,7 +56,6 @@ u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1,
 
 void pathFollowing::velocityCallback(const geometry_msgs::Twist::ConstPtr& robVel){
 robVel_= robVel->linear.x;
-robVel_=robVel_/167;
 got_vel_ = true;
 }
 
@@ -80,8 +79,8 @@ if (got_vel_==true){
 	double k=1;
 	double u1=robVel_;
 	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation)); //check orientation units
-	cmd_vel_.linear.x=(u1);
-	cmd_vel_.angular.z=(u2/18.2);
+	cmd_vel_.linear.x=(u1/167);
+	cmd_vel_.angular.z=(u2/167/18.2);
 	u_pub_.publish(cmd_vel_);
 //	got_vel_=false; *Delete
 	}
