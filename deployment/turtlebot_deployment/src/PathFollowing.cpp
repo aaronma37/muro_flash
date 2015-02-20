@@ -74,6 +74,7 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
+ros::NodeHandle ph_, nh_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 robVel_=0;
