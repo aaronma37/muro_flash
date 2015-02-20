@@ -35,7 +35,7 @@ ros::Subscriber pos_sub_;
 ros::Subscriber vel_sub_;
 
 // Other member variables
-geometry_msgs::Twist cmd_vel_;
+
 geometry_msgs::Twist robVel;
 turtlebot_deployment::PoseWithName Pose;
 
@@ -76,6 +76,7 @@ int main(int argc, char **argv)
 ros::init(argc, argv, "PathFollowing");
 ros::NodeHandle ph_, nh_;
 ros::Publisher u_pub_;
+geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 robVel_=0;
