@@ -71,7 +71,7 @@ if (got_vel_==true){
 	
 	*/
 	double orientation = tf::getYaw(Pose->pose.orientation);
-	orientation=-orientation;
+	//orientation=-orientation;
 	double x1=Pose->pose.position.x;
 	x1=x1-313;
 	double x2=Pose->pose.position.y; //centered
