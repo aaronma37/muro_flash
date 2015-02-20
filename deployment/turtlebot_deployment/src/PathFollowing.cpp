@@ -77,7 +77,7 @@ if (got_vel_==true){
 	double x2=Pose->pose.position.y; //centered
 	x2=x2-200;
 	double r=50;
-	double k=20;
+	double k=1;
 	double u1=robVel_;
 	double u2=robVel_/r;
 	std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
