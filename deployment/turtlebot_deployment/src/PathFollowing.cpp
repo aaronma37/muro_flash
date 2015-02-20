@@ -43,8 +43,8 @@ pathFollowing::pathFollowing():
 /*cmd_vel_(new geometry_msgs::Twist),
 */got_vel_(false)
 {
-vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("/amcl_pose",1, &pathFollowing::velocityCallback, this);
-pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("/position", 1, &pathFollowing::poseCallback, this);
+vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
+pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("amcl_pose", 1, &pathFollowing::poseCallback, this);
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 
 }
