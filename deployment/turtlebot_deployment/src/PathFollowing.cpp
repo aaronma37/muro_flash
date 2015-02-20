@@ -10,6 +10,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
+#include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
 #include <math.h>
 
@@ -21,6 +22,7 @@ class pathFollowing
 {
 public:
 pathFollowing();
+std::string this_agent_;
 private:
 // Methods
 
@@ -41,10 +43,13 @@ bool got_vel_;
 
 pathFollowing::pathFollowing():
 /*cmd_vel_(new geometry_msgs::Twist),
-*/got_vel_(false)
+*/got_vel_(false),
+ph_("~"),
+this_agent_()
 {
+ph_.param("robot_name", this_agent_,this_agent_);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
-pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("amcl_pose", 1, &pathFollowing::poseCallback, this);
+pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("/all_positions", 1, &pathFollowing::poseCallback, this);
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 
 }
