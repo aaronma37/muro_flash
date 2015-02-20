@@ -10,7 +10,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
-#include "geometry_msgs/PoseWithCovarianceStamped.h"
+#include <turtlebot_deployment/PoseWithName.h>
 #include <tf/tf.h>
 #include <math.h>
 
@@ -26,7 +26,7 @@ std::string this_agent_;
 private:
 // Methods
 
-void poseCallback(const geometry_msgs::Pose::ConstPtr&);
+void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
@@ -36,7 +36,7 @@ ros::Publisher u_pub_;
 // Other member variables
 geometry_msgs::Twist cmd_vel_;
 geometry_msgs::Twist robVel;
-geometry_msgs::Pose pose;
+turtlebot_deployment::PoseWithName Pose;
 double robVel_;
 bool got_vel_;
 };
@@ -49,7 +49,7 @@ this_agent_()
 {
 ph_.param("robot_name", this_agent_,this_agent_);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
-pos_sub_ = nh_.subscribe<geometry_msgs::Pose>("/all_positions", 1, &pathFollowing::poseCallback, this);
+pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1, &pathFollowing::poseCallback, this);
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 
 }
@@ -59,7 +59,7 @@ robVel_= robVel->linear.x;
 got_vel_ = true;
 }
 
-void pathFollowing::poseCallback(const geometry_msgs::Pose::ConstPtr& pose)
+void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& Pose)
 {
 if (got_vel_==true){
 	
@@ -70,10 +70,10 @@ if (got_vel_==true){
 % dDistance  = 167  1 ros unit/s  to pixel/s         STD = 19.4
 	
 	*/
-	double orientation = tf::getYaw(pose->orientation);
-	double x1=pose->position.x;
+	double orientation = tf::getYaw(Pose->pose.orientation);
+	double x1=Pose->pose.position.x;
 	x1=x1-250;
-	double x2=pose->position.y; //centered
+	double x2=Pose->pose.position.y; //centered
 	x2=x2-250;
 	double r=100;
 	double k=1;
