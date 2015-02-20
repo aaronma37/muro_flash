@@ -76,6 +76,7 @@ int main(int argc, char **argv)
 ros::init(argc, argv, "PathFollowing");
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
+robVel_=0;
 while (1==1){
 	ros::spinonce();
         double r=50;
