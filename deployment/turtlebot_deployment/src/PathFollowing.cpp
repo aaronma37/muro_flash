@@ -81,7 +81,7 @@ if (got_vel_==true){
 	double u1=robVel_;
 	double u2=robVel_/r;
 	std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
-	u2=u2+k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
+	u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 	std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
 	cmd_vel_.linear.x=(u1/167);
 	cmd_vel_.angular.z=(u2*.85);
