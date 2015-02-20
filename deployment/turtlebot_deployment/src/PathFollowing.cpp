@@ -75,12 +75,12 @@ if (got_vel_==true){
 	x1=x1-313;
 	double x2=Pose->pose.position.y; //centered
 	x2=x2-200;
-	double r=5;
+	double r=25;
 	double k=1;
 	double u1=robVel_;
 	double u2=robVel_/r;//+k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 	cmd_vel_.linear.x=(u1/167);
-	cmd_vel_.angular.z=(u2/17);
+	cmd_vel_.angular.z=(u2*5);
 	u_pub_.publish(cmd_vel_);
 //	got_vel_=false; *Delete
 	}
