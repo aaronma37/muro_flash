@@ -33,7 +33,7 @@ void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
 ros::Subscriber vel_sub_;
-ros::Publisher u_pub_;
+
 // Other member variables
 geometry_msgs::Twist cmd_vel_;
 geometry_msgs::Twist robVel;
@@ -75,11 +75,12 @@ int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
 ros::NodeHandle ph_, nh_;
+ros::Publisher u_pub_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 robVel_=0;
 while (1==1){
-	ros::spinonce();
+	ros::spinOnce();
         double r=50;
 	double k=1;
 	double u1=robVel_;
