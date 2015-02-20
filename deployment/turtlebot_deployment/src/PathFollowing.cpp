@@ -57,17 +57,25 @@ got_vel_ = true;
 void pathFollowing::poseCallback(const geometry_msgs::Pose::ConstPtr& pose)
 {
 if (got_vel_==true){
+	
+	/*
+	
+%% Results (linear about V=.1, omega=1
+% deltaAngle = 18.2 1 ros angle/s to degrees/s(CCW), STD = 2.05
+% dDistance  = 167  1 ros unit/s  to pixel/s         STD = 19.4
+	
+	*/
 	double orientation = tf::getYaw(pose->orientation);
-	double x1=pose->position.x-250;
-	double x2=pose->position.y-250; //centered
+	double x1=pose->(position.x-250);
+	double x2=pose->(position.y-250); //centered
 	double r=100;
 	double k=1;
 	double u1=robVel_;
-	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation));
-	cmd_vel_.linear.x=(u1);
-	cmd_vel_.angular.z=(u2);
+	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation)); //check orientation units
+	cmd_vel_.linear.x=(u1/167);
+	cmd_vel_.angular.z=(u2/18.2);
 	u_pub_.publish(cmd_vel_);
-	got_vel_=false;
+//	got_vel_=false; *Delete
 	}
 }
 int main(int argc, char **argv)
