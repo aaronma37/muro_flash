@@ -15,8 +15,9 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <math.h>
 
 //Declare Variables
-
-
+double x2, x1;
+double orientation;
+double robVel_;
 // Construct Node Class
 class pathFollowing
 {
@@ -37,7 +38,7 @@ ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
 geometry_msgs::Twist robVel;
 turtlebot_deployment::PoseWithName Pose;
-double robVel_;
+
 bool got_vel_;
 };
 
@@ -50,7 +51,6 @@ this_agent_()
 ph_.param("robot_name", this_agent_,this_agent_);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1, &pathFollowing::poseCallback, this);
-u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 
 }
 
@@ -61,22 +61,24 @@ got_vel_ = true;
 
 void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& Pose)
 {
-if (got_vel_==true){
-	
-	/*
-	
-%% Results (linear about V=.1, omega=1
-% deltaAngle = 18.2 1 ros angle/s to degrees/s(CCW), STD = 2.05
-% dDistance  = 167  1 ros unit/s  to pixel/s         STD = 19.4
-	
-	*/
-	double orientation = tf::getYaw(Pose->pose.orientation);
+	orientation = tf::getYaw(Pose->pose.orientation);
 	//orientation=-orientation;
-	double x1=Pose->pose.position.x;
-	x1=x1-313;
-	double x2=Pose->pose.position.y; //centered
+	x1=Pose->pose.position.x;
+	x1=x1-350;
+	x2=Pose->pose.position.y; //centered
 	x2=x2-200;
-	double r=50;
+	
+//	got_vel_=false; *Delete
+	
+}
+int main(int argc, char **argv)
+{
+ros::init(argc, argv, "PathFollowing");
+u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
+pathFollowing pathFollowingk;
+while (1==1){
+	ros::spinonce();
+        double r=50;
 	double k=1;
 	double u1=robVel_;
 	double u2=robVel_/r;
@@ -85,13 +87,5 @@ if (got_vel_==true){
 	std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
 	cmd_vel_.linear.x=(u1/167);
 	cmd_vel_.angular.z=(u2*1.45);
-	u_pub_.publish(cmd_vel_);
-//	got_vel_=false; *Delete
-	}
-}
-int main(int argc, char **argv)
-{
-ros::init(argc, argv, "PathFollowing");
-pathFollowing pathFollowingk;
-ros::spin();
+	u_pub_.publish(cmd_vel_);}
 }
