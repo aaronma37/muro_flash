@@ -13,7 +13,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <turtlebot_deployment/PoseWithName.h>
 #include <tf/tf.h>
 #include <math.h>
-
+#include <time.h> 
 //Declare Variables
 double x2, x1;
 double orientation;
@@ -74,22 +74,33 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
+time_t timer,begin,end;
 ros::NodeHandle ph_, nh_;
 ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 robVel_=0;
-while (1==1){
-	ros::spinOnce();
-        double r=50;
-	double k=1;
-	double u1=robVel_;
-	double u2=robVel_/r;
-	std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
-	u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
-	std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
-	cmd_vel_.linear.x=(u1/167);
-	cmd_vel_.angular.z=(u2*1.45);
-	u_pub_.publish(cmd_vel_);}
+time(&end);
+
+
+while(1==1){
+	
+		while ((time(&begin)-end)>1){
+			ros::spinOnce();
+		        double r=50;
+			double k=1;
+			double u1=robVel_;
+			double u2=robVel_/r;
+			std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
+			u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
+			std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
+			cmd_vel_.linear.x=(u1/167);
+			cmd_vel_.angular.z=(u2*1.45);
+			u_pub_.publish(cmd_vel_);
+			time(&end);
+		}
+			
+}
+	
 }
