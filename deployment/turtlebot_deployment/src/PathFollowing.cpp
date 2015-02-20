@@ -78,7 +78,7 @@ if (got_vel_==true){
 	double r=25;
 	double k=1;
 	double u1=robVel_;
-	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167^2; //check orientation units
+	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 	cmd_vel_.linear.x=(u1/167);
 	cmd_vel_.angular.z=(u2/17);
 	u_pub_.publish(cmd_vel_);
