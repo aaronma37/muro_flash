@@ -73,15 +73,12 @@ target_link_libraries(simple_deployment_dummy
   ${catkin_LIBRARIES}
 )
 
-#######################
-add_executable(Kalmanfilter src/Kalmanfilter.cpp)
-add_dependencies(Kalmanfilter ${catkin_EXPORTED_TARGETS})
-target_link_libraries(Kalmanfilter
-  ${catkin_LIBRARIES}
-)
 
-add_executable(rosUnitsMove src/rosUnitsMove.cpp)
-add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
-target_link_libraries(rosUnitsMove
+add_executable(PathFollowing src/PathFollowing.cpp)
+add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
+target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
+
+
+
