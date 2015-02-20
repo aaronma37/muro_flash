@@ -75,7 +75,7 @@ if (got_vel_==true){
 	x1=x1-250;
 	double x2=Pose->pose.position.y; //centered
 	x2=x2-250;
-	double r=100;
+	double r=50;
 	double k=.1;
 	double u1=robVel_;
 	double u2=robVel_/r+k*(r*x1*cos(orientation)+r*x2*sin(orientation)); //check orientation units
