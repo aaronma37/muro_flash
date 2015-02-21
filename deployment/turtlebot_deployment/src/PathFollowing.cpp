@@ -86,8 +86,9 @@ time(&end);
 
 while(1==1){
 	
-		while ((time(&begin)-end)>.1){
-			ros::spinOnce();
+		//while ((time(&begin)-end)>.1){
+			//ros::spinOnce();
+			pathFollowingk.pathFollowing();
 		        double r=50;
 			double k=1;
 			double u1=robVel_;
@@ -98,8 +99,8 @@ while(1==1){
 			cmd_vel_.linear.x=(u1/167);
 			cmd_vel_.angular.z=(u2*1.45);
 			u_pub_.publish(cmd_vel_);
-			time(&end);
-		}
+		//	time(&end);
+	//	}
 			
 }
 	
