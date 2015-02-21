@@ -85,7 +85,7 @@ add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-add_dependencies(pathFollowing ${PROJECT_NAME}_gencfg)
+add_dependencies(PathFollowing ${PROJECT_NAME}_gencfg)
 
 
 
