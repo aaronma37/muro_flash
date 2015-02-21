@@ -66,7 +66,7 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 	x1=Pose->pose.position.x;
 	x1=x1-350;
 	x2=Pose->pose.position.y; //centered
-	x2=x2-200;
+	x2=x2-250;
 	
 //	got_vel_=false; *Delete
 	
