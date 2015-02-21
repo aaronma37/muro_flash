@@ -28,7 +28,7 @@
 <!--PathFollowing-->
 <node pkg="turtlebot_deployment" type="PathFollowing" name="PathFollowing" output="screen">
 <param name="robot_name" value="$(arg robot)"/>
-<param name="hold_time" value="$(arg hold_time)"/>
+<param name="Radius" value="$(arg radius)"/>
 <param name="resolution" value="$(arg resolution)"/>
 <param name="show_cells_" value="$(arg show_cells_)"/>
 </node>
