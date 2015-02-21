@@ -81,11 +81,11 @@ target_link_libraries(simple_deployment_dummy
 
 
 add_executable(PathFollowing src/PathFollowing.cpp)
-add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
+add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-
+add_dependencies(PathFollowing turtlebot_deployment_gencfg)
 
 
 
