@@ -27,7 +27,19 @@ generate_messages(
   std_msgs
   geometry_msgs
 )
-generate_dynamic_reconfigure_options(cfg/pathFollowing.cfg)
+
+#add dynamic reconfigure api
+#find_package(catkin REQUIRED dynamic_reconfigure)
+generate_dynamic_reconfigure_options(
+  cfg/pathFollowing.cfg
+)
+
+# make sure configure headers are built before any node using them
+
+
+
+
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES turtlebot_deployment
@@ -82,7 +94,7 @@ add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-add_dependencies(pathFollowing ${${turtlebot_deployment}_EXPORTED_TARGETS})
+add_dependencies(pathFollowing ${PROJECT_NAME}_gencfg)
 
 
 
