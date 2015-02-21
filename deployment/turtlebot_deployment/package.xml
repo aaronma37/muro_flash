@@ -28,5 +28,5 @@
   <run_depend>opencv2</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>message_runtime</run_depend>
-  <depend package="dynamic_reconfigure" />
+  <run_depend>dynamic_reconfigure</run_depend>
 </package>
