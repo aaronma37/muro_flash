@@ -107,7 +107,7 @@ while(1==1){
 		//	time(&end);
 	//	}
 			
-			usleep(1000);
+			usleep(10000);
 }
 	
 }
