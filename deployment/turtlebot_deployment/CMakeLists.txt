@@ -12,7 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   genmsg
   dynamic_reconfigure
 )
-generate_dynamic_reconfigure_options(cfg/pathFollowing.cfg)
+generate_dynamic_reconfigure_options(turtlebot_deployment/cfg/pathFollowing.cfg)
 find_package(OpenCV REQUIRED)
 
 include_directories(
