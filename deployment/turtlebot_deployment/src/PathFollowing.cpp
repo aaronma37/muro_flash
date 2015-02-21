@@ -14,11 +14,30 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <tf/tf.h>
 #include <math.h>
 #include <time.h> 
+#include <dynamic_reconfigure/server.h>
+#include <turtlebot_deployment/MyStuffConfig.h>
 //Declare Variables
 double x2, x1;
 double orientation;
 double robVel_;
 // Construct Node Class
+void callback(turtlebot_deployment::MyStuffConfig &config, uint32_t level)
+{
+  ROS_INFO("Reconfigure request : %f %f %i %i %i %s %i %s %f %i",
+           config.groups.angles.min_ang,
+           config.groups.angles.max_ang,
+           (int)config.intensity,
+           config.cluster,
+           config.skip,
+           config.port.c_str(),
+           (int)config.calibrate_time,
+           config.frame_id.c_str(),
+           config.time_offset,
+           (int)config.allow_unsafe_settings);
+
+  // do nothing for now
+}
+
 class pathFollowing
 {
 public:
@@ -74,7 +93,10 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
+dynamic_reconfigure::Server<turtlebot_deployment::MyStuffConfig> srv;
+  dynamic_reconfigure::Server<turtlebot_deployment::MyStuffConfig>::CallbackType f = boost::bind(&callback, _1, _2);
 time_t timer,begin,end;
+srv.setCallback(f);
 ros::NodeHandle ph_, nh_;
 ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
