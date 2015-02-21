@@ -81,7 +81,6 @@ ros::init(argc, argv, "PathFollowing");
 
 time_t timer,begin,end;
 ros::NodeHandle ph_, nh_;
-ph_("~");
 ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
