@@ -11,8 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   genmsg
 )
-find_package(catkin REQUIRED dynamic_reconfigure)
-generate_dynamic_reconfigure_options(cfg/pathFollowing.cfg)
+
 find_package(OpenCV REQUIRED)
 
 include_directories(
@@ -85,7 +84,7 @@ add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-add_dependencies(PathFollowing ${${PROJECT_NAME}_EXPORTED_TARGETS}) 
+
 
 
 
