@@ -31,7 +31,9 @@ generate_messages(
 #add dynamic reconfigure api
 #find_package(catkin REQUIRED dynamic_reconfigure)
 generate_dynamic_reconfigure_options(
-  cfg/pathFollowing.cfg
+  cfg/relative_path_to_file1.cfg
+  cfg/relative_path_to_file2.cfg
+  #...
 )
 
 # make sure configure headers are built before any node using them
