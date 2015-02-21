@@ -79,10 +79,7 @@ target_link_libraries(simple_deployment_dummy
   ${catkin_LIBRARIES}
 )
 
-# add dynamic reconfigure api
-rosbuild_find_ros_package(dynamic_reconfigure)
-include(${dynamic_reconfigure_PACKAGE_PATH}/cmake/cfgbuild.cmake)
-gencfg()
+
 add_executable(PathFollowing src/PathFollowing.cpp)
 add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
