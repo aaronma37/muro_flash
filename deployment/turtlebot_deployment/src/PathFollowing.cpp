@@ -78,7 +78,7 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
-r=50;
+r=100;
 time_t timer,begin,end;
 ros::NodeHandle ph_("~"), nh_;
 ros::Publisher u_pub_;
@@ -107,7 +107,7 @@ while(1==1){
 		//	time(&end);
 	//	}
 			
-			usleep(10000);
+			usleep(50000);
 }
 	
 }
