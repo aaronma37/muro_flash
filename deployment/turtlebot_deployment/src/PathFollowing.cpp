@@ -87,8 +87,8 @@ time(&end);
 while(1==1){
 	
 		//while ((time(&begin)-end)>.1){
-			//ros::spinOnce();
-			pathFollowingk.pathFollowing();
+			ros::spinOnce();
+			//pathFollowingk.pathFollowing();
 		        double r=50;
 			double k=1;
 			double u1=robVel_;
@@ -102,6 +102,7 @@ while(1==1){
 		//	time(&end);
 	//	}
 			
+			usleep(1000);
 }
 	
 }
