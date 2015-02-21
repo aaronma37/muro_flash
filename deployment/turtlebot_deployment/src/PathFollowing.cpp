@@ -16,7 +16,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <time.h> 
 
 //Declare Variables
-double x2, x1;
+double x2, x1, r;
 double orientation;
 double robVel_;
 // Construct Node Class
@@ -52,6 +52,7 @@ ph_("~"),
 this_agent_()
 {
 ph_.param("robot_name", this_agent_,this_agent_);
+ph_.param("radius", r,r);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1, &pathFollowing::poseCallback, this);
 
@@ -77,6 +78,7 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
+r=50;
 
 time_t timer,begin,end;
 
@@ -94,7 +96,7 @@ while(1==1){
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//pathFollowingk.pathFollowing();
-		        double r=50;
+		        
 			double k=1;
 			double u1=robVel_;
 			double u2=robVel_/r;
