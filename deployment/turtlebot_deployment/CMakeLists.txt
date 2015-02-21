@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   genmsg
 )
+find_package(catkin REQUIRED dynamic_reconfigure)
 generate_dynamic_reconfigure_options(cfg/pathFollowing.cfg)
 find_package(OpenCV REQUIRED)
 
