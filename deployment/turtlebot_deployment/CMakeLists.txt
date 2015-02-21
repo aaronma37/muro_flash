@@ -85,7 +85,7 @@ add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-add_dependencies(PathFollowing turtlebot_deployment_gencfg)
+add_dependencies(PathFollowing pathFollowing_gencfg)
 
 
 
