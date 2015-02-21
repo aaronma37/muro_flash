@@ -81,11 +81,10 @@ target_link_libraries(simple_deployment_dummy
 
 
 add_executable(PathFollowing src/PathFollowing.cpp)
-add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
+add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencfg)
 target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
-add_dependencies(PathFollowing ${PROJECT_NAME}_gencfg)
 
 
 
