@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   move_base_msgs
   actionlib
   genmsg
+  dynamic_reconfigure
 )
 
 find_package(OpenCV REQUIRED)
@@ -28,15 +29,6 @@ generate_messages(
   geometry_msgs
 )
 
-#add dynamic reconfigure api
-#find_package(catkin REQUIRED dynamic_reconfigure)
-generate_dynamic_reconfigure_options(
-  cfg/relative_path_to_file1.cfg
-  cfg/relative_path_to_file2.cfg
-  #...
-)
-
-# make sure configure headers are built before any node using them
 
 
 
