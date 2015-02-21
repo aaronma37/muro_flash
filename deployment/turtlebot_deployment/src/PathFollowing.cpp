@@ -90,7 +90,7 @@ time(&end);
 
 
 while(1==1){
-	ph_.param("radius", r,r);
+	ph_.param("~radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//pathFollowingk.pathFollowing();
