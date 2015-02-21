@@ -78,11 +78,10 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
-r=50;
 
 time_t timer,begin,end;
-
 ros::NodeHandle ph_, nh_;
+ph_("~");
 ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
@@ -92,7 +91,7 @@ time(&end);
 
 
 while(1==1){
-	
+	ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//pathFollowingk.pathFollowing();
