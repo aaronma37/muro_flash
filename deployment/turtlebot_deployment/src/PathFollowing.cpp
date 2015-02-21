@@ -14,8 +14,8 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <tf/tf.h>
 #include <math.h>
 #include <time.h> 
-#include <dynamic_reconfigure/server.h>
-#include <turtlebot_deployment/MyStuffConfig.h>
+//#include <dynamic_reconfigure/server.h>
+//#include <turtlebot_deployment/MyStuffConfig.h>
 //Declare Variables
 double x2, x1;
 double orientation;
