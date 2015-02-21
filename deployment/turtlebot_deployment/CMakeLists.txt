@@ -27,7 +27,7 @@ generate_messages(
   std_msgs
   geometry_msgs
 )
-generate_dynamic_reconfigure_options(cfg/DynFile1.cfg cfg/DynFile2.cfg ...)
+generate_dynamic_reconfigure_options(cfg/pathFollowing.cfg)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES turtlebot_deployment
