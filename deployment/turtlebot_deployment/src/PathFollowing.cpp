@@ -78,7 +78,7 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
-r=75;
+r=50;
 time_t timer,begin,end;
 ros::NodeHandle ph_("~"), nh_;
 ros::Publisher u_pub_;
@@ -95,7 +95,7 @@ while(1==1){
 			ros::spinOnce();
 			//pathFollowingk.pathFollowing();
 		        
-			double k=.5;
+			double k=5;
 			double u1=robVel_;
 			double u2=robVel_/r;
 			std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
