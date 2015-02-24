@@ -35,6 +35,7 @@ geometry_msgs::Twist cmd_vel_;
             
             //z=(x%99)/100+.01;
             z=abs(cos(x/100));
+            std::cout<<"normalizer"<<z<<"\n";
           cmd_vel_.angular.z = speed*z;
         vel_pub_.publish(cmd_vel_);
         usleep(10000);
