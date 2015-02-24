@@ -205,7 +205,7 @@ R(2,2)=.01;
 int iTemp;
 iTemp=0;
 int size = robots.size();
-pos_sub_= nh_.subscribe<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1,poseCallback);
+pos_sub_= nh_.subscribe<turtlebot_deployment::PoseWithName>("/toKalmanfilter", 1,poseCallback);
 ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("mobile_base/commands/velocity",1,iptCallback);
 gl_pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
 sf_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("afterKalman",1,true);
