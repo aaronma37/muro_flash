@@ -34,7 +34,7 @@ geometry_msgs::Twist cmd_vel_;
           while (difftime(time(&timer),begin)<100){
             
             z=(x%20);
-            z=z/100+.2;
+            z=z/100+.1;
           
             //z=abs(cos(x/100));
             std::cout<<"normalizer"<<z<<"\n";
