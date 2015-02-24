@@ -33,14 +33,12 @@ geometry_msgs::Twist cmd_vel_;
     time(&begin);
           while (difftime(time(&timer),begin)<100){
             
-            z=(x%99)/100+.01;
+            z=(x%99);
             //z=abs(cos(x/100));
             std::cout<<"normalizer"<<z<<"\n";
-          cmd_vel_.angular.z = speed*z;
+          cmd_vel_.angular.z = speed/z;
         vel_pub_.publish(cmd_vel_);
         usleep(10000);
-        if (x==100){flip=-1;}
-        if (x==0){flip=1;}
         x=x+1;
           } 
     sleep(10);
