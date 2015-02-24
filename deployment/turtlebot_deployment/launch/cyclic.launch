@@ -15,10 +15,16 @@
 </include>
 <param name="mobile_base/base_frame" value="$(arg robot)/base_footprint"/>
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
-<!-- Communication node -->
-<node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
+
+<!-- Communication EKF node -->
+<node pkg="turtlebot_deployment" type="inter_robot_communication_ekf" name="communication">
 <param name="robot_name" value="$(arg robot)"/>
 </node>
+<!-- EKF -->
+<node pkg="turtlebot_deployment" type="extended_kalman" name="ekf_filter">
+<param name="robot_name"	value="$(arg robot)"/>
+</node>
+
 <!--Cyclic Pursuit-->
 <node pkg="turtlebot_deployment" type="cyclic_pursuit" name="cyclic_pursuit" output="screen">
 <param name="robot_name" value="$(arg robot)"/>
