@@ -22,7 +22,7 @@ geometry_msgs::Twist cmd_vel_;
   vel_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
   //cmd_vel_.angular.z = 0.0;
   //cmd_vel_.linear.x = .1;
-  int speed=5;
+  int speed=1;
   cmd_vel_.angular.z = speed;
   cmd_vel_.linear.x = 0;
   int x=1;
@@ -36,7 +36,7 @@ geometry_msgs::Twist cmd_vel_;
         usleep(100000);}
         else
         {
-          cmd_vel_.angular.z = .1;
+          cmd_vel_.angular.z = .25;
           vel_pub_.publish(cmd_vel_);
           usleep(100000);
         }
