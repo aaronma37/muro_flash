@@ -30,14 +30,17 @@ geometry_msgs::Twist cmd_vel_;
   while(1==1){
     time(&begin);
           while (difftime(time(&timer),begin)<100){
+        if (x % 10 ==0){
         vel_pub_.publish(cmd_vel_);
-        usleep(100000);
-}
+        usleep(100000);}
+        else
+        {
+          vel_pub_.publish(.1);
+          usleep(100000);
+        }
+        x=x+1;
+            
+          }
     sleep(10);
   }
-/*sleep(5);
-cmd_vel_.angular.z=0;
-cmd_vel_.linear.x=0;
-vel_pub_.publish(cmd_vel_);
-*/
 }
