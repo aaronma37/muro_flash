@@ -21,7 +21,7 @@
 <param name="robot_name" value="$(arg robot)"/>
 </node>
 <!-- EKF -->
-<node pkg="turtlebot_deployment" type="extended_kalman" name="ekf_filter">
+<node pkg="turtlebot_deployment" type="extended_kalman" name="ekf_filter" output="screen">
 <param name="robot_name"	value="$(arg robot)"/>
 </node>
 
@@ -33,7 +33,7 @@
 <param name="show_cells_" value="$(arg show_cells_)"/>
 </node>
 <!--PathFollowing-->
-<node pkg="turtlebot_deployment" type="PathFollowing" name="PathFollowing" output="screen">
+<node pkg="turtlebot_deployment" type="PathFollowing" name="PathFollowing">
 <param name="robot_name" value="$(arg robot)"/>
 <param name="Radius" value="$(arg radius)"/>
 <param name="resolution" value="$(arg resolution)"/>
