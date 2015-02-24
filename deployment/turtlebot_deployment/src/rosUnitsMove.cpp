@@ -26,15 +26,16 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.angular.z = speed;
   cmd_vel_.linear.x = 0;
   int x=1;
+  double z=0;
   time(&end);
   while(1==1){
     time(&begin);
           while (difftime(time(&timer),begin)<100){
-          cmd_vel_.angular.z = speed/(x%5);
+            z=x%5;
+          cmd_vel_.angular.z = speed/z;
         vel_pub_.publish(cmd_vel_);
         usleep(100);
         x=x+1;
-            
           }
     sleep(10);
   }
