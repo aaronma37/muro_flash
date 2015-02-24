@@ -40,7 +40,7 @@ geometry_msgs::Twist cmd_vel_;
             std::cout<<"normalizer"<<z<<"\n";
           cmd_vel_.angular.z = speed*z;
         vel_pub_.publish(cmd_vel_);
-        usleep(10000);
+        usleep(1000);
         if (x==50){flip=-1;}
         if (x==0){flip=1;}
         x=x+flip;
