@@ -85,7 +85,11 @@ target_link_libraries(PathFollowing
 ${catkin_LIBRARIES}
 )
 
-
+add_executable(rosUnitsMove src/rosUnitsMove.cpp)
+add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
+target_link_libraries(rosUnitsMove
+${catkin_LIBRARIES}
+)
 
 
 add_executable(cyclic_pursuit src/cyclic_pursuit.cpp)
