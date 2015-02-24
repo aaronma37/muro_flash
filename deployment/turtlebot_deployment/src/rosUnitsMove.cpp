@@ -40,7 +40,7 @@ geometry_msgs::Twist cmd_vel_;
         vel_pub_.publish(cmd_vel_);
         usleep(10000);
         if (x==100){flip=-1;}
-        if (x==0){flip=1};
+        if (x==0){flip=1;}
         x=x+flip;
           } 
     sleep(10);
