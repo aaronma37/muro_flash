@@ -27,20 +27,22 @@ geometry_msgs::Twist cmd_vel_;
   cmd_vel_.linear.x = 0;
   int x=1;
   double z=0;
-  int flip=0;
+  int flip=1;
   time(&end);
   while(1==1){
     time(&begin);
           while (difftime(time(&timer),begin)<100){
             
-            //z=(x%99)/100+.01;
-            z=abs(cos(x/100));
+            z=(x%99)/100+.01;
+            //z=abs(cos(x/100));
             std::cout<<"normalizer"<<z<<"\n";
           cmd_vel_.angular.z = speed*z;
         vel_pub_.publish(cmd_vel_);
         usleep(10000);
-        x=x+1;
-          }
+        if (x==100){flip=-1;}
+        if (x==0){flip=1};
+        x=x+flip;
+          } 
     sleep(10);
   }
 }
