@@ -30,7 +30,7 @@ if (name_ == "no_name") {
 ROS_ERROR("Communication: Robot name not set");
 }
 else {
-pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
+pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/toKalmanfilter", 1, true);
 //pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
 sub_ = nh_.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 10, &Communication::positionCallback, this);
 }
