@@ -33,7 +33,7 @@ geometry_msgs::Twist cmd_vel_;
         if (x % 5 ==0){
           cmd_vel_.angular.z = speed;
         vel_pub_.publish(cmd_vel_);
-        usleep(100000);}
+        usleep(10000);}
         else
         {
           cmd_vel_.angular.z = .25;
