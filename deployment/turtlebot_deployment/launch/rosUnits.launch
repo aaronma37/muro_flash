@@ -16,7 +16,7 @@
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
 <!--Move for 5 seconds-->
-<node pkg="turtlebot_deployment" type="rosUnitsMove" name="rosUnitsMove">
+<node pkg="turtlebot_deployment" type="rosUnitsMove" name="rosUnitsMove" output="screen">
 </node>
 </group>
 </launch>
