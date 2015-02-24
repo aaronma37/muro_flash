@@ -30,7 +30,7 @@ geometry_msgs::Twist cmd_vel_;
   while(1==1){
     time(&begin);
           while (difftime(time(&timer),begin)<100){
-        if (x % 500 ==0){
+        if (x % 5 ==0){
           cmd_vel_.angular.z = speed;
         vel_pub_.publish(cmd_vel_);
         usleep(100000);}
