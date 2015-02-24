@@ -34,7 +34,7 @@ geometry_msgs::Twist cmd_vel_;
           while (difftime(time(&timer),begin)<100){
             
             //z=(x%99)/100+.01;
-            z=cos(x);
+            z=abs(cos(x/100));
           cmd_vel_.angular.z = speed*z;
         vel_pub_.publish(cmd_vel_);
         usleep(10000);
