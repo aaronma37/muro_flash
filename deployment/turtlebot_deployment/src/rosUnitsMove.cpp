@@ -29,11 +29,12 @@ geometry_msgs::Twist cmd_vel_;
   time(&end);
   while(1==1){
     time(&begin);
-    if(difftime(time(&begin),end)>15){
+    if(difftime(time(&begin),end)>25){
       time(&end);
     
-  while (difftime(time(&timer),begin)<5){
-vel_pub_.publish(cmd_vel_);
+          while (difftime(time(&timer),begin)<20){
+        vel_pub_.publish(cmd_vel_);
+        usleep(100000);
 }}}
 /*sleep(5);
 cmd_vel_.angular.z=0;
