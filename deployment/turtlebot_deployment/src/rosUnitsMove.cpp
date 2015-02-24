@@ -34,7 +34,7 @@ geometry_msgs::Twist cmd_vel_;
             z=x%50+1;
           cmd_vel_.angular.z = speed/z;
         vel_pub_.publish(cmd_vel_);
-        usleep(1000000);
+        usleep(100000);
         x=x+1;
           }
     sleep(10);
