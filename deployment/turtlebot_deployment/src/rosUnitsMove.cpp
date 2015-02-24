@@ -37,7 +37,7 @@ geometry_msgs::Twist cmd_vel_;
         else
         {
           cmd_vel_.angular.z = .1;
-          vel_pub_.publish(.1);
+          vel_pub_.publish(cmd_vel_);
           usleep(100000);
         }
         x=x+1;
