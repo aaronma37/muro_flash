@@ -186,7 +186,8 @@ ros::start();
 ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 getName getname;
 ofstream myfile;
-myfile.open("/src/ekfData.txt");
+const char *path="/home/ekfData.txt";
+myfile.open(path);
 myfile <<"Data";
 myfile.close();
 ros::NodeHandle nh_, ph_, gnh_;
