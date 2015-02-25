@@ -5,6 +5,7 @@
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/tf.h>
+#include <fstream>
 #include <math.h>
 #include "PoseWithName.h"
 #include <opencv2/imgproc/imgproc.hpp>
@@ -184,6 +185,10 @@ ros::init(argc, argv, "ekf_temp"); //Ros Initialize
 ros::start();
 ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 getName getname;
+ofstream myfile;
+myfile.open("ekfData.txt");
+myfile <<"Data";
+myfile.close();
 ros::NodeHandle nh_, ph_, gnh_;
 ros::Subscriber pos_sub_ ;
 ros::Subscriber ipt_sub_ ;
