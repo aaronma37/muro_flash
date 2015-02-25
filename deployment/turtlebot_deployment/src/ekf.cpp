@@ -186,7 +186,7 @@ ros::start();
 ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 getName getname;
 ofstream myfile;
-myfile.open("/home/aaronma/git_catkin_ws/src/ucsd_ros_project/deployment/turtlebot_deployment/ekfData.txt");
+myfile.open("/home/ekfData.txt");
 myfile <<"Data";
 myfile.close();
 ros::NodeHandle nh_, ph_, gnh_;
