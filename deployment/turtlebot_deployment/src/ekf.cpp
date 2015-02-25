@@ -186,7 +186,7 @@ ros::start();
 ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 getName getname;
 ofstream myfile;
-const char *path="/home/ekfData.txt";
+const char *path="/home/turtlebot/ekfData.txt";
 myfile.open(path);
 myfile <<"Data";
 myfile.close();
