@@ -141,6 +141,7 @@ counter11=0;
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
 agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation);
+agentVector[iTemp].theta=-agentVector[iTemp].theta; //ARUCO MARKERS ARE BACKWARDS
 }
 }
 else{
