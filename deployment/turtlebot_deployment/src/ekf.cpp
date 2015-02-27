@@ -128,7 +128,7 @@ XTv.push_back(XT);
 agentVector[iTemp].name=posePtr->name;
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)+3.14;
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation);
 
 }
 else{
@@ -140,7 +140,7 @@ counter11=0;
 //Set found agent's position
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)+3.14;
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation);
 }
 }
 else{
@@ -248,7 +248,7 @@ XT=XTv[iTemp];
 P=Pv[iTemp];
 //Stage 1
 Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
-X << XT(0)+agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),XT(1)+agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),XT(2)+T*agentVector[iTemp].omega*57/52;
+X << XT(0)+agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),XT(1)+agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),XT(2)+T*agentVector[iTemp].omega*57/52;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
 A << 1, 0, -T*agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 1,T*agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 0, 1;
