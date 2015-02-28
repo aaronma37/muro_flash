@@ -248,7 +248,7 @@ XT=XTv[iTemp];
 P=Pv[iTemp];
 //Stage 1
 Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
-X << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
+X << XT(0)+agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),XT(1)+agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),XT(2)+agentVector[iTemp].omega*57/52/T;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
 A << 1, 0, -T*agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 1,T*agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 0, 1;
