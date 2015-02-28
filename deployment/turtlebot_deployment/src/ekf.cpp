@@ -128,7 +128,7 @@ XTv.push_back(XT);
 agentVector[iTemp].name=posePtr->name;
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation);
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)+3.14;
 
 }
 else{
@@ -140,7 +140,7 @@ counter11=0;
 //Set found agent's position
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation);
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)+3.14;
 }
 }
 else{
@@ -270,7 +270,7 @@ turtlebot_deployment::PoseWithName goalPose;
 goalPose.pose.position.x = X(0);
 goalPose.pose.position.y = X(1);
 goalPose.name=agentVector[iTemp].name;
-goalPose.pose.orientation =tf::createQuaternionMsgFromYaw(X(2));
+goalPose.pose.orientation =tf::createQuaternionMsgFromYaw(X(2)+3.14);
 //added if Statement
 //if (goalPose.name!=""){
 gl_pub_.publish(goalPose);
