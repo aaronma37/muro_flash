@@ -128,7 +128,7 @@ XTv.push_back(XT);
 agentVector[iTemp].name=posePtr->name;
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)-3.14/2;
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)-3.14;
 
 }
 else{
@@ -140,7 +140,7 @@ counter11=0;
 //Set found agent's position
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
-agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)-3.14/2;
+agentVector[iTemp].theta = tf::getYaw(posePtr->pose.orientation)-3.14;
 }
 }
 else{
