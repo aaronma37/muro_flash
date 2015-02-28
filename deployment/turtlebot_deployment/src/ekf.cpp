@@ -251,7 +251,7 @@ Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
 X << XT(0)+agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),XT(1)+agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),XT(2)+T*agentVector[iTemp].omega*57/52;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
-A << 1, 0, -T*agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 1,T*agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 0, 1;
+A << 1, 0, -T*agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 1,T*agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 0, 1;
 P=A*P*A.transpose()+W*Q*W.transpose();
 //Stage 3
 temp=(W*P*W.transpose()+W*R*W.transpose());
