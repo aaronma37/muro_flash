@@ -235,9 +235,9 @@ Q(0,0)=0;
 Q(1,1)=0;
 Q(2,2)=0;
 }else{
-Q(0,0)=25;
-Q(1,1)=25;
-Q(2,2)=25;
+Q(0,0)=5;
+Q(1,1)=5;
+Q(2,2)=5;
 }
 if (0<robots.size()){
 ///
@@ -250,7 +250,8 @@ Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
 X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2)),X(1)+agentVector[iTemp].velo*167/T*sin(X(2)),X(2)+agentVector[iTemp].omega*57/52/T;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
-A << 1, 0, -T*agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 1,T*agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 0, 1;
+if (got_pose_==true){
+A << 1, 0, -agentVector[iTemp].velo*167/T*sin(agentVector[iTemp].theta),0, 1,agentVector[iTemp].velo*167/T*cos(agentVector[iTemp].theta),0, 0, 1;
 P=A*P*A.transpose()+W*Q*W.transpose();
 //Stage 3
 temp=(W*P*W.transpose()+W*R*W.transpose());
@@ -259,6 +260,7 @@ K=P*W.transpose()*temp.inverse();
 X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
+}
 //Stage 6
 XT=X;
 //Set Vectors
