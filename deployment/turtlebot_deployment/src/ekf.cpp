@@ -274,7 +274,7 @@ if (counter12>counter11+10){
 OmegaC=OmegaC-.01*(XT(2)-X(2));
   XT=X;
   counter12=counter11;
-  floatMsg=OmegaC;
+  floatMsg.data=OmegaC;
   cal0_pub_.publish(floatMsg);
 }
 }
