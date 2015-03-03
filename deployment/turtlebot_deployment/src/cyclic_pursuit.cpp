@@ -53,7 +53,7 @@ ros::NodeHandle ph_, nh_;
 ros::Publisher vel_pub_;
 geometry_msgs::Twist cmd_vel_;
 vel_pub_ = nh_.advertise<geometry_msgs::Twist>("velocity", 1, true);
-cmd_vel_.linear.x=15;
+cmd_vel_.linear.x=10;
 while (1==1){
 vel_pub_.publish(cmd_vel_);
 //cyclicPursuit cp;
