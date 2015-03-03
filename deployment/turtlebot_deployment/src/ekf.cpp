@@ -270,7 +270,7 @@ X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
 if (counter12+10<counter11){
-OmegaC=OmegaC-.1*(XT(2)-X(2));
+OmegaC=OmegaC+.1*(XT(2)-X(2));
   XT=X;
   counter12=counter11;
   floatMsg.data=OmegaC;
