@@ -63,7 +63,7 @@ cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callb
 
 }
 
-void pathFollowing::cal0Callback(const std_msgs::Float64 OmegaC_){
+void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
 OmegaC=OmegaC_;
 }
 
