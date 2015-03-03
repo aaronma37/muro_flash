@@ -221,7 +221,7 @@ ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("mobile_base/commands/velocity",1,i
 gl_pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
 sf_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("afterKalman",1,true);
 nm_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("nametest", 5);
-cal0_pub_= gnh_.advertise<std_msgs::Float64>("cal0", 1);
+cal0_pub_= gnh_.advertise<std_msgs::Float64>("cal0", 1,true);
 while (ros::ok()) {
 got_pose_=false;
 ros::spinOnce();
