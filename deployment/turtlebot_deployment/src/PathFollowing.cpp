@@ -9,6 +9,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
+#include <std_msgs/Float64.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <turtlebot_deployment/PoseWithName.h>
 #include <tf/tf.h>
@@ -33,7 +34,7 @@ private:
 
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
-void cal0Callback(const std_msgs::float64::ConstPtr&);
+void cal0Callback(const std_msgs::Float64::ConstPtr&);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
@@ -62,7 +63,7 @@ cal0_sub_ = nh_.subscribe<std_msgs::float64>("cal0",1, &pathFollowing::cal0Callb
 
 }
 
-void pathFollowing::cal0Callback(const std_msgs::float64::ConstPtr& OmegaC_){
+void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
 OmegaC=OmegaC_;
 }
 
