@@ -19,6 +19,7 @@ http://www.control.utoronto.ca/people/profs/maggiore/DATA/PAPERS/CONFERENCES/ACC
 double x2, x1, r;
 double orientation;
 double robVel_;
+double OmegaC;
 // Construct Node Class
 
 
@@ -32,10 +33,12 @@ private:
 
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
+void cal0Callback(const double::ConstPtr&);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
 ros::Subscriber vel_sub_;
+ros::Subscriber cal0_sub_;
 
 // Other member variables
 
@@ -55,7 +58,12 @@ ph_.param("robot_name", this_agent_,this_agent_);
 ph_.param("radius", r,r);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman", 1, &pathFollowing::poseCallback, this);
+cal0_sub_ = nh_.subscribe<double>("cal0",1, &pathFollowing::cal0Callback, this);
 
+}
+
+void pathFollowing::cal0Callback(const cal0::ConstPtr& OmegaC_){
+OmegaC=OmegaC_;
 }
 
 void pathFollowing::velocityCallback(const geometry_msgs::Twist::ConstPtr& robVel){
@@ -91,6 +99,7 @@ double k=1;
 ros::spinOnce();
 double u1=robVel_;
 double u2=robVel_/r;
+OmegaC=2;
 while(1==1){
 	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
@@ -100,7 +109,7 @@ while(1==1){
 			u2=robVel_/r;
 			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
 			u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
-			u2=u2*2;
+			u2=u2*OmegaC;
 			if (u2>1){u2=1;}
 			if (u2<-1){u2=-1;}
 			
