@@ -59,7 +59,7 @@ ph_.param("robot_name", this_agent_,this_agent_);
 ph_.param("radius", r,r);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman", 1, &pathFollowing::poseCallback, this);
-cal0_sub_ = nh_.subscribe<std_msgs::float64>("cal0",1, &pathFollowing::cal0Callback, this);
+cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callback, this);
 
 }
 
