@@ -87,7 +87,7 @@ u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1,
 pathFollowing pathFollowingk;
 robVel_=0;
 time(&end);
-double k=5;
+double k=1;
 ros::spinOnce();
 double u1=robVel_;
 double u2=robVel_/r;
