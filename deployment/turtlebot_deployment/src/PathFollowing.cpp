@@ -95,6 +95,7 @@ while(1==1){
 	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
+			u1=robVel_;
 			//pathFollowingk.pathFollowing();
 			u2=robVel_/r;
 			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
