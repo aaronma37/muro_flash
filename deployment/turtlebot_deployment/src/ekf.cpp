@@ -197,6 +197,7 @@ ros::Subscriber ipt_sub_ ;
 ros::Publisher gl_pub_ ;
 ros::Publisher sf_pub_;
 ros::Publisher nm_pub_;
+ros::Publisher cal0_pub_;
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
@@ -219,6 +220,7 @@ ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("mobile_base/commands/velocity",1,i
 gl_pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
 sf_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("afterKalman",1,true);
 nm_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("nametest", 5);
+cal0_pub_= gnh_.advertise<double>("cal0", 1);
 while (ros::ok()) {
 got_pose_=false;
 ros::spinOnce();
@@ -267,9 +269,10 @@ X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
 if (counter12>counter11+10){
-OmegaC=OmegaC-.1*(XT(2)-X(2));
+OmegaC=OmegaC-.01*(XT(2)-X(2));
   XT=X;
   counter12=counter11;
+  cal0_pub_.publish(OmegaC);
 }
 }
 
