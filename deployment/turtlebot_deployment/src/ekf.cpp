@@ -209,6 +209,8 @@ Q(2,2)=0;
 R(0,0)=.01;
 R(1,1)=.01;
 R(2,2)=.01;
+double OmegaC=2;
+double counter12=0;
 int iTemp;
 iTemp=0;
 int size = robots.size();
@@ -243,10 +245,14 @@ if (0<robots.size()){
 ///
 VectorXf Z(3);
 Matrix3f temp;
-XT=XTv[iTemp];
 P=Pv[iTemp];
 //Stage 1
 Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
+
+//Calibration 
+if (counter11>10){
+XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+.9*agentVector[iTemp].omega*57/52/T;
+}
 X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2)),X(1)+agentVector[iTemp].velo*167/T*sin(X(2)),X(2)+.9*agentVector[iTemp].omega*57/52/T;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
@@ -260,12 +266,15 @@ K=P*W.transpose()*temp.inverse();
 X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
+if (counter12>counter11+10){
+OmegaC=OmegaC-.1*(XT(2)-X(2));
+  XT=X;
+  counter12=counter11;
 }
-//Stage 6
-XT=X;
+}
+
 //Set Vectors
 Xv[iTemp]=X;
-XTv[iTemp]=XT;
 Pv[iTemp]=P;
 turtlebot_deployment::PoseWithName goalPose;
 goalPose.pose.position.x = X(0);
@@ -285,6 +294,7 @@ cout<<"Number of Robots: "<<size<<"\n";
 cout<<"Robot #: "<<iTemp<<"\n";
 std::cout<<"Measured: \n"<<Z<<"\n\n";
 std::cout<<"Goal Pose\n"<<goalPose<<"\n---------\n\n\n\n";
+std::cout<<"OmegaC\n"<<OmegaC<<"\n---------\n\n\n\n";
 std::cout<<"--------------------------------------------------------------------";
 //}
 ///
