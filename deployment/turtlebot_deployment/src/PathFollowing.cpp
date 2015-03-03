@@ -64,7 +64,7 @@ cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callb
 }
 
 void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
-OmegaC=OmegaC_;
+OmegaC=OmegaC_->data;
 }
 
 void pathFollowing::velocityCallback(const geometry_msgs::Twist::ConstPtr& robVel){
