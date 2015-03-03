@@ -254,7 +254,7 @@ Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
 
 //Calibration 
 if (counter11>10){
-XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+.9*agentVector[iTemp].omega*57/52/T;
+XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+.9*agentVector[iTemp].omega*57/52/T/OmegaC;
 }
 X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2)),X(1)+agentVector[iTemp].velo*167/T*sin(X(2)),X(2)+.9*agentVector[iTemp].omega*57/52/T;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
@@ -270,7 +270,7 @@ X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
 if (counter12+10<counter11){
-OmegaC=OmegaC+.1*(XT(2)-X(2));
+OmegaC=OmegaC-.1*(XT(2)-X(2));
   XT=X;
   counter12=counter11;
   floatMsg.data=OmegaC;
