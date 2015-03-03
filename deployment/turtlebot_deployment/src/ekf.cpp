@@ -137,7 +137,6 @@ else{
 ** This block runs if posePtr->name was found in found, ie if robot's id was previously detected.
 */
 std::cout<<"pass";
-counter11=0;
 //Set found agent's position
 agentVector[iTemp].x=posePtr->pose.position.x;
 agentVector[iTemp].y=posePtr->pose.position.y;
