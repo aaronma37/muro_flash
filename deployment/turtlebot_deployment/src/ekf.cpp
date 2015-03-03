@@ -213,6 +213,7 @@ R(1,1)=.01;
 R(2,2)=.01;
 double OmegaC=2;
 double counter12=0;
+std_msgs::Float64 floatMsg;
 int iTemp;
 iTemp=0;
 int size = robots.size();
@@ -273,7 +274,8 @@ if (counter12>counter11+10){
 OmegaC=OmegaC-.01*(XT(2)-X(2));
   XT=X;
   counter12=counter11;
-  cal0_pub_.publish(OmegaC);
+  floatMsg=OmegaC;
+  cal0_pub_.publish(floatMsg);
 }
 }
 
