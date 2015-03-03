@@ -87,27 +87,25 @@ u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1,
 pathFollowing pathFollowingk;
 robVel_=0;
 time(&end);
-
-
+double k=5;
+double u1=robVel_;
+double u2=robVel_/r;
 while(1==1){
-	ph_.param("radius", r,r);
+	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//pathFollowingk.pathFollowing();
-		        
-			double k=5;
-			double u1=robVel_;
-			double u2=robVel_/r;
-			std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
+			u2=robVel_/r;
+			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
 			u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
-			std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
+			//std::cout<<"final angular velocity: \n"<<u2<<"\n\n";
 			cmd_vel_.linear.x=(u1/167);
 			cmd_vel_.angular.z=(u2*1.6);
 			u_pub_.publish(cmd_vel_);
 		//	time(&end);
 	//	}
 			
-			usleep(1000000);
+			usleep(700000);
 }
 	
 }
