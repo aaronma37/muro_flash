@@ -34,7 +34,7 @@ private:
 
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
-void cal0Callback(const std_msgs::Float64::ConstPtr&);
+void cal0Callback(const std_msgs::Float64);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
@@ -63,7 +63,7 @@ cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callb
 
 }
 
-void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
+void pathFollowing::cal0Callback(const std_msgs::Float64 OmegaC_){
 OmegaC=OmegaC_;
 }
 
