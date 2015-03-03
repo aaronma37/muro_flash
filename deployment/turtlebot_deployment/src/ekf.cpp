@@ -210,7 +210,7 @@ Q(2,2)=0;
 R(0,0)=.01;
 R(1,1)=.01;
 R(2,2)=.01;
-double OmegaC=2;
+double OmegaC=1;
 double counter12=0;
 std_msgs::Float64 floatMsg;
 int iTemp;
