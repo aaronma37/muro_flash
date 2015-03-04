@@ -275,7 +275,10 @@ OmegaC=OmegaC+.3*((XT(2))-(X(2)+2*3.14));}
 else{OmegaC=OmegaC+.3*((XT(2))-(X(2)));}
   XT=X;
   counter12=counter11;
+  if (OmegaC<.5){OmegaC=.5;}
+  if (OmegaC>4){OmegaC=4;}
   floatMsg.data=OmegaC;
+  
   cal0_pub_.publish(floatMsg);
 }
 }
