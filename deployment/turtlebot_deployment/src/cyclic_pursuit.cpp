@@ -45,6 +45,7 @@ else
         rad1=rad1+3.14/2;
     }
 }
+}
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
