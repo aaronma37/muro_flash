@@ -28,6 +28,23 @@ x0=selfPtr->pose.position.x-350;
 yc=selfPtr->pose.position.y-250;
 z=yc/x0;
 rad1=atan(z);
+rad1=abs(rad1);
+if (x0>=0)
+{
+    if (yc<0){
+        rad1=rad1+3*3.14/2;
+        }
+    }
+}
+else
+{
+    if (yc<0){
+        rad1=rad1+3.14;
+    }
+    else
+    {
+        rad1=rad1+3.14/2;
+    }
 }
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
@@ -36,6 +53,25 @@ void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr
       x2=posePtr->pose.position.x-350;
       y2=posePtr->pose.position.y-250;
       rad2=atan(y2/x2);
+      rad2=abs(rad2);
+if (x2>=0)
+{
+    if (y2<0){
+        rad2=rad2+3*3.14/2;
+        }
+    }
+}
+else
+{
+    if (y2<0){
+        rad2=rad2+3.14;
+    }
+    else
+    {
+        rad2=rad2+3.14/2;
+    }
+}
+      
         if(rad2<rad1){
             rad2=3.14*2-rad1+rad2;
         }
