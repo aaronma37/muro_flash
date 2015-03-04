@@ -32,7 +32,7 @@ rad1=abs(rad1);
 if (x0>=0)
 {
     if (yc<0){
-        rad1=rad1+3*3.14/2;
+        rad1=-rad1+2*3.14;
         }
     }
 else
@@ -42,7 +42,7 @@ else
     }
     else
     {
-        rad1=rad1+3.14/2;
+        rad1=-rad1+3.14;
     }
 }
 }
