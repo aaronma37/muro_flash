@@ -51,7 +51,7 @@ void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr
 
 int main(int argc, char **argv)
 {
-ros::init(argc, argv, "cyclicpursuit");
+ros::init(argc, argv, "cyclic_pursuit");
 ros::NodeHandle ph_, nh_;
 ros::Publisher vel_pub_;
 ros::Subscriber pos_sub_;
