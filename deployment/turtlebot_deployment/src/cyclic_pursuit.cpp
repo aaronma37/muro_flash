@@ -8,6 +8,7 @@ Cyclic Pursuit
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
+#include "PoseWithName.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
 #include <math.h>
