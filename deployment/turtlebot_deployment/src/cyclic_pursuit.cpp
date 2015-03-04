@@ -19,7 +19,7 @@ double rad2,x2,y2,radN;
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
 x0=selfPtr->pose.x-350;
-y0=selfPtr->pose.y-250;
+//y0=selfPtr->pose.y-250;
 z=y0/x0
 rad1=atan(z);
 }
