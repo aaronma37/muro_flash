@@ -36,17 +36,17 @@ void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr
       x2=posePtr->pose.position.x-350;
       y2=posePtr->pose.position.y-250;
       rad2=atan(y2/x2);
-        /*if((rad2-rad1)>3.14){
+        if((rad2-rad1)>3.14){
           rad2=rad2-(rad1+2*3.14);
         }
         else{
           rad2=rad2-rad1;
         }
       
-        if (rad2>.1 && rad2<radN){
+        /*if (rad2>.1 && rad2<radN){
           radN=rad2;
         }*/
-        radN=rad2-rad1;
+        radN=rad2;
     }
 }
 
@@ -73,7 +73,7 @@ x0=0;
 x2=0;
 while (1==1){
     ros::spinOnce();
-    cmd_vel_.linear.x=25*k*(-radN);
+    cmd_vel_.linear.x=10*k*(-radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
 }
