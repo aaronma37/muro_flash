@@ -32,21 +32,21 @@ rad1=atan(z);
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
-  if (name_==posePtr->name){break;}
-x2=posePtr->pose.position.x-350;
-y2=posePtr->pose.position.y-250;
-rad2=atan(y2/x2);
-  if((rad2-rad1)>3.14){
-    rad2=rad2-(rad1+2*3.14);
-  }
-  else{
-    rad2=rad2-rad1;
-  }
-
-  if (rad2>.1 && rad2<radN){
-    radN=rad2;
-  }
-
+    if (name_!=posePtr->name){
+      x2=posePtr->pose.position.x-350;
+      y2=posePtr->pose.position.y-250;
+      rad2=atan(y2/x2);
+        if((rad2-rad1)>3.14){
+          rad2=rad2-(rad1+2*3.14);
+        }
+        else{
+          rad2=rad2-rad1;
+        }
+      
+        if (rad2>.1 && rad2<radN){
+          radN=rad2;
+        }
+    }
 }
 
 int main(int argc, char **argv)
