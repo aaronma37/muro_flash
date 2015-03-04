@@ -20,16 +20,16 @@ double rad2,x2,y2,radN;
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
-x0=selfPtr->pose.x-350;
-//y0=selfPtr->pose.y-250;
+x0=selfPtr->pose.position.x-350;
+yc=selfPtr->pose.position.y-250;
 z=yc/x0
 rad1=atan(z);
 }
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
-x2=posePtr->pose.x-350;
-y2=posePtr->pose.y-250;
+x2=posePtr->pose.position.x-350;
+y2=posePtr->pose.position.y-250;
 rad2=atan(y2/x2);
   if((rad2-rad1)>3.14){
     rad2=rad2-(rad1+2*pi);
