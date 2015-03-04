@@ -12,15 +12,15 @@ Cyclic Pursuit
 #include <tf/tf.h>
 #include <math.h>
 
-double rad1,x1,y1, z;
+double rad1,x0,y0, z;
 double rad2,x2,y2,radN;
 
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
-x1=selfPtr->pose.x-350;
-y1=selfPtr->pose.y-250;
-z=y1/x1
+x0=selfPtr->pose.x-350;
+y0=selfPtr->pose.y-250;
+z=y0/x0
 rad1=atan(z);
 }
 
@@ -57,9 +57,9 @@ double k=1;
 radN=1;
 rad2=1;
 rad1=1;
-y1=0;
+y0=0;
 y2=0;
-x1=0;
+x0=0;
 x2=0;
 while (1==1){
 ros::spinOnce();
