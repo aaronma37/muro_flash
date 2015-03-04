@@ -12,7 +12,8 @@ Cyclic Pursuit
 #include <tf/tf.h>
 #include <math.h>
 
-double rad1,x0,y0, z;
+double rad1,x0, z;
+double y0;
 double rad2,x2,y2,radN;
 
 
