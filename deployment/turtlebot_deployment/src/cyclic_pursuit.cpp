@@ -38,7 +38,7 @@ rad2=atan(y2/x2);
     rad2=rad2-rad1;
   }
 
-  if (rad2>0 && rad2<radN){
+  if (rad2>.1 && rad2<radN){
     radN=rad2;
   }
 
