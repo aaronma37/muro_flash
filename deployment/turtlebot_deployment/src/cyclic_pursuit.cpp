@@ -59,7 +59,7 @@ ros::Subscriber self_sub_;
 geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
 vel_pub_ = nh_.advertise<geometry_msgs::Twist>("velocity", 5, true);
-pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("\all_positions", 1,allPoseCallback);
+pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1,allPoseCallback);
 self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 cmd_vel_.linear.x=10;
 double k=1;
