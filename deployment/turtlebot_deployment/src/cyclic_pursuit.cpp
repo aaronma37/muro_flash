@@ -74,7 +74,8 @@ x2=0;
 while (1==1){
     ros::spinOnce();
     
-std::cout<<"RADIANS: "<<radN<<"\n";
+std::cout<<"RADIANS1: "<<rad1<<"\n";
+std::cout<<"RADIANS2: "<<rad2<<"\n";
     cmd_vel_.linear.x=10*k*(radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
