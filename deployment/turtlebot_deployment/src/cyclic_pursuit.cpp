@@ -12,7 +12,7 @@ Cyclic Pursuit
 #include <tf/tf.h>
 #include <math.h>
 
-double rad1,x1,y1;
+double rad1,x1,y1, z;
 double rad2,x2,y2,radN;
 
 
@@ -20,7 +20,8 @@ void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
 x1=selfPtr->pose.x-350;
 y1=selfPtr->pose.y-250;
-rad1=atan(y1/x1);
+z=y1/x1
+rad1=atan(z);
 }
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
