@@ -22,7 +22,7 @@ void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
 x0=selfPtr->pose.position.x-350;
 yc=selfPtr->pose.position.y-250;
-z=yc/x0
+z=yc/x0;
 rad1=atan(z);
 }
 
@@ -32,7 +32,7 @@ x2=posePtr->pose.position.x-350;
 y2=posePtr->pose.position.y-250;
 rad2=atan(y2/x2);
   if((rad2-rad1)>3.14){
-    rad2=rad2-(rad1+2*pi);
+    rad2=rad2-(rad1+2*3.14);
   }
   else{
     rad2=rad2-rad1;
