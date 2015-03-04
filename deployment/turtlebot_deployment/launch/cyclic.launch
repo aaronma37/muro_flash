@@ -21,7 +21,7 @@
 <param name="robot_name" value="$(arg robot)"/>
 </node>
 <!-- EKF -->
-<node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
+<node pkg="turtlebot_deployment" type="ekf" name="ekf_filter">
 <param name="robot_name"	value="$(arg robot)"/>
 </node>
 
