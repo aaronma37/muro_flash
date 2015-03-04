@@ -53,6 +53,9 @@ pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("\all_positions", 1
 self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback)
 cmd_vel_.linear.x=10;
 double k=1;
+radN=1;
+rad2=1;
+rad1=1;
 while (1==1){
 ros::spinOnce();
 cmd_vel_.linear.x=10*k*(radN);
