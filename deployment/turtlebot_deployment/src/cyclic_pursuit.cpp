@@ -56,6 +56,10 @@ double k=1;
 radN=1;
 rad2=1;
 rad1=1;
+y1=0;
+y2=0;
+x1=0;
+x2=0;
 while (1==1){
 ros::spinOnce();
 cmd_vel_.linear.x=10*k*(radN);
