@@ -71,8 +71,8 @@ y2=0;
 x0=0;
 x2=0;
 while (1==1){
-    //ros::spinOnce();
-    cmd_vel_.linear.x=1;//10*k*(radN);
+    ros::spinOnce();
+    cmd_vel_.linear.x=10*k*(radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
 }
