@@ -57,7 +57,7 @@ void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr
 if (x2>=0)
 {
     if (y2<0){
-        rad2=rad2+3*3.14/2;
+        rad2=-rad2+2*3.14;
         }
     }
 else
@@ -67,7 +67,7 @@ else
     }
     else
     {
-        rad2=rad2+3.14/2;
+        rad2=-rad2+3.14;
     }
 }
       
