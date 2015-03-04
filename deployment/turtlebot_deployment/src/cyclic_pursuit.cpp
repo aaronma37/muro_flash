@@ -12,14 +12,18 @@ Cyclic Pursuit
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 double rad1,x0, z;
 double yc;
 double rad2,x2,y2,radN;
+std::string name_;
 
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
+name_=selfPtr->name;
 x0=selfPtr->pose.position.x-350;
 yc=selfPtr->pose.position.y-250;
 z=yc/x0;
@@ -28,6 +32,7 @@ rad1=atan(z);
 
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
+  if (name_==posePtr->name){break;}
 x2=posePtr->pose.position.x-350;
 y2=posePtr->pose.position.y-250;
 rad2=atan(y2/x2);
