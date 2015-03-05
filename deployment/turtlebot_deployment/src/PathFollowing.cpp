@@ -21,6 +21,7 @@ double x2, x1, r;
 double orientation;
 double robVel_;
 double OmegaC;
+double OmegaD;
 // Construct Node Class
 
 
@@ -35,11 +36,13 @@ private:
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
 void cal0Callback(const std_msgs::Float64::ConstPtr&);
+void calDCallback(const std_msgs::Float64::ConstPtr&);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
 ros::Subscriber vel_sub_;
 ros::Subscriber cal0_sub_;
+ros::Subscriber calD_sub_;
 
 // Other member variables
 
@@ -60,11 +63,14 @@ ph_.param("radius", r,r);
 vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::velocityCallback, this);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman", 1, &pathFollowing::poseCallback, this);
 cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callback, this);
-
+calD_sub_ = nh_.subscribe<std_msgs::Float64>("calD",1, &pathFollowing::calDCallback, this);
 }
 
 void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
 OmegaC=OmegaC_->data;
+}
+void pathFollowing::calDCallback(const std_msgs::Float64::ConstPtr& OmegaD_){
+OmegaD=OmegaD_->data;
 }
 
 void pathFollowing::velocityCallback(const geometry_msgs::Twist::ConstPtr& robVel){
@@ -101,6 +107,7 @@ ros::spinOnce();
 double u1=robVel_;
 double u2=robVel_/r;
 OmegaC=2;
+OmegaD=1;
 while(1==1){
 	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
@@ -111,6 +118,7 @@ while(1==1){
 			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
 			u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 			u2=u2*OmegaC;
+			u1=u1*OmegaD;
 			if (u2>1){u2=1;}
 			if (u2<-1){u2=-1;}
 			
