@@ -77,9 +77,9 @@ else
           rad2=rad2-rad1;
         }
       
-        /*if (rad2>.1 && rad2<radN){
+        if (rad2<radN){
           radN=rad2;
-        }*/
+        }
         radN=rad2;
     }
 }
