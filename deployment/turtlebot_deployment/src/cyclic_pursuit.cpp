@@ -80,7 +80,6 @@ else
         if (rad2<radN){
           radN=rad2;
         }
-        radN=rad2;
     }
 }
 
@@ -106,6 +105,7 @@ y2=0;
 x0=0;
 x2=0;
 while (1==1){
+    radN=100;
     ros::spinOnce();
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
@@ -113,6 +113,6 @@ std::cout<<"RADIANS2: "<<rad2<<"\n";
     cmd_vel_.linear.x=3*k*(radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
-    radN=100;
+    
 }
 }
