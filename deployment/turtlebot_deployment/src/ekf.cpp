@@ -216,7 +216,7 @@ double OmegaD=1;
 double counter12=0;
 double x0=0;
 double y0=0;
-std_msgs::Float64 floatMsg;
+std_msgs::Float64 floatMsg floatMsg2;
 int iTemp;
 iTemp=0;
 int size = robots.size();
