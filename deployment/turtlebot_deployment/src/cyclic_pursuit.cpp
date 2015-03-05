@@ -18,7 +18,8 @@ Cyclic Pursuit
 double rad1,x0, z;
 double yc;
 double rad2,x2,y2,radN;
-std::string name_;
+
+std::string name_, name2_;
 
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
@@ -77,10 +78,21 @@ else
           rad2=rad2-rad1;
         }
       
-        if (rad2<radN){
+        /*if (rad2<radN){
           radN=rad2;
+        }*/
+        if (name2_=="temp"){
+            name2_=posePtr->name;
         }
-        //radN=rad2;
+        if (name2_==posePtr->name){
+        radN=rad2;
+        }
+        else {
+            if (rad2<radN){
+                name2_=posePtr->name;
+                radN=rad2;
+            }
+        }
     }
 }
 
@@ -105,15 +117,16 @@ yc=0;
 y2=0;
 x0=0;
 x2=0;
+name2_="temp";
 while (1==1){
-    radN=7;
+
     ros::spinOnce();
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
 std::cout<<"RADIANS2: "<<rad2<<"\n";
     cmd_vel_.linear.x=6*k*(radN);
     vel_pub_.publish(cmd_vel_);
-    usleep(1000000);
+    usleep(100000);
     
 }
 }
