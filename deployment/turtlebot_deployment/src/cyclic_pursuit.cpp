@@ -80,6 +80,7 @@ else
         /*if (rad2<radN){
           radN=rad2;
         }*/
+        radN=rad2;
     }
 }
 
