@@ -275,7 +275,7 @@ X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
     if (counter12+5<counter11){
-      omegaD=omegaD+.01*(sqrt((XT(1)-y0)^2+(XT(0)-x0)^2)-sqrt((X(1)-y0)^2+(X(0)-x0)^2));//FIX NORM FOR ROBUST CONTROL
+      OmegaD=OmegaD+.01*(sqrt((XT(1)-y0)^2+(XT(0)-x0)^2)-sqrt((X(1)-y0)^2+(X(0)-x0)^2));//FIX NORM FOR ROBUST CONTROL
       if ((XT(2)-X(2))>3.14){
     OmegaC=OmegaC+.1*((XT(2))-(X(2)+2*3.14));}
     else{OmegaC=OmegaC+.1*((XT(2))-(X(2)));}
