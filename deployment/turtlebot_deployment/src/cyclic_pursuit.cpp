@@ -77,9 +77,9 @@ else
           rad2=rad2-rad1;
         }
       
-        if (rad2<radN){
+        /*if (rad2<radN){
           radN=rad2;
-        }
+        }*/
     }
 }
 
@@ -105,7 +105,6 @@ y2=0;
 x0=0;
 x2=0;
 while (1==1){
-    radN=100;
     ros::spinOnce();
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
