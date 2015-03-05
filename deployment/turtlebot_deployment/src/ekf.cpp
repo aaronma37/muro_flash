@@ -271,8 +271,8 @@ X=X+K*(Z-X);
 P=(I-K*W)*P;
 if (counter12+10<counter11){
   if ((XT(2)-X(2))>3.14){
-OmegaC=OmegaC+.3*((XT(2))-(X(2)+2*3.14));}
-else{OmegaC=OmegaC+.3*((XT(2))-(X(2)));}
+OmegaC=OmegaC+.1*((XT(2))-(X(2)+2*3.14));}
+else{OmegaC=OmegaC+.1*((XT(2))-(X(2)));}
   XT=X;
   counter12=counter11;
   if (OmegaC<.5){OmegaC=.5;}
