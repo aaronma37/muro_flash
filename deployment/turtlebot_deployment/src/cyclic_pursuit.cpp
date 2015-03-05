@@ -109,7 +109,7 @@ while (1==1){
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
 std::cout<<"RADIANS2: "<<rad2<<"\n";
-    cmd_vel_.linear.x=3*k*(radN);
+    cmd_vel_.linear.x=6*k*(radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
     
