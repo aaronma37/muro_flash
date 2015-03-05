@@ -24,7 +24,7 @@ std::string name_, name2_;
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
-name_=selfPtr->name;
+name_=selfPtr->name;    
 x0=selfPtr->pose.position.x-350;
 yc=selfPtr->pose.position.y-250;
 z=yc/x0;
