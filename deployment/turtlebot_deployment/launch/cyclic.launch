@@ -17,7 +17,7 @@
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
 <!-- Communication EKF node -->
-<node pkg="turtlebot_deployment" type="inter_robot_communication_ekf" name="communication">
+<node pkg="turtlebot_deployment" type="inter_robot_communication_ekf" name="communication" output="screen">
 <param name="robot_name" value="$(arg robot)"/>
 </node>
 <!-- EKF -->
@@ -26,7 +26,7 @@
 </node>
 
 <!--Cyclic Pursuit-->
-<node pkg="turtlebot_deployment" type="cyclic_pursuit" name="cyclic_pursuit" output="screen">
+<node pkg="turtlebot_deployment" type="cyclic_pursuit" name="cyclic_pursuit">
 <param name="robot_name" value="$(arg robot)"/>
 <param name="hold_time" value="$(arg hold_time)"/>
 <param name="resolution" value="$(arg resolution)"/>
