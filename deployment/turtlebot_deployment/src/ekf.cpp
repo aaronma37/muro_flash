@@ -313,8 +313,10 @@ cout<<"Counter: "<<counter11<<"\n";
 cout<<"Number of Robots: "<<size<<"\n";
 cout<<"Robot #: "<<iTemp<<"\n";
 std::cout<<"Measured: \n"<<Z<<"\n\n";
+std::cout<<"OmegaC\n"<<OmegaC<<"\n---------\n";
+std::cout<<"OmegaD\n"<<OmegaD<<"\n---------\n";
 std::cout<<"Goal Pose\n"<<goalPose<<"\n---------\n\n\n\n";
-std::cout<<"OmegaC\n"<<OmegaC<<"\n---------\n\n\n\n";
+
 std::cout<<"--------------------------------------------------------------------";
 //}
 ///
