@@ -212,6 +212,8 @@ R(1,1)=.01;
 R(2,2)=.01;
 double OmegaC=1.5;
 double counter12=0;
+double x0=0;
+double y0=0;
 std_msgs::Float64 floatMsg;
 int iTemp;
 iTemp=0;
@@ -269,18 +271,22 @@ K=P*W.transpose()*temp.inverse();
 X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
-if (counter12+10<counter11){
-  if ((XT(2)-X(2))>3.14){
-OmegaC=OmegaC+.1*((XT(2))-(X(2)+2*3.14));}
-else{OmegaC=OmegaC+.1*((XT(2))-(X(2)));}
-  XT=X;
-  counter12=counter11;
-  if (OmegaC<.5){OmegaC=.5;}
-  if (OmegaC>4){OmegaC=4;}
-  floatMsg.data=OmegaC;
-  
-  cal0_pub_.publish(floatMsg);
-}
+    if (counter12+5<counter11){
+      omegaD=omegaD+.1*(-sqrt((X(1)-y0)^2+(X(0)-x0)^2))//FIX NORM FOR ROBUST CONTROL
+      if ((XT(2)-X(2))>3.14){
+    OmegaC=OmegaC+.1*((XT(2))-(X(2)+2*3.14));}
+    else{OmegaC=OmegaC+.1*((XT(2))-(X(2)));}
+      XT=X;
+      counter12=counter11;
+      if (OmegaC<.5){OmegaC=.5;}
+      if (OmegaC>4){OmegaC=4;}
+      floatMsg.data=OmegaC;
+      
+      cal0_pub_.publish(floatMsg);
+      x0=X(0);
+      y0=Y(0);
+      
+    }
 }
 
 //Set Vectors
