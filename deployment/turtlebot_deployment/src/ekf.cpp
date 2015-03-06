@@ -281,6 +281,7 @@ P=(I-K*W)*P;
     else{OmegaC=OmegaC+.2*((XT(2))-(X(2)));}
       XT=X;
       counter12=counter11;
+      if (OmegaD<.4){OmegaD=.4;}
       if (OmegaC<.5){OmegaC=.5;}
       if (OmegaC>4){OmegaC=4;}
       floatMsg.data=OmegaC;
