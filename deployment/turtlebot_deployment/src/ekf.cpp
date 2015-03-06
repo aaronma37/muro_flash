@@ -275,14 +275,14 @@ X=X+K*(Z-X);
 //Stage 5
 P=(I-K*W)*P;
     if (counter12+5<counter11){
-      OmegaD=OmegaD+.05*(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));//FIX NORM FOR ROBUST CONTROL
+      OmegaD=OmegaD+.01*(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));//FIX NORM FOR ROBUST CONTROL
       if ((XT(2)-X(2))>3.14){
-    OmegaC=OmegaC+.25*((XT(2))-(X(2)+2*3.14));}
-    else{OmegaC=OmegaC+.25*((XT(2))-(X(2)));}
+    OmegaC=OmegaC+.2*((XT(2))-(X(2)+2*3.14));}
+    else{OmegaC=OmegaC+.2*((XT(2))-(X(2)));}
       XT=X;
       counter12=counter11;
       if (OmegaD<.4){OmegaD=.4;}
-      if (OmegaD>1.5){OmegaD=1.5;}
+      if (OmegaD>1.2){OmegaD=1.2;}
       if (OmegaC<.5){OmegaC=.5;}
       if (OmegaC>4){OmegaC=4;}
       floatMsg.data=OmegaC;
