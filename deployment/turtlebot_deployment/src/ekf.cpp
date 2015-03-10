@@ -219,7 +219,7 @@ double x0=0;
 double y0=0;
 double ec=0;
 double ed=0;
-double id=1.5;
+double id=1;
 double ic=1.5;
 double ed0=0;
 double ec0=0;
@@ -308,7 +308,7 @@ P=(I-K*W)*P;
     
       XT=X;
       counter12=counter11;
-      if (OmegaD<.4){OmegaD=.4;}
+      if (OmegaD<.4){OmegaD=.44;}
       if (OmegaD>1.2){OmegaD=1.2;}
       if (OmegaC<.5){OmegaC=.5;}
       if (OmegaC>4){OmegaC=4;}
