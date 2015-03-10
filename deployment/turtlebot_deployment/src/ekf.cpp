@@ -288,7 +288,7 @@ P=(I-K*W)*P;
     if (counter12+5<counter11){
         ed=(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));
         id=id+.01*ed;
-      OmegaD=0*ed+id+0*(ed-ed0);//PID
+      OmegaD=.001*ed+id+0*(ed-ed0);//PID
        ed0=ed;
       if ((XT(2)-X(2))>3.14){
         ec=((XT(2))-(X(2)+2*3.14));
@@ -301,7 +301,7 @@ P=(I-K*W)*P;
         ke.data=XT(2)-X(2);
     }
     ic=ic+.2*ec;
-    OmegaC=0*ec+ic+0*(ec-ec0);
+    OmegaC=.001*ec+ic+0*(ec-ec0);
     ec0=ec;
     
     
@@ -309,9 +309,9 @@ P=(I-K*W)*P;
       XT=X;
       counter12=counter11;
       if (OmegaD<.4){OmegaD=.4;id=.4;}
-      if (OmegaD>1.2){OmegaD=1.2;}
-      if (OmegaC<.5){OmegaC=.5;}
-      if (OmegaC>4){OmegaC=4;}
+      if (OmegaD>1.2){OmegaD=1.2; id=1.2;}
+      if (OmegaC<.5){OmegaC=.5;ic=.5;}
+      if (OmegaC>4){OmegaC=4;ic=4;}
       floatMsg.data=OmegaC;
       floatMsg2.data=OmegaD;
       cal0_pub_.publish(floatMsg);
