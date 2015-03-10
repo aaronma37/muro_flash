@@ -199,6 +199,7 @@ ros::Publisher sf_pub_;
 ros::Publisher nm_pub_;
 ros::Publisher cal0_pub_;
 ros::Publisher calD_pub_;
+ros::Publisher kalmanError;
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
@@ -216,7 +217,7 @@ double OmegaD=1;
 double counter12=0;
 double x0=0;
 double y0=0;
-std_msgs::Float64 floatMsg, floatMsg2;
+std_msgs::Float64 floatMsg, floatMsg2, ke;
 int iTemp;
 iTemp=0;
 int size = robots.size();
@@ -227,6 +228,8 @@ sf_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("afterKalman",1,true
 nm_pub_= gnh_.advertise<turtlebot_deployment::PoseWithName>("nametest", 5);
 cal0_pub_= gnh_.advertise<std_msgs::Float64>("cal0", 1,true);
 calD_pub_= gnh_.advertise<std_msgs::Float64>("calD", 1,true);
+calD_pub_= gnh_.advertise<std_msgs::Float64>("calD", 1,true);
+kalmanError=gnh_.advertise<std_msgs::Float64>("ke",1,true);
 while (ros::ok()) {
 got_pose_=false;
 ros::spinOnce();
@@ -277,8 +280,12 @@ P=(I-K*W)*P;
     if (counter12+5<counter11){
       OmegaD=OmegaD+.01*(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));//FIX NORM FOR ROBUST CONTROL
       if ((XT(2)-X(2))>3.14){
-    OmegaC=OmegaC+.2*((XT(2))-(X(2)+2*3.14));}
-    else{OmegaC=OmegaC+.2*((XT(2))-(X(2)));}
+    OmegaC=OmegaC+.2*((XT(2))-(X(2)+2*3.14));
+          ke.data = XT(2)-X(2)+2*3.14;
+      }
+    else{OmegaC=OmegaC+.2*((XT(2))-(X(2)));
+        ke.data=XT(2)-X(2);
+    }
       XT=X;
       counter12=counter11;
       if (OmegaD<.4){OmegaD=.4;}
@@ -289,6 +296,7 @@ P=(I-K*W)*P;
       floatMsg2.data=OmegaD;
       cal0_pub_.publish(floatMsg);
       calD_pub_.publish(floatMsg2);
+      kalmanError.publish(ke);
       x0=X(0);
       y0=X(1);
       
