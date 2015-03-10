@@ -213,13 +213,13 @@ R(0,0)=.01;
 R(1,1)=.01;
 R(2,2)=.01;
 double OmegaC=1.5;
-double OmegaD=1;
+double OmegaD=.7;
 double counter12=0;
 double x0=0;
 double y0=0;
 double ec=0;
 double ed=0;
-double id=1;
+double id=.7;
 double ic=1.5;
 double ed0=0;
 double ec0=0;
@@ -287,7 +287,7 @@ P=(I-K*W)*P;
 //PID FEEDBACK
     if (counter12+5<counter11){
         ed=(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));
-        id=id+.01*ed;
+        id=id+.005*ed;
       OmegaD=0*ed+id+0*(ed-ed0);//PID
        ed0=ed;
       if ((XT(2)-X(2))>3.14){
