@@ -301,7 +301,7 @@ P=(I-K*W)*P;
         ke.data=XT(2)-X(2);
     }
     ic=ic+.2*ec;
-    OmegaC=1*ec+ic+0*(ec-ec0);
+    OmegaC=0*ec+ic+0*(ec-ec0);
     ec0=ec;
     
     
