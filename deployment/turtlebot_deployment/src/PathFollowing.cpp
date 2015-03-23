@@ -112,9 +112,9 @@ while(1==1){
 	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
-			u1=robVel_;
+			u1=robVel_()*sqrt(x1^2+x2^2)/r;
 			//pathFollowingk.pathFollowing();
-			u2=robVel_/r;
+			u2=u1/r;
 			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
 			u2=u2-k*(r*x1*cos(orientation)+r*x2*sin(orientation))/167/167; //check orientation units
 			u2=u2*OmegaC;
