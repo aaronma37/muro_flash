@@ -112,6 +112,7 @@ while(1==1){
 	//ph_.param("radius", r,r);
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
+			//ADDED V PROPORTIONAL TO RADIUS
 			u1=robVel_()*sqrt(x1^2+x2^2)/r;
 			//pathFollowingk.pathFollowing();
 			u2=u1/r;
