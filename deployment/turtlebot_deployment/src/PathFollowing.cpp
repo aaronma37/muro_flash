@@ -113,7 +113,7 @@ while(1==1){
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//ADDED V PROPORTIONAL TO RADIUS
-			u1=robVel_()*sqrt(x1^2+x2^2)/r;
+			u1=robVel_*sqrt(x1^2+x2^2)/r;
 			//pathFollowingk.pathFollowing();
 			u2=u1/r;
 			//std::cout<<"initial angular velocity: \n"<<u2<<"\n\n";
