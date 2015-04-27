@@ -287,7 +287,7 @@ P=(I-K*W)*P;
 //PID FEEDBACK
     if (counter12+5<counter11){
         ed=(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));
-        id=id+(counter11-counter12)*ed/500;
+        id=id+(counter11-counter12)*ed/1500;
       OmegaD=0*ed+id+0*(ed-ed0);//PID
        ed0=ed;
       if ((XT(2)-X(2))>3.14){
@@ -300,7 +300,7 @@ P=(I-K*W)*P;
         //OmegaC=OmegaC+.2*((XT(2))-(X(2)));
         ke.data=XT(2)-X(2);
     }
-    ic=ic+(counter11-counter12)*ec/25;
+    ic=ic+(counter11-counter12)*ec/250;
     OmegaC=0*ec+ic+0*(ec-ec0);
     ec0=ec;
     
