@@ -82,6 +82,7 @@ class agent{
 public:
 float x, y, theta, velo, omega, t;
 string name;
+double send;
 };
 vector<agent> agentVector;
 class getName
@@ -91,13 +92,17 @@ getName();
 private:
 ros::NodeHandle ph1_;
 std::string name1_;
+double send_;
 } ;
 getName::getName():
 ph1_("~"),
 name1_("no_name")
+send_=0;
 {
 ph1_.param("robot_name", name1_, name1_);
+ph1_.param("sendAll", send_, send_);
 name_=name1_;
+send=send_;
 }
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
@@ -333,7 +338,9 @@ goalPose.name=agentVector[iTemp].name;
 goalPose.pose.orientation =tf::createQuaternionMsgFromYaw(X(2)+3.14);
 //added if Statement
 //if (goalPose.name!=""){
+if (send==1){
 gl_pub_.publish(goalPose);
+}
 goalPose.name=name_;
 nm_pub_.publish(goalPose);
 sf_pub_.publish(goalPose);
