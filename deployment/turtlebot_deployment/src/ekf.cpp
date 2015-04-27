@@ -71,6 +71,7 @@ vector<Matrix3f> Pv;
 vector<Matrix3f> Hv;
 vector<string> robots; //Initialize a vector of robot names
 std::string name_;
+double send;
 turtlebot_deployment::PoseWithNamePtr newPose_;
 bool got_pose_, stationary;
 double theta,
@@ -82,7 +83,6 @@ class agent{
 public:
 float x, y, theta, velo, omega, t;
 string name;
-double send;
 };
 vector<agent> agentVector;
 class getName
