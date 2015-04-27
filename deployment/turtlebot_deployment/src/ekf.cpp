@@ -96,7 +96,7 @@ double send_;
 } ;
 getName::getName():
 ph1_("~"),
-name1_("no_name")
+name1_("no_name"),
 send_=0;
 {
 ph1_.param("robot_name", name1_, name1_);
