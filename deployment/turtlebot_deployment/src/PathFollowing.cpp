@@ -22,6 +22,7 @@ double orientation;
 double robVel_;
 double OmegaC;
 double OmegaD;
+double cenx, ceny;
 // Construct Node Class
 
 
@@ -50,6 +51,7 @@ geometry_msgs::Twist robVel;
 turtlebot_deployment::PoseWithName Pose;
 
 bool got_vel_;
+
 };
 
 pathFollowing::pathFollowing():
@@ -64,6 +66,7 @@ vel_sub_ = nh_.subscribe<geometry_msgs::Twist>("velocity",1, &pathFollowing::vel
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman", 1, &pathFollowing::poseCallback, this);
 cal0_sub_ = nh_.subscribe<std_msgs::Float64>("cal0",1, &pathFollowing::cal0Callback, this);
 calD_sub_ = nh_.subscribe<std_msgs::Float64>("calD",1, &pathFollowing::calDCallback, this);
+cen_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/centroidPos",1, &pathFollowing::updateCentroid, this);
 }
 
 void pathFollowing::cal0Callback(const std_msgs::Float64::ConstPtr& OmegaC_){
@@ -78,14 +81,19 @@ robVel_= robVel->linear.x;
 got_vel_ = true;
 }
 
+void pathFollowing::updateCentroid(const turtlebot_deployment::PoseWithName::ConstPtr& cenPose){
+cenx=cenPose->pose.position.x;
+ceny=cenPose->pose.position.y
+}
+
 void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& Pose)
 {
 	orientation = tf::getYaw(Pose->pose.orientation);
 	//orientation=-orientation;
 	x1=Pose->pose.position.x;
-	x1=x1-350;
+	x1=x1-cenx;
 	x2=Pose->pose.position.y; //centered
-	x2=x2-250;
+	x2=x2-ceny;
 	
 //	got_vel_=false; *Delete
 	
@@ -93,6 +101,8 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
+cenx=250;
+ceny=250;
 r=100;
 time_t timer,begin,end;
 ros::NodeHandle ph_("~"), nh_;
@@ -100,6 +110,7 @@ ros::Publisher u_pub_;
 geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
+
 robVel_=0;
 time(&end);
 double k=1;
