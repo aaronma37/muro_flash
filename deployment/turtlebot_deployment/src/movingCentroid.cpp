@@ -23,7 +23,7 @@ start with moving centroid
 #include <stdlib.h>
 #include <std_msgs/Float64.h>
 double cenPos;
-double yc;
+double l;
 double rad2,x2,y2,radN;
 std_msgs::Float64 floatMsg
 std::string name_, name2_;
@@ -127,6 +127,7 @@ cen_pub_ = nh_.advertise<std_msgs::Float64>("centroidPos", 5, true);
 //x0=0;
 //x2=0;
 //name2_="temp";
+l=0;
 while (1==1){
 
     //ros::spinOnce();
