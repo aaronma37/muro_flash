@@ -121,11 +121,12 @@ ros::init(argc, argv, "movingCentroid");
 ros::NodeHandle ph_, gnh_;
 ros::Publisher cen_pub_;
 std_msgs::Float64 floatMsg;
+turtlebot_deployment::PoseWithName cenPose;
 //ros::Subscriber pos_sub_;
 //ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
-cen_pub_ = gnh_.advertise<std_msgs::Float64>("/centroidPos", 5, true);
+cen_pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/centroidPos", 5, true);
 //pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
 //self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 //cmd_vel_.linear.x=75;
@@ -158,8 +159,9 @@ while (1==1){
  if (cenPos>500){
      l=0;
  }
- floatMsg.data=cenPos;
-    cen_pub_.publish(floatMsg);
+cenPose.pose.position.x = cenPos;
+cenPose.pose.position.y = 250;
+cen_pub_.publish(cenPose);
     usleep(100000);
     
 }
