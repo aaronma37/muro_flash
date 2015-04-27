@@ -22,10 +22,13 @@ start with moving centroid
 #include <stdio.h>
 #include <stdlib.h>
 #include <std_msgs/Float64.h>
+
+using namespace std;
+
 double cenPos;
 double l;
 double rad2,x2,y2,radN;
-std_msgs::Float64 floatMsg
+
 std::string name_, name2_;
 /*
 
@@ -110,6 +113,7 @@ int main(int argc, char **argv)
 ros::init(argc, argv, "movingCentroid");
 ros::NodeHandle ph_, nh_;
 ros::Publisher cen_pub_;
+std_msgs::Float64 floatMsg
 //ros::Subscriber pos_sub_;
 //ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
