@@ -25,10 +25,7 @@ ROS opensource
 */
 /*
 Notes for meeting-
--Report
--Finish multiple robotic intake
--Try on actual robots
--Thoughts about updating while pose has not been published
+-NEED TO FIX THE LAUNCH PROBLEM (SENDALL SEND SEND_)
 */
 /*
 Changelog
