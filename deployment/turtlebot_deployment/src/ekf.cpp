@@ -90,17 +90,17 @@ class getName
 public:
 getName();
 private:
-ros::NodeHandle ph1_;
+ros::NodeHandle ph1_, ph;
 std::string name1_;
 double send_;
 } ;
 getName::getName():
 ph1_("~"),
 name1_("no_name"),
-send_(1)
+send_(0)
 {
 ph1_.param("robot_name", name1_, name1_);
-ph1_.param("sendAll", send_, send_);
+ph.param("sendAll", send_, send_);
 name_=name1_;
 send=send_;
 }
