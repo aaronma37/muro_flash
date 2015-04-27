@@ -84,7 +84,7 @@ got_vel_ = true;
 
 void pathFollowing::updateCentroid(const turtlebot_deployment::PoseWithName::ConstPtr& cenPose){
 cenx=cenPose->pose.position.x;
-ceny=cenPose->pose.position.y
+ceny=cenPose->pose.position.y;
 }
 
 void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& Pose)
