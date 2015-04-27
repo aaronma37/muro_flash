@@ -12,6 +12,13 @@ start with moving centroid
 
 */
 
+#include <iostream>
+
+#include <fstream>
+
+#include "std_msgs/String.h"
+#include <sstream>
+
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <nav_msgs/Odometry.h>
@@ -113,7 +120,7 @@ int main(int argc, char **argv)
 ros::init(argc, argv, "movingCentroid");
 ros::NodeHandle ph_, nh_;
 ros::Publisher cen_pub_;
-std_msgs::Float64 floatMsg
+std_msgs::Float64 floatMsg;
 //ros::Subscriber pos_sub_;
 //ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
