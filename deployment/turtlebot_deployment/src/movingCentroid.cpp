@@ -21,7 +21,7 @@ start with moving centroid
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <std_msgs/Float64.h>
 double cenPos;
 double yc;
 double rad2,x2,y2,radN;
