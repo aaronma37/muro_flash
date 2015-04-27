@@ -38,6 +38,7 @@ void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 void velocityCallback(const geometry_msgs::Twist::ConstPtr&);
 void cal0Callback(const std_msgs::Float64::ConstPtr&);
 void calDCallback(const std_msgs::Float64::ConstPtr&);
+void updateCentroid(const turtlebot_deployment::PoseWithName::ConstPtr&);
 // ROS stuff
 ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
