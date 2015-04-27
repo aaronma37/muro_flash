@@ -153,10 +153,10 @@ while (1==1){
      cenPos=cenPos-10;
  }
  if (cenPos<200){
-     l==1;
+     l=1;
  }
  if (cenPos>500){
-     l==0;
+     l=0;
  }
  floatMsg.data=cenPos;
     cen_pub_.publish(floatMsg);
