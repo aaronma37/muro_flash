@@ -118,14 +118,14 @@ else
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "movingCentroid");
-ros::NodeHandle ph_, nh_;
+ros::NodeHandle ph_, gnh_;
 ros::Publisher cen_pub_;
 std_msgs::Float64 floatMsg;
 //ros::Subscriber pos_sub_;
 //ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
-cen_pub_ = nh_.advertise<std_msgs::Float64>("centroidPos", 5, true);
+cen_pub_ = gnh_.advertise<std_msgs::Float64>("centroidPos", 5, true);
 //pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
 //self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 //cmd_vel_.linear.x=75;
@@ -147,10 +147,10 @@ while (1==1){
 //std::cout<<"RADIANS1: "<<rad1<<"\n";
 //std::cout<<"RADIANS2: "<<rad2<<"\n";
  if (l==1){
-  cenPos=cenPos+10;
+  cenPos=cenPos+2;
  }else{
      
-     cenPos=cenPos-10;
+     cenPos=cenPos-2;
  }
  if (cenPos<200){
      l=1;
