@@ -109,7 +109,7 @@ vel_pub_ = nh_.advertise<geometry_msgs::Twist>("velocity", 5, true);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
 self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 cmd_vel_.linear.x=75;
-double k=1;
+double k=4;
 radN=2;
 rad2=1;
 rad1=1;
@@ -124,7 +124,7 @@ while (1==1){
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
 std::cout<<"RADIANS2: "<<rad2<<"\n";
-    cmd_vel_.linear.x=10*k*(radN);
+    cmd_vel_.linear.x=k*(radN);
     vel_pub_.publish(cmd_vel_);
     usleep(100000);
     
