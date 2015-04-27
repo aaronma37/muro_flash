@@ -104,3 +104,9 @@ target_link_libraries(ekf
 ${catkin_LIBRARIES}
 )
 
+add_executable(movingCentroid src/movingCentroid.cpp)
+add_dependencies(movingCentroid ${catkin_EXPORTED_TARGETS})
+target_link_libraries(movingCentroid
+${catkin_LIBRARIES}
+)
+
