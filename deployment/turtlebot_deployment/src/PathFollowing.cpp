@@ -43,7 +43,7 @@ ros::NodeHandle ph_, nh_;
 ros::Subscriber pos_sub_;
 ros::Subscriber vel_sub_;
 ros::Subscriber cal0_sub_;
-ros::Subscriber calD_sub_;
+ros::Subscriber calD_sub_, cen_sub_;
 
 // Other member variables
 
