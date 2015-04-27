@@ -25,7 +25,7 @@ start with moving centroid
 double cenPos;
 double yc;
 double rad2,x2,y2,radN;
-
+std_msgs::Float64 floatMsg
 std::string name_, name2_;
 /*
 
@@ -107,14 +107,14 @@ else
 */
 int main(int argc, char **argv)
 {
-ros::init(argc, argv, "cyclic_pursuit");
+ros::init(argc, argv, "movingCentroid");
 ros::NodeHandle ph_, nh_;
 ros::Publisher cen_pub_;
 //ros::Subscriber pos_sub_;
 //ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
-cen_pub_ = nh_.advertise<turtlebot_deployment::PoseWithName>("centroidPos", 5, true);
+cen_pub_ = nh_.advertise<std_msgs::Float64>("centroidPos", 5, true);
 //pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
 //self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 //cmd_vel_.linear.x=75;
@@ -145,8 +145,8 @@ while (1==1){
  if (cenPos>500){
      l==0;
  }
- 
-    cen_pub_.publish(cenPose);
+ floatMsg.data=cenPos;
+    cen_pub_.publish(floatMsg);
     usleep(100000);
     
 }
