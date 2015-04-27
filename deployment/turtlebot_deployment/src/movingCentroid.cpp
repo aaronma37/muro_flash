@@ -139,6 +139,7 @@ cen_pub_ = nh_.advertise<std_msgs::Float64>("centroidPos", 5, true);
 //x2=0;
 //name2_="temp";
 l=0;
+cenPos=250;
 while (1==1){
 
     //ros::spinOnce();
