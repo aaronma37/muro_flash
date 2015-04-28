@@ -118,7 +118,7 @@ else
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "movingCentroid");
-ros::NodeHandle ph_, gnh_;
+ros::NodeHandle ph_, gnh_, nh;
 ros::Publisher cen_pub_;
 std_msgs::Float64 floatMsg;
 turtlebot_deployment::PoseWithName cenPose;
