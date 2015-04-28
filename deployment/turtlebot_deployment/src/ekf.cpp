@@ -189,7 +189,7 @@ double send_;
 myfile.open(path);
 myfile <<"Data";
 myfile.close();
-ros::NodeHandle nh_, ph_, gnh_, ph;
+ros::NodeHandle nh_, ph_, gnh_, ph("~");
 ros::Subscriber pos_sub_ ;
 ros::Subscriber ipt_sub_ ;
 ros::Publisher gl_pub_ ;
