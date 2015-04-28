@@ -164,7 +164,7 @@ cenPose.pose.position.x = cenPos;
 cenPose.pose.position.y = 250;
 */
 cenPose.pose.position.x = x0;
-cenPose.pose.position.y = y0;
+cenPose.pose.position.y = yc;
 cen_pub_.publish(cenPose);
     usleep(100000);
     
