@@ -18,7 +18,10 @@
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
 <!-- Communication EKF node -->
-
+<!-- Communication EKF node -->
+<node pkg="turtlebot_deployment" type="inter_robot_communication_ekf" name="communication">
+<param name="robot_name" value="$(arg robot)"/>
+</node>
 <!-- EKF -->
 <node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
 <param name="robot_name"	value="$(arg robot)"/>
