@@ -37,14 +37,14 @@ double l;
 double rad2,x2,y2,radN;
 
 std::string name_, name2_;
-/*
+
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
 name_=selfPtr->name;    
-x0=selfPtr->pose.position.x-350;
-yc=selfPtr->pose.position.y-250;
-z=yc/x0;
+x0=selfPtr->pose.position.x;
+yc=selfPtr->pose.position.y;
+/*z=yc/x0;
 rad1=atan(z);
 if (x0>=0)
 {
@@ -61,9 +61,9 @@ else
     {
         rad1=rad1+3.14;
     }
+}*/
 }
-}
-*/
+
 
 /*
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
@@ -123,20 +123,20 @@ ros::Publisher cen_pub_;
 std_msgs::Float64 floatMsg;
 turtlebot_deployment::PoseWithName cenPose;
 //ros::Subscriber pos_sub_;
-//ros::Subscriber self_sub_;
+ros::Subscriber self_sub_;
 //geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
 cen_pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/centroidPos", 5, true);
 //pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
-//self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
+self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
 //cmd_vel_.linear.x=75;
 //double k=1;
 //radN=1;
 //rad2=1;
 //rad1=1;
-//yc=0;
+yc=0;
 //y2=0;
-//x0=0;
+x0=0;
 //x2=0;
 //name2_="temp";
 l=0;
@@ -159,8 +159,12 @@ while (1==1){
  if (cenPos>500){
      l=0;
  }
+ /*
 cenPose.pose.position.x = cenPos;
 cenPose.pose.position.y = 250;
+*/
+cenPose.pose.position.x = x0;
+cenPose.pose.position.y = y0;
 cen_pub_.publish(cenPose);
     usleep(100000);
     
