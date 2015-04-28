@@ -185,6 +185,7 @@ ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 getName getname;
 ofstream myfile;
 const char *path="/home/turtlebot/ekfData.txt";
+double send_;
 myfile.open(path);
 myfile <<"Data";
 myfile.close();
@@ -197,7 +198,7 @@ ros::Publisher nm_pub_;
 ros::Publisher cal0_pub_;
 ros::Publisher calD_pub_;
 ros::Publisher kalmanError;
-//ph.param("sendAll", send, send);
+ph.param("sendAll", send_, send_);
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
