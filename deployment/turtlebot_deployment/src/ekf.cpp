@@ -97,9 +97,8 @@ name1_("no_name"),
 send_(0)
 {
 ph1_.param("robot_name", name1_, name1_);
-ph.param("sendAll", send_, send_);
+
 name_=name1_;
-send=send_;
 }
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
@@ -202,6 +201,7 @@ ros::Publisher nm_pub_;
 ros::Publisher cal0_pub_;
 ros::Publisher calD_pub_;
 ros::Publisher kalmanError;
+ph.param("sendAll", send, send);
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
