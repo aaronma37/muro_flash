@@ -68,7 +68,6 @@ vector<Matrix3f> Pv;
 vector<Matrix3f> Hv;
 vector<string> robots; //Initialize a vector of robot names
 std::string name_;
-double send;
 turtlebot_deployment::PoseWithNamePtr newPose_;
 bool got_pose_, stationary;
 double theta,
@@ -89,7 +88,6 @@ getName();
 private:
 ros::NodeHandle ph1_, ph;
 std::string name1_;
-double send_;
 } ;
 getName::getName():
 ph1_("~"),
