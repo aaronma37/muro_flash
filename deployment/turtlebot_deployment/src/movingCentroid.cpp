@@ -143,7 +143,7 @@ l=0;
 cenPos=250;
 while (1==1){
 
-    //ros::spinOnce();
+    ros::spinOnce();
     
 //std::cout<<"RADIANS1: "<<rad1<<"\n";
 //std::cout<<"RADIANS2: "<<rad2<<"\n";
