@@ -34,7 +34,7 @@ using namespace std;
 
 double cenPos;
 double l;
-double rad2,x2,y2,radN;
+double rad2,x2,y2,radN,x0,yc;
 
 std::string name_, name2_;
 
