@@ -198,8 +198,7 @@ ros::Publisher nm_pub_;
 ros::Publisher cal0_pub_;
 ros::Publisher calD_pub_;
 ros::Publisher kalmanError;
-ph.param("sendAll", send_, send_);
-send_=1;
+ph.getParam("sendAll", send_);
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
