@@ -44,7 +44,7 @@ using Eigen::MatrixXd;
 ** Initialization Block
 **
 ** Initialize Q,R,W, I(identity) as a permanent matrices determined by
-** covariance in our model
+** covariance in our modeladam lambert what do you want from me
 **
 ** Initialize P,H,X,XT,A,K,Z as matrices that vary
 ** during iterations
@@ -199,7 +199,7 @@ ros::Publisher nm_pub_;
 ros::Publisher cal0_pub_;
 ros::Publisher calD_pub_;
 ros::Publisher kalmanError;
-ph.param("sendAll", send, send);
+//ph.param("sendAll", send, send);
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose);
 void iptCallback(const geometry_msgs::Twist::ConstPtr&);
 // ROS stuff
