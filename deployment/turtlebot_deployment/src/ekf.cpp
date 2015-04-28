@@ -192,7 +192,7 @@ const char *path="/home/turtlebot/ekfData.txt";
 myfile.open(path);
 myfile <<"Data";
 myfile.close();
-ros::NodeHandle nh_, ph_, gnh_;
+ros::NodeHandle nh_, ph_, gnh_, ph;
 ros::Subscriber pos_sub_ ;
 ros::Subscriber ipt_sub_ ;
 ros::Publisher gl_pub_ ;
