@@ -332,7 +332,7 @@ goalPose.name=agentVector[iTemp].name;
 goalPose.pose.orientation =tf::createQuaternionMsgFromYaw(X(2)+3.14);
 //added if Statement
 //if (goalPose.name!=""){
-if (send==1){
+if (send_==1){
 gl_pub_.publish(goalPose);
 }
 goalPose.name=name_;
