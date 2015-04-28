@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 ros::init(argc, argv, "PathFollowing");
 cenx=250;
 ceny=250;
-r=50;
+r=100;
 time_t timer,begin,end;
 ros::NodeHandle ph_("~"), nh_;
 ros::Publisher u_pub_;
