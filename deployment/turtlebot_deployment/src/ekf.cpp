@@ -93,11 +93,9 @@ double send_;
 } ;
 getName::getName():
 ph1_("~"),
-name1_("no_name"),
-send_(0)
+name1_("no_name")
 {
 ph1_.param("robot_name", name1_, name1_);
-
 name_=name1_;
 }
 void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
