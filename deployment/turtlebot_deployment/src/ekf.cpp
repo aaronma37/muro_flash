@@ -267,8 +267,8 @@ Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
 
 //Calibration 
 if (counter11>10){
-//XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2))/OmegaD,XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2))/OmegaD,XT(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
-XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
+XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2))/OmegaD,XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2))/OmegaD,XT(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
+//XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
     
 }
 //X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2))/OmegaD,X(1)+agentVector[iTemp].velo*167/T*sin(X(2))/OmegaD,X(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
