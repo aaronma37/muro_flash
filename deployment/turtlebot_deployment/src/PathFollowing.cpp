@@ -114,7 +114,7 @@ pathFollowing pathFollowingk;
 
 robVel_=0;
 time(&end);
-double k=2.3;
+double k=1.5;
 ros::spinOnce();
 double u1=robVel_;
 double u2=robVel_/r;
