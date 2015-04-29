@@ -267,8 +267,8 @@ Z << agentVector[iTemp].x,agentVector[iTemp].y,agentVector[iTemp].theta;
 
 //Calibration 
 if (counter11>10){
-XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2))/OmegaD,XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2))/OmegaD,XT(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
-//XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
+//XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2))/OmegaD,XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2))/OmegaD,XT(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
+XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
     
 }
 //X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2))/OmegaD,X(1)+agentVector[iTemp].velo*167/T*sin(X(2))/OmegaD,X(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
@@ -289,8 +289,9 @@ P=(I-K*W)*P;
 //PID FEEDBACK
     if (counter12+5<counter11){
         ed=(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));
+        //NEED TO MAKE ARCLENGTH NOT SQRT
         id=id+(counter11-counter12)*ed/1500;
-      OmegaD=.02*ed+1*id+0*(ed-ed0);//PID
+      OmegaD=.001*ed+1*id+0*(ed-ed0);//PID
        ed0=ed;
       if ((XT(2)-X(2))>3.14){
         ec=((XT(2))-(X(2)+2*3.14));
