@@ -271,8 +271,8 @@ if (counter11>10){
 XT << XT(0)+agentVector[iTemp].velo*167/T*cos(XT(2)),XT(1)+agentVector[iTemp].velo*167/T*sin(XT(2)),XT(2)+agentVector[iTemp].omega*57/52/T;
     
 }
-X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2))/OmegaD,X(1)+agentVector[iTemp].velo*167/T*sin(X(2))/OmegaD,X(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
-//X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2)),X(1)+agentVector[iTemp].velo*167/T*sin(X(2)),X(2)+agentVector[iTemp].omega*57/52/T;
+//X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2))/OmegaD,X(1)+agentVector[iTemp].velo*167/T*sin(X(2))/OmegaD,X(2)+agentVector[iTemp].omega*57/52/T/OmegaC;
+X << X(0)+agentVector[iTemp].velo*167/T*cos(X(2)),X(1)+agentVector[iTemp].velo*167/T*sin(X(2)),X(2)+agentVector[iTemp].omega*57/52/T;
 cout<<"Velocity: "<<agentVector[iTemp].velo*167/T<<"\n";
 //Stage 2
 if (got_pose_==true){
