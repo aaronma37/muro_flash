@@ -73,7 +73,7 @@ bool got_pose_, stationary;
 double theta,
 x,
 y;
-double T =10;
+double T =20;
 int counter11=0;
 class agent{
 public:
