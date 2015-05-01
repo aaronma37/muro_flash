@@ -312,8 +312,8 @@ P=(I-K*W)*P;
     
       XT=X;
       counter12=counter11;
-      if (id<-.5){id=-.5;}
-      if (id>.5){id=.5;}
+      if (id<-5){id=-5;}
+      if (id>5){id=5;}
       if (ic<0){ic=0;}
       if (ic>4){ic=4;}
       floatMsg.data=OmegaC;
