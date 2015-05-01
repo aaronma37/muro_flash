@@ -102,8 +102,8 @@ void pathFollowing::poseCallback(const turtlebot_deployment::PoseWithName::Const
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "PathFollowing");
-cenx=300;
-ceny=300;
+cenx=350;
+ceny=200;
 r=75;
 time_t timer,begin,end;
 ros::NodeHandle ph_("~"), nh_;
