@@ -311,10 +311,10 @@ P=(I-K*W)*P;
     
       XT=X;
       counter12=counter11;
-      if (OmegaD<.4){OmegaD=.4;id=.4;}
-      if (OmegaD>1.2){OmegaD=1.2; id=1.2;}
-      if (OmegaC<.5){OmegaC=.5;ic=.5;}
-      if (OmegaC>4){OmegaC=4;ic=4;}
+      if (id<0){id=0;}
+      if (id>2){id=2;}
+      if (ic<0){ic=0;}
+      if (ic>4){ic=4;}
       floatMsg.data=OmegaC;
       floatMsg2.data=OmegaD;
       cal0_pub_.publish(floatMsg);
