@@ -291,7 +291,7 @@ P=(I-K*W)*P;
         ed=(sqrt((XT(1)-y0)*(XT(1)-y0)+(XT(0)-x0)*(XT(0)-x0))-sqrt((X(1)-y0)*(X(1)-y0)+(X(0)-x0)*(X(0)-x0)));
         //NEED TO MAKE ARCLENGTH NOT SQRT
         id=id+(counter11-counter12)*ed/1500;
-      OmegaD=1+0*ed+.1*id+0*(ed-ed0);//PID
+      OmegaD=1+.01*ed+1*id+0*(ed-ed0);//PID
       
        ed0=ed;
       if ((XT(2)-X(2))>3.14){
