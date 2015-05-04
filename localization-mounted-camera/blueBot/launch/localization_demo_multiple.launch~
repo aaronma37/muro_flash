@@ -4,9 +4,16 @@
   <include file="$(find blueBot)/launch/uvcCameraLaunch.launch"/>
 
   <!-- Localization -->
-    <node pkg="blueBot" type="blueBot"
-          args="/boticellibot" name="localization_bbot" />
-    <node pkg="blueBot" type="blueBot"
-          args="/titian" name="localization_tbot" />
+  <node pkg="blueBot" type="blueBot"
+	args="/boticellibot" name="localization_pink" output="screen" />
+    
+  <node pkg="blueBot" type="blueBot"
+	args="/michelangelobot" name="localization_green" output="screen" />
+
+  <node pkg="blueBot" type="blueBot"
+	args="/leonardobot" name="localization_orange" output="screen" />
+
+  <node pkg="blueBot" type="blueBot"
+	args="/raphaelbot" name="localization_purple" output="screen" />
 
 </launch>
