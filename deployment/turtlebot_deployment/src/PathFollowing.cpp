@@ -125,12 +125,14 @@ while(1==1){
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//ADDED V PROPORTIONAL TO RADIUS
-			//if(sqrt(x1*x1+x2*x2)>r){
-			//u1=robVel_*sqrt(x1*x1+x2*x2)/r;}
-			//else{
+			if(sqrt(x1*x1+x2*x2)>r){
+			u1=robVel_*sqrt(x1*x1+x2*x2)/r;
+				k=1;
+			}
+			else{
 				u1=robVel_;
-				
-			//}
+				k=4;
+			}
 			//pathFollowingk.pathFollowing();
 			
 			u2=u1/r;
