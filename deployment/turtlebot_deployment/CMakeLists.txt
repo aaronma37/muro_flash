@@ -65,9 +65,9 @@ target_link_libraries(simple_deployment
   ${catkin_LIBRARIES}
 )
 
-add_executable(inter_robot_communication_ekf src/inter_robot_communication_ekf.cpp)
-add_dependencies(inter_robot_communication_ekf turtlebot_deployment_gencpp)
-target_link_libraries(inter_robot_communication_ekf
+add_executable(inter_robot_communication src/inter_robot_communication.cpp)
+add_dependencies(inter_robot_communication turtlebot_deployment_gencpp)
+target_link_libraries(inter_robot_communication
   ${catkin_LIBRARIES}
 )
 
