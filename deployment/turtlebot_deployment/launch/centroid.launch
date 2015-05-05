@@ -1,5 +1,6 @@
 <launch>
 <arg name="robot" default="$(env ROBOT)"/>
+<arg name="EKF_on" default="1"/>
 <arg name="hold_time" default="8.0"/>
 <arg name="resolution" default="1"/>
 <arg name="turn_speed" default="0.3"/>
@@ -19,8 +20,9 @@
 
 <!-- Communication EKF node -->
 <!-- Communication EKF node -->
-<node pkg="turtlebot_deployment" type="inter_robot_communication_ekf" name="communication">
+<node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
 <param name="robot_name" value="$(arg robot)"/>
+<param name="EKF_switch" value="$(arg EKF_on)"/>
 </node>
 <!-- EKF -->
 <node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
