@@ -38,8 +38,10 @@ Communication::Communication():
         ROS_ERROR("Communication: Robot name not set");
     }
     else {
-        pub_ = nh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
-	//pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
+    	if (on==1){
+        pub_ = nh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);}
+        else{
+	pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);}
         sub_ = nh_.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 10, &Communication::positionCallback, this);
     }
 }
