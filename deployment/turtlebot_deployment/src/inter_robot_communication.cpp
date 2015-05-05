@@ -4,6 +4,7 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <turtlebot_deployment/PoseWithName.h>
 
+double on;
 class Communication
 {
 public:
@@ -37,8 +38,8 @@ Communication::Communication():
         ROS_ERROR("Communication: Robot name not set");
     }
     else {
-        //pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
-	pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
+        pub_ = nh_.advertise<turtlebot_deployment::PoseWithName>("toKalmanfilter", 1, true);
+	//pub_ = gnh_.advertise<turtlebot_deployment::PoseWithName>("/all_positions", 1, true);
         sub_ = nh_.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 10, &Communication::positionCallback, this);
     }
 }
@@ -53,8 +54,12 @@ void Communication::positionCallback(const geometry_msgs::PoseWithCovarianceStam
 
 int main(int argc, char** argv)
 {
+	on=1;
+	
     ros::init(argc, argv, "inter_robot_communication");
     Communication inter_robot_communication;
+    ros::NodeHandle ph,
+    ph.getParam("EKF_switch", on);
 
     ros::spin();
 }
