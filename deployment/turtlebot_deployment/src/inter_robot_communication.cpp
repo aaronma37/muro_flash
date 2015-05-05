@@ -60,7 +60,7 @@ int main(int argc, char** argv)
 	
     ros::init(argc, argv, "inter_robot_communication");
     Communication inter_robot_communication;
-    ros::NodeHandle ph,
+    ros::NodeHandle ph;
     ph.getParam("EKF_switch", on);
 
     ros::spin();
