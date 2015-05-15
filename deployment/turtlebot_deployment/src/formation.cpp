@@ -1,6 +1,6 @@
 
 /*
-Cyclic Pursuit
+formation
 */
 
 #include <ros/ros.h>
@@ -12,10 +12,16 @@ Cyclic Pursuit
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "eigen/Eigen/Dense"
+
+using namespace Eigen;
 
 double rad1,x0, z;
 double yc;
 double rad2,x2,y2,radN;
+
+
+
 
 std::string name_, name2_;
 
@@ -116,9 +122,41 @@ y2=0;
 x0=0;
 x2=0;
 name2_="temp";
+
+RthetaI=Matrix2f::Zero();
+MatrixXd C(2,2);
+matrixXd S=(1,2);
+C(0,0)=0;
+C(0,1)=0;
+C(1,0)=0;
+C(1,1)=0;
+double vd,v,w,wd, eTheta;
+vd=0;
+v=0;
+w=0;
+wd=0;
+eTheta=0;
+ctheta=0;
+
+
+
+
 while (1==1){
 
     ros::spinOnce();
+    
+ //Initialize Matrix P(confidence) to be "loose"
+RthetaI(0,0)=cos(rad1);
+RthetaI(1,1)=cos(rad1);
+RthetaI(0,1)=-sin(rad1);
+RthetaI(1,0)=sin(rad1);
+S(0,0)=1;
+S(0,1)=0;
+    
+v=vd+S*RthetaI.transpose()*C;
+w=wd+cTheta*eTheta
+
+    
     
 std::cout<<"RADIANS1: "<<rad1<<"\n";
 std::cout<<"RADIANS2: "<<rad2<<"\n";
