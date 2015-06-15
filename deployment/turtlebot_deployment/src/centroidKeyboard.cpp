@@ -8,6 +8,7 @@
 #include <turtlebot_deployment/PoseWithName.h>
 #include <tf/tf.h>
 #include <math.h>
+#include <termios.h>
 #include <time.h> 
 
 //Declare Variables
