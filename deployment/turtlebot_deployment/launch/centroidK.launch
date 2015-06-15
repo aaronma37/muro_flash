@@ -19,25 +19,14 @@
 <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
 <!-- Communication EKF node -->
-<!-- Communication EKF node -->
-<node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
-<param name="robot_name" value="$(arg robot)"/>
-<param name="EKF_switch" value="$(arg EKF_on)"/>
-</node>
-<!-- EKF -->
-<node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
+
+<!-- KeyboardCentroid-->
+<node pkg="turtlebot_deployment" type="centroidKeyboard" name="centroidKeyboard" output="screen">
 <param name="robot_name"	value="$(arg robot)"/>
 <param name="sendAll"	value="$(arg send)"/>
 </node>
 
-<!--Centroid-->
-<node pkg="turtlebot_deployment" type="movingCentroid" name="movingCentroid">
-<param name="robot_name" value="$(arg robot)"/>
-<param name="hold_time" value="$(arg hold_time)"/>
-<param name="resolution" value="$(arg resolution)"/>
-<param name="show_cells_" value="$(arg show_cells_)"/>
-</node>
-<!--PathFollowing-->
+
 
 </group>
 </launch>
