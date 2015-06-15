@@ -112,7 +112,7 @@ geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 
-robVel_=0;
+robVel_=50;
 time(&end);
 double k=1.75;
 ros::spinOnce();
