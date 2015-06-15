@@ -17,16 +17,17 @@ Cyclic Pursuit
 
 double rad1,x0, z;
 double yc;
-double rad2,x2,y2,radN;
+double rad2,x2,y2,radN,cenx,ceny;
 
 std::string name_, name2_;
+
 
 
 void selfCallback(const turtlebot_deployment::PoseWithName::ConstPtr& selfPtr)
 {
 name_=selfPtr->name;    
-x0=selfPtr->pose.position.x-350;
-yc=selfPtr->pose.position.y-250;
+x0=selfPtr->pose.position.x-cenx;
+yc=selfPtr->pose.position.y-ceny;
 z=yc/x0;
 rad1=atan(z);
 if (x0>=0)
@@ -50,8 +51,8 @@ else
 void allPoseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& posePtr)
 {
     if (name_!=posePtr->name){
-      x2=posePtr->pose.position.x-350;
-      y2=posePtr->pose.position.y-250;
+      x2=posePtr->pose.position.x-cenx;
+      y2=posePtr->pose.position.y-ceny;
       rad2=atan(y2/x2);
       
 if (x2>=0)
@@ -96,20 +97,28 @@ else
     }
 }
 
+void updateCentroid(const turtlebot_deployment::PoseWithName::ConstPtr& cenPose){
+cenx=cenPose->pose.position.x;
+ceny=cenPose->pose.position.y;
+}
+
 int main(int argc, char **argv)
 {
 ros::init(argc, argv, "cyclic_pursuit");
 ros::NodeHandle ph_, nh_;
 ros::Publisher vel_pub_;
 ros::Subscriber pos_sub_;
-ros::Subscriber self_sub_;
+ros::Subscriber self_sub_,cen_sub_;
 geometry_msgs::Twist cmd_vel_;
 ros::Rate loop_rate(.2);
 vel_pub_ = nh_.advertise<geometry_msgs::Twist>("velocity", 5, true);
 pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/all_positions", 1000,allPoseCallback);
 self_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",1,selfCallback);
+cen_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("/centroidPos",1, updateCentroid);
 cmd_vel_.linear.x=100;
 double k=10;
+cenx=300;
+ceny=200;
 radN=4;
 rad2=1;
 rad1=1;
