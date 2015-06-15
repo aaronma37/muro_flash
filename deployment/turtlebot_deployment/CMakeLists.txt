@@ -110,3 +110,9 @@ target_link_libraries(movingCentroid
 ${catkin_LIBRARIES}
 )
 
+add_executable(centroidKeyboard src/centroidKeyboard.cpp)
+add_dependencies(centroidKeyboard  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(centroidKeyboard 
+${catkin_LIBRARIES}
+)
+
