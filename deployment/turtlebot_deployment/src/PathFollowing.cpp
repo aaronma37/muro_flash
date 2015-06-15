@@ -112,7 +112,7 @@ geometry_msgs::Twist cmd_vel_;
 u_pub_ = nh_.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
 pathFollowing pathFollowingk;
 
-robVel_=50;
+robVel_=0;
 time(&end);
 double k=1.75;
 ros::spinOnce();
@@ -125,14 +125,15 @@ while(1==1){
 		//while ((time(&begin)-end)>.1){
 			ros::spinOnce();
 			//ADDED V PROPORTIONAL TO RADIUS
-			/*if(sqrt(x1*x1+x2*x2)>r){
+			if(sqrt(x1*x1+x2*x2)>r){
 			u1=robVel_*sqrt(x1*x1+x2*x2)/r;
-				k=1;
+				k=1.75;
+				u1=robVel_;
 			}
 			else{
 				u1=robVel_;
-				k=4;
-			}*/
+				k=1.75;
+			}
 			//pathFollowingk.pathFollowing();
 			
 			u2=u1/r;
