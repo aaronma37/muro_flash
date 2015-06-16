@@ -66,6 +66,7 @@ while(1==1){
     cenPose.pose.position.y=cenPose.pose.position.y-10;
     else if (c == 'a')
     cenPose.pose.position.y=cenPose.pose.position.y-10;
+    std::cout<<"Centroid Moved: \n";
 
 cen_pub_.publish(cenPose);
     usleep(100000);
