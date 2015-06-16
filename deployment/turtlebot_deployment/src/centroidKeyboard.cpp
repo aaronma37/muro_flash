@@ -67,7 +67,8 @@ while(1==1){
     else if (c == 'a'){
     cenPose.pose.position.y=cenPose.pose.position.x-10;}
     std::cout<<"Centroid Moved: \n";
-
+    std::cout<<"X Centroid: "<<cenPose.pose.position.x<<"\n";
+    std::cout<<"Y Centroid: "<<cenPose.pose.position.y<<"\n";
 cen_pub_.publish(cenPose);
     usleep(100000);
 }	
