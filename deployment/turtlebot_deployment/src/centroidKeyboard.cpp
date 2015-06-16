@@ -56,7 +56,7 @@ OmegaC=2;
 OmegaD=1;
 std::cout<<"Exiting Main Sequence: \n";
 while(1==1){
-}
+
 	int c = getch();   // call your non-blocking input function
   if (c == 'd')
     cenPose.pose.position.x=cenPose.pose.position.x+10;
@@ -70,7 +70,7 @@ while(1==1){
 
 cen_pub_.publish(cenPose);
     usleep(100000);
-  	
+}	
 }
 
     
