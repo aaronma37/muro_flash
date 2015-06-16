@@ -58,14 +58,14 @@ std::cout<<"Exiting Main Sequence: \n";
 while(1==1){
 
 	int c = getch();   // call your non-blocking input function
-  if (c == 'd')
-    cenPose.pose.position.x=cenPose.pose.position.x+10;
-  else if (c == 'w')
-    cenPose.pose.position.y=cenPose.pose.position.y+10;
-    else if (c == 's')
-    cenPose.pose.position.y=cenPose.pose.position.y-10;
-    else if (c == 'a')
-    cenPose.pose.position.y=cenPose.pose.position.y-10;
+  if (c == 'd'){
+    cenPose.pose.position.x=cenPose.pose.position.x+10;}
+  else if (c == 'w'){
+    cenPose.pose.position.y=cenPose.pose.position.y+10;}
+    else if (c == 's'){
+    cenPose.pose.position.y=cenPose.pose.position.y-10;}
+    else if (c == 'a'){
+    cenPose.pose.position.y=cenPose.pose.position.y-10;}
     std::cout<<"Centroid Moved: \n";
 
 cen_pub_.publish(cenPose);
