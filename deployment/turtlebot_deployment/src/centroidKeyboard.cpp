@@ -50,11 +50,11 @@ cenPose.pose.position.y=ceny;
 cen_pub_ = nh_.advertise<turtlebot_deployment::PoseWithName>("/centroidPos", 5, true);
 
 double k=1.75;
-ros::spinOnce();
 double u1=robVel_;
 double u2=robVel_/r;
 OmegaC=2;
 OmegaD=1;
+std::cout<<"Exiting Main Sequence: \n";
 while(1==1){
 }
 	int c = getch();   // call your non-blocking input function
