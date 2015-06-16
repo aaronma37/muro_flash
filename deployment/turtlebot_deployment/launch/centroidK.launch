@@ -13,17 +13,12 @@
 <group ns="$(arg robot)">
 <param name="tf_prefix" value="$(arg robot)"/>
 <!-- Minimal -->
-<include file="$(find turtlebot_bringup)/launch/minimal.launch">
-</include>
-<param name="mobile_base/base_frame" value="$(arg robot)/base_footprint"/>
-<param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
+
 
 <!-- Communication EKF node -->
 
 <!-- KeyboardCentroid-->
 <node pkg="turtlebot_deployment" type="centroidKeyboard" name="centroidKeyboard" output="screen">
-<param name="robot_name"	value="$(arg robot)"/>
-<param name="sendAll"	value="$(arg send)"/>
 </node>
 
 
