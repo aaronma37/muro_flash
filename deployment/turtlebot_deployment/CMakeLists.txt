@@ -28,6 +28,11 @@ generate_messages(
   geometry_msgs
 )
 
+
+
+
+
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES turtlebot_deployment
@@ -73,9 +78,41 @@ target_link_libraries(simple_deployment_dummy
   ${catkin_LIBRARIES}
 )
 
-#######################
-add_executable(Kalmanfilter src/Kalmanfilter.cpp)
-add_dependencies(Kalmanfilter ${catkin_EXPORTED_TARGETS})
-target_link_libraries(Kalmanfilter
-  ${catkin_LIBRARIES}
+
+add_executable(PathFollowing src/PathFollowing.cpp)
+add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
+target_link_libraries(PathFollowing
+${catkin_LIBRARIES}
 )
+
+add_executable(rosUnitsMove src/rosUnitsMove.cpp)
+add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
+target_link_libraries(rosUnitsMove
+${catkin_LIBRARIES}
+)
+
+
+add_executable(cyclic_pursuit src/cyclic_pursuit.cpp)
+add_dependencies(cyclic_pursuit ${catkin_EXPORTED_TARGETS})
+target_link_libraries(cyclic_pursuit
+${catkin_LIBRARIES}
+)
+
+add_executable(ekf src/ekf.cpp)
+add_dependencies(ekf ${catkin_EXPORTED_TARGETS})
+target_link_libraries(ekf
+${catkin_LIBRARIES}
+)
+
+add_executable(movingCentroid src/movingCentroid.cpp)
+add_dependencies(movingCentroid ${catkin_EXPORTED_TARGETS})
+target_link_libraries(movingCentroid
+${catkin_LIBRARIES}
+)
+
+add_executable(centroidKeyboard src/centroidKeyboard.cpp)
+add_dependencies(centroidKeyboard  ${catkin_EXPORTED_TARGETS})
+target_link_libraries(centroidKeyboard 
+${catkin_LIBRARIES}
+)
+
