@@ -22,14 +22,14 @@ include_directories(
 
 #add_message_files( DIRECTORY msg FILES PoseWithName.msg )
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-)
+#generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#  geometry_msgs
+#)
 
 catkin_package(
-  INCLUDE_DIRS include
+  #INCLUDE_DIRS include
   LIBRARIES turtlebot_deployment
   CATKIN_DEPENDS roscpp cv_bridge opencv2 std_msgs geometry_msgs nav_msgs move_base_msgs actionlib message_runtime
   DEPENDS
