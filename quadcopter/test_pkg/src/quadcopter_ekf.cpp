@@ -155,7 +155,7 @@ Matrix4f temp;
 
 //Stage 1
 Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
-X << X(0)+twist.linear.x/T,X(1)+twist.linear.y/T,X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
+X << X(0)+twist.linear.x/T*cos(yaw)+twist.linear.y/T*sin(yaw),X(1)+twist.linear.y/T*cos(yaw)+twist.linear.x/T*sin(yaw),X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
 
 //Stage 2
 if (got_pose_==true){
