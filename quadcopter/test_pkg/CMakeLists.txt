@@ -49,3 +49,9 @@ file(GLOB_RECURSE HEADER_FILES include/*.h)
 #  ${OpenCV_LIBS}
 #  ${catkin_LIBRARIES}
 #)
+
+add_executable(quadcopter_ekf src/quadcopter_ekf.cpp)
+add_dependencies(quadcopter_ekf ${catkin_EXPORTED_TARGETS})
+target_link_libraries(quadcopter_ekf
+${catkin_LIBRARIES}
+)
