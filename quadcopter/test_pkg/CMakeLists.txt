@@ -22,11 +22,11 @@ include_directories(
 
 #add_message_files( DIRECTORY msg FILES PoseWithName.msg )
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs
-  geometry_msgs
-)
+#generate_messages(
+#  DEPENDENCIES
+#  std_msgs
+#  geometry_msgs
+#)
 
 catkin_package(
   INCLUDE_DIRS include
