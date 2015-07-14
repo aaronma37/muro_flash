@@ -149,7 +149,6 @@ ros::spinOnce();
 
 VectorXf Z(3);
 Matrix3f temp;
-P=Pv[iTemp];
 
 //Stage 1
 Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
@@ -171,9 +170,6 @@ X=X+K*(Z-X);
 P=(I-K*W)*P;
 }
 
-//Set Vectors
-Xv[iTemp]=X;
-Pv[iTemp]=P;
 geometry_msgs::PoseStamped poseEstimation;
 poseEstimation.pose.position.x = X(0);
 poseEstimation.pose.position.y = X(1);
