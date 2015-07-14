@@ -7,7 +7,6 @@
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
-#include "PoseWithName.h"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include "eigen/Eigen/Dense"
