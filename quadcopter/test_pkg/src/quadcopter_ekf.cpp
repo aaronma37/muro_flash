@@ -131,23 +131,27 @@ ros::spinOnce();
     R(0,0)=1;
     R(1,1)=1;
     R(2,2)=1;
+    R(3,3)=1;
     }else{
     R(0,0)=10000;
     R(1,1)=10000;
     R(2,2)=10000;
+    R(3,3)=10000;
     }
     if (stationary==true){
     Q(0,0)=0;
     Q(1,1)=0;
     Q(2,2)=0;
+    Q(3,3)=0;
     }else{
     Q(0,0)=5;
     Q(1,1)=5;
     Q(2,2)=5;
+    Q(3,3)=5;
     }
 
-VectorXf Z(3);
-Matrix3f temp;
+VectorXf Z(4);
+Matrix4f temp;
 
 //Stage 1
 Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
