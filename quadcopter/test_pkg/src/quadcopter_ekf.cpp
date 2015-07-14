@@ -111,6 +111,12 @@ P(1,1)=1000;
 P(2,2)=1000;
 P(3,3)=1000;
 
+geometry_msgs::PoseStamped poseEstimation;
+poseEstimation.pose.position.x=0;
+poseEstimation.pose.position.y=0;
+poseEstimation.pose.position.z=0;
+poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);
+
 
 
 double counter12=0;
@@ -173,15 +179,14 @@ X=X+K*(Z-X);
 P=(I-K*W)*P;
 }
 
-geometry_msgs::PoseStamped poseEstimation;
+
 poseEstimation.pose.position.x = X(0);
 poseEstimation.pose.position.y = X(1);
 poseEstimation.pose.position.z = X(2);
 poseEstimation.pose.orientation =tf::createQuaternionMsgFromYaw(X(3)+3.14);
 gl_pub_.publish(poseEstimation);
 
-
-std::cout<<"Measured: \n"<<Z<<"\n\n";
+std::cout<<"\n Measured: \n"<<Z<<"\n\n";
 std::cout<<"Twist: \n"<<twist<<"\n\n";
 std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
 std::cout<<"--------------------------------------------------------------------";
