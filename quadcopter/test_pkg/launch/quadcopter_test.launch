@@ -1,7 +1,7 @@
 <launch>
 
 <!-- EKF -->
-<node pkg="quadcopter_ekf" type="quadcopter_ekf" name="quadcopter_ekf" output="screen">
+<node pkg="test_pkg" type="quadcopter_ekf" name="quadcopter_ekf" output="screen">
 </node>
 
 
