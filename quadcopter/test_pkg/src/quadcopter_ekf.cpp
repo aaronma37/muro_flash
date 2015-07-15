@@ -64,12 +64,12 @@ double yaw; // FIXME: What is this for?
 void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
     const tf2_msgs::TFMessage& msg=*posePtr;
-    if (msg[0].transforms.header.frame_id.compare("ORB_SLAM/World")==0){
+    if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
     got_pose_ = true;
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    measurementPose.pose.position = msg[0].transforms.transform.translation;
+    measurementPose.pose.position = msg.transforms[0].transform.translation;
     measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
     yaw = tf::getYaw(posePtr->st_transforms.transform.rotation)+3.14;
