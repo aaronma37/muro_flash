@@ -166,7 +166,7 @@ X << X(0)+twist.linear.x/T*cos(yaw)+twist.linear.y/T*sin(yaw),X(1)+twist.linear.
 
 //Stage 2
 if (got_pose_==true){
-A << 1, 0,0, -twist.linear.x/T*sin(yaw)+twist.linear.y/T*cos(yaw),0, 1,0, twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw),0, 0, 1,0;
+A << 1, 0,0, -twist.linear.x/T*sin(yaw)+twist.linear.y/T*cos(yaw),0, 1,0, twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw),0, 0, 1,0, 0,0,0,1;
 P=A*P*A.transpose()+W*Q*W.transpose();
 
 //Stage 3
