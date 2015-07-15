@@ -33,6 +33,9 @@ chatter_pub.publish(myMsg);
     chatter_pub2.publish(myMsg);
     break;
   }
+  else{
+    chatter_pub.publish(myMsg);
+  }
   
   count=count+1;
   loop_rate.sleep();
