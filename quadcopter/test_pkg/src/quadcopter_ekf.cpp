@@ -69,9 +69,9 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    measurementPose.pose.position.x = msg.transforms[0].transform.translation.x;
-    measurementPose.pose.position.y = msg.transforms[0].transform.translation.y;
-    measurementPose.pose.position.z = msg.transforms[0].transform.translation.z;
+    measurementPose.pose.position.x = msg.transforms[0].transform.translation.z;
+    measurementPose.pose.position.y = -msg.transforms[0].transform.translation.x;
+    measurementPose.pose.position.z = -msg.transforms[0].transform.translation.y;
     measurementPose.pose.orientation.x = msg.transforms[0].transform.rotation.x;
     measurementPose.pose.orientation.y = msg.transforms[0].transform.rotation.y;
     measurementPose.pose.orientation.z = msg.transforms[0].transform.rotation.z;
@@ -207,7 +207,7 @@ int main(int argc, char **argv)
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
         gl_pub_.publish(poseEstimation);
 
-        std::cout<<"\n Measured: \n"<<Z<<"\n\n";
+        std::cout<<"\n Measured: \n"<<measurementPose<<"\n\n";
         std::cout<<"Twist: \n"<<twist<<"\n\n";
         std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
         std::cout<<"--------------------------------------------------------------------";
