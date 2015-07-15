@@ -3,6 +3,7 @@
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
 #include <tf2_msgs/TFMessage.h>
+#include "geometry_msgs/TransformStamped.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/tf.h>
