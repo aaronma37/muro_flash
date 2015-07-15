@@ -61,6 +61,7 @@ double yaw; // FIXME: What is this for?
 // Updates position coordinates
 void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
+    if (posePtr.Header.frame_id=="ORB_SLAM/World"){
     got_pose_ = true;
     std::cout<<"pass";
     // FIXME: Set found agent's position
@@ -69,6 +70,7 @@ void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     measurementPose.pose.orientation = posePtr->pose.orientation;
 
     yaw = tf::getYaw(posePtr->pose.orientation)+3.14;
+    }
 }
 
 
