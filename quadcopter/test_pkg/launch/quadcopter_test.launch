@@ -4,5 +4,8 @@
 <node pkg="test_pkg" type="quadcopter_ekf" name="quadcopter_ekf" output="screen">
 </node>
 
+<node pkg="test_pkg" type="sample" name="sample">
+</node>
+
 
 </launch>
