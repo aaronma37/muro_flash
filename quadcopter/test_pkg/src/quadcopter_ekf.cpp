@@ -182,7 +182,7 @@ P=(I-K*W)*P;
 
 
 poseEstimation.pose.position.x = X(0);
-poseEstimation.pose.position.y = X(1);
+poseEstimation.pose.position.y = X(1);
 poseEstimation.pose.position.z = X(2);
 poseEstimation.pose.orientation =tf::createQuaternionMsgFromYaw(X(3)+3.14);
 gl_pub_.publish(poseEstimation);
