@@ -164,7 +164,7 @@ ros::spinOnce();
     Q(3,3)=5;
     }
 
-VectorXf Z(4);
+//VectorXf Z(4);
 Matrix4f temp;
 
 //Stage 1
