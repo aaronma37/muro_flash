@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ros/ros.h>
 #include <geometry_msgs/Twist.h>
+#include <tf2_msgs/TFMessage.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
 #include <tf/tf.h>
@@ -59,17 +60,17 @@ int counter11 = 0;
 double yaw; // FIXME: What is this for?
 
 // Updates position coordinates
-void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
+void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
-    if (posePtr->header.frame_id.compare("ORB_SLAM/World")==0){
+    if (posePtr->transforms.header.frame_id.compare("ORB_SLAM/World")==0){
     got_pose_ = true;
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    measurementPose.pose.position = posePtr->pose.position;
-    measurementPose.pose.orientation = posePtr->pose.orientation;
+    measurementPose.pose.position = posePtr->transforms.transform.translation;
+    measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
-    yaw = tf::getYaw(posePtr->pose.orientation)+3.14;
+    yaw = tf::getYaw(posePtr->transforms.transform.rotation)+3.14;
     }
 }
 
@@ -94,7 +95,7 @@ int main(int argc, char **argv)
     ros::Subscriber ipt_sub_ ;
     ros::Publisher gl_pub_ ;
 
-    void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& pose);
+    void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
     void iptCallback(const geometry_msgs::Twist::ConstPtr&);
     // ROS stuff
     // Other member variables
@@ -128,7 +129,7 @@ int main(int argc, char **argv)
     poseEstimation.pose.position.z=0;
     poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);
 
-    pos_sub_= nh_.subscribe<geometry_msgs::PoseStamped>("/tf", 1,poseCallback);
+    pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
 
