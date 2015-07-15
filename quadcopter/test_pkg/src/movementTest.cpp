@@ -21,14 +21,15 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   ros::Publisher chatter_pub = n.advertise<std_msgs::Empty>("/ardrone/takeoff", 1000);
   ros::Publisher chatter_pub2 = n.advertise<std_msgs::Empty>("/ardrone/land", 1000);
+  std_msg::Empty myMsg;
 
 ros::Rate loop_rate(200);
 int count =0;
-chatter_pub.publish();
+chatter_pub.publish(myMsg);
  while (ros::ok()){
   
   if (count > 1000){
-    chatter_pub2.publish();
+    chatter_pub2.publish(myMsg);
     break;
   }
   
