@@ -125,12 +125,6 @@ poseEstimation.pose.position.y=0;
 poseEstimation.pose.position.z=0;
 poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);
 
-
-
-double counter12=0;
-
-std_msgs::Float64 floatMsg, floatMsg2, ke;
-
 pos_sub_= nh_.subscribe<geometry_msgs::PoseStamped>("/tf", 1,poseCallback);
 ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
 gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
@@ -164,7 +158,6 @@ ros::spinOnce();
     Q(3,3)=5;
     }
 
-//VectorXf Z(4);
 Matrix4f temp;
 
 //Stage 1
@@ -189,7 +182,7 @@ P=(I-K*W)*P;
 
 
 poseEstimation.pose.position.x = X(0);
-poseEstimation.pose.position.y = X(1);
+poseEstimation.pose.position.y = X(1);
 poseEstimation.pose.position.z = X(2);
 poseEstimation.pose.orientation =tf::createQuaternionMsgFromYaw(X(3)+3.14);
 gl_pub_.publish(poseEstimation);
