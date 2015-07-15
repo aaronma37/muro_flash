@@ -1,1 +1,7 @@
+<launch>
 
+<!-- Movement Test -->
+<node pkg="test_pkg" type="movementTest" name="movementTest" output="screen">
+</node>
+
+</launch>
