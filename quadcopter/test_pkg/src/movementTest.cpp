@@ -35,7 +35,7 @@ chatter_pub.publish(myMsg);
   else{
     chatter_pub.publish(myMsg);
   }
-  
+  std::cout<<"\n Count: "<<count<<"\n";
   count=count+1;
   loop_rate.sleep();
   }
