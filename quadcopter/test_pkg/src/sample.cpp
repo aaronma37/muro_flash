@@ -22,10 +22,10 @@ int main(int argc, char **argv)
 {
   ros::init(argc, argv, "talker");
   ros::NodeHandle n;
-  ros::Publisher chatter_pub = n.advertise<geometry_msgs::PoseStamped>("/all_positions", 1000);
+  ros::Publisher chatter_pub = n.advertise<geometry_msgs::PoseStamped>("/tf", 1000);
 //ros::Publisher chatter_pub3 = n.advertise<nav_msgs::Odometry>("/vo", 1000);
 
-ros::Publisher chatter_pub2 = n.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1000);
+ros::Publisher chatter_pub2 = n.advertise<geometry_msgs::Twist>("cmd_vel", 1000);
 
 
 ros::Rate loop_rate(200);
@@ -97,7 +97,8 @@ Pose4.pose.orientation=tf::createQuaternionMsgFromYaw(yaw);
 Pose5.pose.orientation=tf::createQuaternionMsgFromYaw(yaw);
 
 chatter_pub2.publish(t);
-if (count % 5 ==0){
+chatter_pub.publish(Pose);
+/*if (count % 5 ==0){
 chatter_pub.publish(Pose);}
 else if (count % 5 ==1){
 chatter_pub.publish(Pose2);}
@@ -109,7 +110,7 @@ chatter_pub.publish(Pose4);
 }
 else if (count % 5 == 4){
 chatter_pub.publish(Pose5);
-}
+}*/
 
 std::cout<<"Check echo \n";
 count=count+1;
