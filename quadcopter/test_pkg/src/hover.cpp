@@ -1,8 +1,13 @@
 /*
 
+The main function of this node is to process position (pose) 
+data, compute the error between desired and estimated pose, 
+and then use a tuned PID controller to determine the correct 
+velocity needed to minimize that error and approximate the 
+goal pose.
+
 This node subcribes to "/poseEstimation" topic where it will 
-listen for any position (pose) data coming in from the ekf 
-filter node.
+listen for any pose data coming in from the ekf filter node.
 These pose coordinates are the best estimates for where the
 Quadcopter is currently located.
 
@@ -40,43 +45,27 @@ its velocity, to be used by the ekf node for pose estimation.
 using namespace std;
 
 // Position and movement messages
-geometry_msgs::PoseStamped measurementPose;
-geometry_msgs::Twist twist;
+geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
+geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 
 // Keep track of Quadcopter state
-bool got_pose_, stationary;
-double theta,x,y;
+bool updatedPoseEst, updatedPoseGoal;
+double theta, x, y;
 double T = 20; // ROS loop rate
-int counter11 = 0;
-double yaw; // FIXME: What is this for?
+double yaw; // twist or oscillation about a vertical axis
 
-// Updates position coordinates
-void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
+// Updates current position estimate sent by the ekf
+void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-    const tf2_msgs::TFMessage& msg=*posePtr;
-    if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
-    got_pose_ = true;
-    std::cout<<"pass";
-    // FIXME: Set found agent's position
-    // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    measurementPose.pose.position.x = msg.transforms[0].transform.translation.x;
-    measurementPose.pose.position.y = msg.transforms[0].transform.translation.y;
-    measurementPose.pose.position.z = msg.transforms[0].transform.translation.z;
-    measurementPose.pose.orientation.x = msg.transforms[0].transform.rotation.x;
-    measurementPose.pose.orientation.y = msg.transforms[0].transform.rotation.y;
-    measurementPose.pose.orientation.z = msg.transforms[0].transform.rotation.z;
-    measurementPose.pose.orientation.w = msg.transforms[0].transform.rotation.z;
-   // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
-
-    yaw = tf::getYaw(measurementPose.pose.orientation)+3.14;
-    }
+    updatedPoseEst = true;
+    poseEstimation.pose = posePtr -> pose;
 }
 
-
-void iptCallback(const geometry_msgs::Twist::ConstPtr& ipt)
+// Updates goal position sent by android
+void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& ipt)
 {
-    twist.linear=ipt->linear;
-    twist.angular=ipt->angular;
+    updatedPoseGoal = true;
+    poseGoal.pose = posePtr -> pose;
 }
 
 
@@ -86,27 +75,25 @@ int main(int argc, char **argv)
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
-    // FIXME: Make variable names clearer or add comments next to them
-    ros::NodeHandle nh_, gnh_;
-    ros::Subscriber pos_sub_ ;
-    ros::Subscriber ipt_sub_ ;
-    ros::Publisher gl_pub_ ;
+    ros::NodeHandle n;
+    ros::Subscriber poseEstSub ;
+    ros::Subscriber poseGoalSub ;
+    ros::Publisher velPub ;
 
-    void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
-    void iptCallback(const geometry_msgs::Twist::ConstPtr&);
+    void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& pose);
+    void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr&);
 
-    got_pose_ = false;
-    stationary = false;
+    updatedPoseEst = false;
 
-    geometry_msgs::PoseStamped poseEstimation;
+    /*geometry_msgs::PoseStamped poseEstimation;
     poseEstimation.pose.position.x=0;
     poseEstimation.pose.position.y=0;
     poseEstimation.pose.position.z=0;
-    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);
+    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);*/
 
-    pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
-    ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
-    gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
+    poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
+    poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
+    velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
 
     while (ros::ok()) 
     {
