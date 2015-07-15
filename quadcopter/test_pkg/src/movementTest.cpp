@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   ros::Publisher chatter_pub3 = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000);
   std_msgs::Empty myMsg;
   geometry_msgs::Twist twist;
-  twist.linear.x=.01;
+  twist.linear.x=.05;
   twist.linear.y=0;
   twist.linear.z=0;
   twist.angular.y=0;
@@ -40,15 +40,15 @@ chatter_pub.publish(myMsg);
   if (count > 7000){
     chatter_pub2.publish(myMsg);
   }
-  else if (count >6000){
+  else if (count >5000){
     twist.linear.x=0;
     chatter_pub3.publish(twist);
   }
   else if (count >4000){
-    twist.linear.x=-.01;
+    twist.linear.x=-.05;
     chatter_pub3.publish(twist);
   }
-  else if (count >2000){
+  else if (count >3000){
     chatter_pub3.publish(twist);
   }
   else{
