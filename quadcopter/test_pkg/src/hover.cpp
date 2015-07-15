@@ -47,18 +47,22 @@ using namespace std;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
+geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
 double theta, x, y;
 double T = 20; // ROS loop rate
-double yaw; // twist or oscillation about a vertical axis
+double poseEstYaw; // twist or oscillation about a vertical axis
+double poseGoalYaw;
+const double PI = 3.141592653589793238463;
 
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
     updatedPoseEst = true;
     poseEstimation.pose = posePtr -> pose;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI;
 }
 
 // Updates goal position sent by android
@@ -66,8 +70,17 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& ipt)
 {
     updatedPoseGoal = true;
     poseGoal.pose = posePtr -> pose;
+    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
 }
 
+void calculateError(void)
+{
+    poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
+    poseError.pose.position.y = poseGoal.pose.position.y - poseEstimation.pose.position.y;
+    poseError.pose.position.z = poseGoal.pose.position.z - poseEstimation.pose.position.z;
+    poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
+    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseGoalYaw - poseEstYaw + PI);
+}
 
 int main(int argc, char **argv)
 {
@@ -80,34 +93,31 @@ int main(int argc, char **argv)
     ros::Subscriber poseGoalSub ;
     ros::Publisher velPub ;
 
-    void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& pose);
-    void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr&);
-
-    updatedPoseEst = false;
-
-    /*geometry_msgs::PoseStamped poseEstimation;
-    poseEstimation.pose.position.x=0;
-    poseEstimation.pose.position.y=0;
-    poseEstimation.pose.position.z=0;
-    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);*/
-
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
+    
+    // Initalize velocity components
+    geometry_msgs::Twist velocity;
+    velocity.linear.x = 0;
+    velocity.linear.y = 0;
+    velocity.linear.z = 0;
+    velocity.angular.x = 0;
+    velocity.angular.y = 0;
+    velocity.angular.z = 0;
 
     while (ros::ok()) 
     {
-        got_pose_ = false;
+        updatedPoseEst = false;
+        updatedPoseGoal = false;
+        
         ros::spinOnce();
+        
+        calculateError();
 
-        poseEstimation.pose.position.x = X(0);
-        poseEstimation.pose.position.y = X(1);
-        poseEstimation.pose.position.z = X(2);
-        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
-        gl_pub_.publish(poseEstimation);
+        velPub.publish(velocity);
 
-        std::cout<<"\n Measured: \n"<<Z<<"\n\n";
-        std::cout<<"Twist: \n"<<twist<<"\n\n";
+        std::cout<<"Twist: \n"<<velocity<<"\n\n";
         std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
