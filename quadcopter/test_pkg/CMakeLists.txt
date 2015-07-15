@@ -61,3 +61,10 @@ add_dependencies(sample ${catkin_EXPORTED_TARGETS})
 target_link_libraries(sample
 ${catkin_LIBRARIES}
 )
+
+add_executable(movementTest src/movementTest.cpp)
+add_dependencies(movementTest ${catkin_EXPORTED_TARGETS})
+target_link_libraries(movementTest
+${catkin_LIBRARIES}
+)
+
