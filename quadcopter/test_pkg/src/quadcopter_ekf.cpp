@@ -72,10 +72,10 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     measurementPose.pose.position.x = msg.transforms[0].transform.translation.z;
     measurementPose.pose.position.y = -msg.transforms[0].transform.translation.x;
     measurementPose.pose.position.z = -msg.transforms[0].transform.translation.y;
-    measurementPose.pose.orientation.x = msg.transforms[0].transform.rotation.x;
-    measurementPose.pose.orientation.y = msg.transforms[0].transform.rotation.y;
-    measurementPose.pose.orientation.z = msg.transforms[0].transform.rotation.z;
-    measurementPose.pose.orientation.w = msg.transforms[0].transform.rotation.z;
+    measurementPose.pose.orientation.x = msg.transforms[0].transform.rotation.z;
+    measurementPose.pose.orientation.y = -msg.transforms[0].transform.rotation.x;
+    measurementPose.pose.orientation.z = -msg.transforms[0].transform.rotation.y;
+    measurementPose.pose.orientation.w = msg.transforms[0].transform.rotation.w;
    // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
     yaw = tf::getYaw(measurementPose.pose.orientation)+3.14;
@@ -207,9 +207,10 @@ int main(int argc, char **argv)
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
         gl_pub_.publish(poseEstimation);
 
-        std::cout<<"\n Measured: \n"<<measurementPose<<"\n\n";
-        std::cout<<"Twist: \n"<<twist<<"\n\n";
-        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
+        std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
+        //std::cout<<"Twist: \n"<<twist<<"\n";
+        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n";
+        std::cout<<"Yaw: "<<yaw<<"\n---------\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
