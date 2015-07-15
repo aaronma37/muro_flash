@@ -60,7 +60,7 @@ int counter11 = 0;
 double yaw; // FIXME: What is this for?
 
 // Updates position coordinates
-void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
+void poseCallback(const tf2_msgs::TFMessageConstPtr& posePtr)
 {
     if (posePtr->transforms.header.frame_id.compare("ORB_SLAM/World")==0){
     got_pose_ = true;
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     ros::Subscriber ipt_sub_ ;
     ros::Publisher gl_pub_ ;
 
-    void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
+    void poseCallback(const tf2_msgs::TFMessageConstPtr& pose);
     void iptCallback(const geometry_msgs::Twist::ConstPtr&);
     // ROS stuff
     // Other member variables
