@@ -22,7 +22,7 @@ int main(int argc, char **argv)
   ros::NodeHandle n;
   ros::Publisher chatter_pub = n.advertise<std_msgs::Empty>("/ardrone/takeoff", 1000);
   ros::Publisher chatter_pub2 = n.advertise<std_msgs::Empty>("/ardrone/land", 1000);
-  std_msg::Empty myMsg;
+  std_msgs::Empty myMsg;
 
 ros::Rate loop_rate(200);
 int count =0;
