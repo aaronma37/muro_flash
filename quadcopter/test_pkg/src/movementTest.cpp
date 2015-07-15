@@ -31,7 +31,6 @@ chatter_pub.publish(myMsg);
   
   if (count > 1000){
     chatter_pub2.publish(myMsg);
-    break;
   }
   else{
     chatter_pub.publish(myMsg);
