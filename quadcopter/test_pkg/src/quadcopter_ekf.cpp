@@ -174,36 +174,33 @@ int main(int argc, char **argv)
         X << X(0)+twist.linear.x/T*cos(yaw)+twist.linear.y/T*sin(yaw),X(1)+twist.linear.y/T*cos(yaw)+twist.linear.x/T*sin(yaw),X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
 
         //Stage 2
-        if (got_pose_==true)
+        if (got_pose_ == true)
         {
             A << 1, 0,0, -twist.linear.x/T*sin(yaw)+twist.linear.y/T*cos(yaw),0, 1,0, twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw),0, 0, 1,0, 0,0,0,1;
-            P=A*P*A.transpose()+W*Q*W.transpose();
+            P = A*P*A.transpose() + W*Q*W.transpose();
 
             //Stage 3
-            temp=(W*P*W.transpose()+W*R*W.transpose());
+            temp = (W*P*W.transpose() + W*R*W.transpose());
             K = P*W.transpose()*temp.inverse();
 
             //Stage 4
-            X = X+K*(Z-X);
+            X = X + K*(Z-X);
 
-//Stage 5
-P=(I-K*W)*P;
-}
+            //Stage 5
+            P = (I - K*W)*P;
+        }
 
+        poseEstimation.pose.position.x = X(0);
+        poseEstimation.pose.position.y = X(1);
+        poseEstimation.pose.position.z = X(2);
+        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
+        gl_pub_.publish(poseEstimation);
 
-poseEstimation.pose.position.x = X(0);
-poseEstimation.pose.position.y = X(1);
-poseEstimation.pose.position.z = X(2);
-poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
-gl_pub_.publish(poseEstimation);
-
-std::cout<<"\n Measured: \n"<<Z<<"\n\n";
-std::cout<<"Twist: \n"<<twist<<"\n\n";
-std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
-std::cout<<"--------------------------------------------------------------------";
-loop_rate.sleep();
-
-}
-
+        std::cout<<"\n Measured: \n"<<Z<<"\n\n";
+        std::cout<<"Twist: \n"<<twist<<"\n\n";
+        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
+        std::cout<<"--------------------------------------------------------------------";
+        loop_rate.sleep();
+    }
 }
 //END
