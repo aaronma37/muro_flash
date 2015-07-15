@@ -40,11 +40,15 @@ chatter_pub.publish(myMsg);
   if (count > 7000){
     chatter_pub2.publish(myMsg);
   }
-  else if (count >5000){
+  else if (count >6000){
+    twist.linear.x=0;
+    chatter_pub3.publish(twist);
+  }
+  else if (count >4000){
     twist.linear.x=-.01;
     chatter_pub3.publish(twist);
   }
-  else if (count >2500){
+  else if (count >2000){
     chatter_pub3.publish(twist);
   }
   else{
