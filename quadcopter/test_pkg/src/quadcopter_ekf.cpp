@@ -61,7 +61,7 @@ double yaw; // FIXME: What is this for?
 // Updates position coordinates
 void poseCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-    if (posePtr->header.frame_id=="ORB_SLAM/World"){
+    if (posePtr->header.frame_id.compare("ORB_SLAM/World")==0){
     got_pose_ = true;
     std::cout<<"pass";
     // FIXME: Set found agent's position
