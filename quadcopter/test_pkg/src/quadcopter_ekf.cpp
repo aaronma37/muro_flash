@@ -69,10 +69,10 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    measurementPose.pose.position = msg.transforms[0].transform.translation;
-    measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
+    measurementPose.pose.position.x = msg.transforms[0].transform.translation.x;
+   // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
-    yaw = tf::getYaw(posePtr->st_transforms.transform.rotation)+3.14;
+    //yaw = tf::getYaw(posePtr->st_transforms.transform.rotation)+3.14;
     }
 }
 
