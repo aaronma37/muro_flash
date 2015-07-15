@@ -55,3 +55,9 @@ add_dependencies(quadcopter_ekf ${catkin_EXPORTED_TARGETS})
 target_link_libraries(quadcopter_ekf
 ${catkin_LIBRARIES}
 )
+
+add_executable(sample src/sample.cpp)
+add_dependencies(sample ${catkin_EXPORTED_TARGETS})
+target_link_libraries(sample
+${catkin_LIBRARIES}
+)
