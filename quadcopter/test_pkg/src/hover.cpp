@@ -48,13 +48,28 @@ using namespace std;
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
+poseError.pose.position.x = 0;
+poseError.pose.position.y = 0;
+poseError.pose.position.z = 0;
+geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
 double theta, x, y;
-double T = 20; // ROS loop rate
+double T = 50; // ROS loop rate
 double poseEstYaw; // twist or oscillation about a vertical axis
 double poseGoalYaw;
+double poseErrYaw = 0;
+
+// PID controller terms
+geometry_msgs::PoseStamped pastError; // This is the integral term
+pastError.pose.position.x = 0;
+pastError.pose.position.y = 0;
+pastError.pose.position.z = 0;
+geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the derviative term
+                                          // It stores the previous poseError
+
+// Constants
 const double PI = 3.141592653589793238463;
 
 // Updates current position estimate sent by the ekf
@@ -73,13 +88,34 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& ipt)
     poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
 }
 
+// Calculates updated error to be used by PID
 void calculateError(void)
 {
+    poseErrorPrev.pose = poseError.pose; // Store old pose error for PID
     poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
     poseError.pose.position.y = poseGoal.pose.position.y - poseEstimation.pose.position.y;
     poseError.pose.position.z = poseGoal.pose.position.z - poseEstimation.pose.position.z;
-    poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
-    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseGoalYaw - poseEstYaw + PI);
+    poseErrYaw = poseGoalYaw - poseEstYaw;
+    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw);
+}
+
+// This is the PID method
+void PID(void)
+{
+    // FIXME: Tune PID constants
+    double kp = 0; // Proportionality constant
+    double ki = 0; // Integration constant
+    double kd = 0; // Differential constant
+    pastError.pose.position.x += (1/T)*poseError.pose.position.x;
+    pastError.pose.position.y += (1/T)*poseError.pose.position.y;
+    pastError.pose.position.z += (1/T)*poseError.pose.position.z;
+    
+    // FIXME: Check if equations are correct
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErroPrev.pose.position.x));
+    velocity.linear.y = (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErroPrev.pose.position.y));
+    velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErroPrev.pose.position.z));
+    
+    // FIXME: Add angular components
 }
 
 int main(int argc, char **argv)
@@ -96,15 +132,6 @@ int main(int argc, char **argv)
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
-    
-    // Initalize velocity components
-    geometry_msgs::Twist velocity;
-    velocity.linear.x = 0;
-    velocity.linear.y = 0;
-    velocity.linear.z = 0;
-    velocity.angular.x = 0;
-    velocity.angular.y = 0;
-    velocity.angular.z = 0;
 
     while (ros::ok()) 
     {
@@ -114,11 +141,12 @@ int main(int argc, char **argv)
         ros::spinOnce();
         
         calculateError();
+        
+        PID();
 
         velPub.publish(velocity);
 
         std::cout<<"Twist: \n"<<velocity<<"\n\n";
-        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
