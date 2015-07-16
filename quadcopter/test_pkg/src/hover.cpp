@@ -103,7 +103,7 @@ void PID(void)
 {
     // FIXME: Tune PID constants
     double kp = .2; // Proportionality constant
-    double ki = 0; // Integration constant
+    double ki = .1; // Integration constant
     double kd = 0; // Differential constant
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
@@ -111,10 +111,10 @@ void PID(void)
     pastYawErr += (1/T)*poseErrYaw;
     
     velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
-    velocity.linear.y = (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErrorPrev.pose.position.y));
+    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
     velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
-    velocity.angular.z = (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev));
+    velocity.angular.z = -( (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev)) );
 }
 
 int main(int argc, char **argv)
