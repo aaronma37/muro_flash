@@ -47,19 +47,28 @@ using namespace std;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
+poseGoal.pose.position.x = 0;
+poseGoal.pose.position.y = 0;
+poseGoal.pose.position.z = 0;
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
 poseError.pose.position.x = 0;
 poseError.pose.position.y = 0;
 poseError.pose.position.z = 0;
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
+velocity.angular.x = 1;
+velocity.angular.y = 0;
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
 double theta, x, y;
 double T = 50; // ROS loop rate
+
+// Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
-double poseGoalYaw;
+double poseGoalYaw = PI;
 double poseErrYaw = 0;
+double poseErrYawPrev; // for PID derivative term
+double pastYawErr = 0;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
@@ -81,7 +90,7 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 }
 
 // Updates goal position sent by android
-void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& ipt)
+void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
     updatedPoseGoal = true;
     poseGoal.pose = posePtr -> pose;
@@ -91,7 +100,8 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& ipt)
 // Calculates updated error to be used by PID
 void calculateError(void)
 {
-    poseErrorPrev.pose = poseError.pose; // Store old pose error for PID
+    poseErrorPrev.pose = poseError.pose; // Store old pose error for PID equation
+    poseErrYawPrev = poseErrYaw; // Store old pose yaw for PID equation
     poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
     poseError.pose.position.y = poseGoal.pose.position.y - poseEstimation.pose.position.y;
     poseError.pose.position.z = poseGoal.pose.position.z - poseEstimation.pose.position.z;
@@ -109,13 +119,13 @@ void PID(void)
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
+    pastYawErr += (1/T)*poseErrYaw;
     
-    // FIXME: Check if equations are correct
     velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErroPrev.pose.position.x));
     velocity.linear.y = (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErroPrev.pose.position.y));
     velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErroPrev.pose.position.z));
     
-    // FIXME: Add angular components
+    velocity.angular.z = (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev));
 }
 
 int main(int argc, char **argv)
