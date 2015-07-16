@@ -68,3 +68,8 @@ target_link_libraries(movementTest
 ${catkin_LIBRARIES}
 )
 
+add_executable(hover src/hover.cpp)
+add_dependencies(hover ${catkin_EXPORTED_TARGETS})
+target_link_libraries(hover
+${catkin_LIBRARIES}
+)
