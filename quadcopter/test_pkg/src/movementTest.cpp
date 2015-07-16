@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   twist.linear.z=0;
   twist.angular.y=0;
   twist.angular.z=0;
-  twist.angular.x=0;
+  twist.angular.x=1;
 
 ros::Rate loop_rate(200);
 int count =0;
