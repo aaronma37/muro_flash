@@ -78,7 +78,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     measurementPose.pose.orientation.w = msg.transforms[0].transform.rotation.w;
    // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
-    yaw = tf::getYaw(measurementPose.pose.orientation)+3.14;
+    yaw = tf::getYaw(measurementPose.pose.orientation);
     }
 }
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     poseEstimation.pose.position.x=0;
     poseEstimation.pose.position.y=0;
     poseEstimation.pose.position.z=0;
-    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(3.14);
+    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(0);
 
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
         poseEstimation.pose.position.x = X(0);
         poseEstimation.pose.position.y = X(1);
         poseEstimation.pose.position.z = X(2);
-        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3)+3.14);
+        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
         gl_pub_.publish(poseEstimation);
 
         std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
