@@ -114,7 +114,7 @@ void PID(void)
     velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
     velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
-    velocity.angular.z = - ( (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev)) );
+    velocity.angular.z = ( (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev)) );
 }
 
 int main(int argc, char **argv)
