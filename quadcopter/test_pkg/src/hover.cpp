@@ -47,21 +47,16 @@ using namespace std;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
-poseGoal.pose.position.x = 0;
-poseGoal.pose.position.y = 0;
-poseGoal.pose.position.z = 0;
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
-poseError.pose.position.x = 0;
-poseError.pose.position.y = 0;
-poseError.pose.position.z = 0;
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
-velocity.angular.x = 1;
-velocity.angular.y = 0;
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
 double theta, x, y;
 double T = 50; // ROS loop rate
+
+// Constants
+const double PI = 3.141592653589793238463;
 
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
@@ -72,14 +67,8 @@ double pastYawErr = 0;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
-pastError.pose.position.x = 0;
-pastError.pose.position.y = 0;
-pastError.pose.position.z = 0;
 geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the derviative term
                                           // It stores the previous poseError
-
-// Constants
-const double PI = 3.141592653589793238463;
 
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
@@ -113,8 +102,8 @@ void calculateError(void)
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kp = 0; // Proportionality constant
-    double ki = 0; // Integration constant
+    double kp = .2; // Proportionality constant
+    double ki = .1; // Integration constant
     double kd = 0; // Differential constant
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
@@ -142,6 +131,19 @@ int main(int argc, char **argv)
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
+
+    // Initialize msgs
+    poseGoal.pose.position.x = 0;
+    poseGoal.pose.position.y = 0;
+    poseGoal.pose.position.z = 0;
+    poseError.pose.position.x = 0;
+    poseError.pose.position.y = 0;
+    poseError.pose.position.z = 0;
+    velocity.angular.x = 1;
+    velocity.angular.y = 0;
+    pastError.pose.position.x = 0;
+    pastError.pose.position.y = 0;
+    pastError.pose.position.z = 0;
 
     while (ros::ok()) 
     {
