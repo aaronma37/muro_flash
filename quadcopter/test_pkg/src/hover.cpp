@@ -110,9 +110,9 @@ void PID(void)
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErroPrev.pose.position.x));
-    velocity.linear.y = (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErroPrev.pose.position.y));
-    velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErroPrev.pose.position.z));
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
+    velocity.linear.y = (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErrorPrev.pose.position.y));
+    velocity.linear.z = (kp*poseError.pose.position.z) + (ki*pastError.pose.position.z) + (kd*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
     velocity.angular.z = (kp*poseErrYaw) + (ki*pastYawErr) + (kd*(poseErrYaw - poseErrYawPrev));
 }
