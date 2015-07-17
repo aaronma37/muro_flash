@@ -107,11 +107,11 @@ void PID(void)
     double kpYaw= .5;
     
     double ki = 0; // Integration constant
-    double kiZ=.1/50;
+    double kiZ=.5/50;
     double kiYaw=0;
     
-    double kd = 2; // Differential constant
-    double kdZ = 2; // Differential constant
+    double kd = 1.5; // Differential constant
+    double kdZ = .5; // Differential constant
     double kdYaw=0;
     
     
