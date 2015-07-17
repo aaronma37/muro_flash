@@ -102,8 +102,8 @@ void calculateError(void)
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kp = .5; // Proportionality constant
-    double kpZ= .5;
+    double kp = 1.5; // Proportionality constant
+    double kpZ= 1;
     double kpYaw= .5;
     
     double ki = 0; // Integration constant
