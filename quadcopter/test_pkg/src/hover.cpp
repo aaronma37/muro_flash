@@ -104,7 +104,7 @@ void PID(void)
     // FIXME: Tune PID constants
     double kp = .5; // Proportionality constant
     double ki = 0; // Integration constant
-    double kd = .01; // Differential constant
+    double kd = .5; // Differential constant
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
