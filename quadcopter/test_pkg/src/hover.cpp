@@ -103,18 +103,29 @@ void PID(void)
 {
     // FIXME: Tune PID constants
     double kp = .5; // Proportionality constant
+    double kpZ= .5;
+    double kpYaw= .5;
+    
     double ki = 0; // Integration constant
-    double kd = 25; // Differential constant
+    double kiZ=.1/50;
+    double kiYaw=0;
+    
+    double kd = 2; // Differential constant
+    double kdZ = 2; // Differential constant
+    double kdYaw=0;
+    
+    
+    
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
-    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
-    velocity.linear.z = (kp*poseError.pose.position.z) + (.1/50*pastError.pose.position.z) + (0*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*50*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
+    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*50*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
+    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*50*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
-    velocity.angular.z = ( (kp*poseErrYaw) + (0*pastYawErr) + (0*(poseErrYaw - poseErrYawPrev)) );
+    velocity.angular.z = ( (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*50*(poseErrYaw - poseErrYawPrev)) );
 }
 
 int main(int argc, char **argv)
