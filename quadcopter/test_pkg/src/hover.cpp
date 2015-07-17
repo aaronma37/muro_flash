@@ -103,14 +103,14 @@ void PID(void)
 {
     // FIXME: Tune PID constants
     double kp = 1.5; // Proportionality constant
-    double kpZ= 1;
+    double kpZ= .5;
     double kpYaw= .5;
     
     double ki = 0; // Integration constant
-    double kiZ=.5/50;
+    double kiZ=1/50;
     double kiYaw=0;
     
-    double kd = 1.5; // Differential constant
+    double kd = 2; // Differential constant
     double kdZ = .5; // Differential constant
     double kdYaw=0;
     
