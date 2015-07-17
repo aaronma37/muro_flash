@@ -102,7 +102,7 @@ void calculateError(void)
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kp = .2; // Proportionality constant
+    double kp = 1; // Proportionality constant
     double ki = 0; // Integration constant
     double kd = 0; // Differential constant
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
