@@ -102,7 +102,7 @@ void calculateError(void)
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kp = 1; // Proportionality constant
+    double kp = .7; // Proportionality constant
     double kpZ= .5;
     double kpYaw= .5;
     
@@ -110,7 +110,7 @@ void PID(void)
     double kiZ=.5/50;
     double kiYaw=0;
     
-    double kd = 1.5; // Differential constant
+    double kd = 1; // Differential constant
     double kdZ = 0; // Differential constant
     double kdYaw=0;
     
