@@ -161,7 +161,7 @@ int main(int argc, char **argv)
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
-    pidGainSub = n.subscribe<geometry_msgs::Velocity3>("/pid_gain", 1, pidGainCallback)
+    pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback)
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
 
     // Initialize msgs
