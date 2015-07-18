@@ -68,9 +68,12 @@ double T = 50; // ROS loop rate
 
 // Constants
 const double PI = 3.141592653589793238463;
-double kp = 0.7; // Proportionality constant
-double ki = 0; // Integration constant
-double kd = 1; // Differential constant
+const double DEFAULT_KP = 0.7;
+const double DEFAULT_KI = 0;
+const double DEFAULT_KD = 1;
+double kp = DEFAULT_KP; // Proportional gain
+double ki = DEFAULT_KI; // Integral gain
+double kd = DEFAULT_KD; // Differential gain
 
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
@@ -103,9 +106,18 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 // Updates pid gain values
 void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
 {
-    kp = (double) gainPtr -> x;
-    ki = (double) gainPtr -> y;
-    kd = (double) gainPtr -> z;
+    if(gainPtr -> x == 0.0 && gainPtr -> y == 0.0 && gainPtr -> z == 0.0)
+    {
+      kp = DEFAULT_KP;
+      ki = DEFAULT_KI;
+      kd = DEFAULT_KD;
+    }
+    else
+    {
+      kp = (double) gainPtr -> x;
+      ki = (double) gainPtr -> y;
+      kd = (double) gainPtr -> z;
+    }
 }
 
 // Calculates updated error to be used by PID
