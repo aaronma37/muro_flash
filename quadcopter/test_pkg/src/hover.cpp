@@ -27,6 +27,13 @@ its velocity, to be used by the ekf node for pose estimation.
 // http://docs.ros.org/api/geometry_msgs/html/msg/Vector3.html 
 // THAT IS A LINK TO A VECTOR OF 3 FLOATS (then convert with (double))
 
+//TODO: IMPLEMENT MOVING AVERAGE FOR DERIVATIVE TERM
+// http://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
+// THIS WILL GET RID OF SPIKES AND NOISE (COMMONLY DONE)
+//
+// TOOLS AGAINST INTEGRAL WINDUP
+// GAIN SCHEDULING 
+
 #include <iostream>
 #include <stdio.h>
 #include <ros/ros.h>
