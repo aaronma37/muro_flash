@@ -23,10 +23,6 @@ its velocity, to be used by the ekf node for pose estimation.
 
 */
 
-// READ ME GERARDO
-// http://docs.ros.org/api/geometry_msgs/html/msg/Vector3.html 
-// THAT IS A LINK TO A VECTOR OF 3 FLOATS (then convert with (double))
-
 //TODO: IMPLEMENT MOVING AVERAGE FOR DERIVATIVE TERM
 // http://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
 // THIS WILL GET RID OF SPIKES AND NOISE (COMMONLY DONE)
@@ -144,8 +140,6 @@ void PID(void)
     
     double kdZ = 0;
     double kdYaw = 0;
-    
-    
     
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
