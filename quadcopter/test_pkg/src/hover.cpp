@@ -60,14 +60,17 @@ geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
+geometry_msgs::Vector3 pidGain; // Store pid gain values
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
-double theta, x, y;
 double T = 50; // ROS loop rate
 
 // Constants
 const double PI = 3.141592653589793238463;
+double kp = 0.7; // Proportionality constant
+double ki = 0; // Integration constant
+double kd = 1; // Differential constant
 
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
@@ -97,6 +100,14 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
 }
 
+// Updates pid gain values
+void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
+{
+    kp = (double) gainPtr -> x;
+    ki = (double) gainPtr -> y;
+    kd = (double) gainPtr -> z;
+}
+
 // Calculates updated error to be used by PID
 void calculateError(void)
 {
@@ -113,17 +124,14 @@ void calculateError(void)
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kp = .7; // Proportionality constant
-    double kpZ= .8;
-    double kpYaw= .5;
+    double kpZ = .8;
+    double kpYaw = .5;
     
-    double ki = 0; // Integration constant
-    double kiZ=1.5/50;
-    double kiYaw=0;
+    double kiZ = 1.5/50;
+    double kiYaw = 0;
     
-    double kd = 1; // Differential constant
-    double kdZ = 0; // Differential constant
-    double kdYaw=0;
+    double kdZ = 0;
+    double kdYaw = 0;
     
     
     
@@ -132,11 +140,11 @@ void PID(void)
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*50*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
-    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*50*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
-    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*50*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*T*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
+    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*T*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
+    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*T*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
-    velocity.angular.z = ( (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*50*(poseErrYaw - poseErrYawPrev)) );
+    velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(poseErrYaw - poseErrYawPrev));
 }
 
 int main(int argc, char **argv)
@@ -146,12 +154,14 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
     ros::NodeHandle n;
-    ros::Subscriber poseEstSub ;
-    ros::Subscriber poseGoalSub ;
-    ros::Publisher velPub ;
+    ros::Subscriber poseEstSub;
+    ros::Subscriber poseGoalSub;
+    ros::Subscriber pidGainSub;
+    ros::Publisher velPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
+    pidGainSub = n.subscribe<geometry_msgs::Velocity3>("/pid_gain", 1, pidGainCallback)
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
 
     // Initialize msgs
