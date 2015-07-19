@@ -26,9 +26,29 @@ its velocity, to be used by the ekf node for pose estimation.
 //TODO: IMPLEMENT MOVING AVERAGE FOR DERIVATIVE TERM
 // http://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
 // THIS WILL GET RID OF SPIKES AND NOISE (COMMONLY DONE)
+// Use this for the derivative part 
+// you will need to record that value as d[0]=poseError.pose.position.x - poseErrorPrev.pose.position.x
+// and then record up to 10 of them, then apply the moving average
+// I think that since the hover.cpp is going quicker than the ekf is publishing, the derivative term is either what its supposed to be
+// or 0 (since error - same error =0) This will help with that and I will speed up the ekf to match it
+//
+// We need to record using the command below so we can get a good system id
+//
+// we have add in controls for when yaw isnt 0. for example, we are still sending a pure x signal even when the yaw ~=0, meaning 
+// that sin(yaw)*linear.x is in the y component.  we haven't accounted for that yet here.
 //
 // TOOLS AGAINST INTEGRAL WINDUP
 // GAIN SCHEDULING 
+// write a bash script to automatically launch all files
+// 
+
+/*
+More notes for Gerardo
+
+This is the command to record to a txt file
+rostopic echo -p /topic_name > data.txt
+
+*/
 
 #include <iostream>
 #include <stdio.h>
