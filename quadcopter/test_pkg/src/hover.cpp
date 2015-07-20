@@ -176,6 +176,20 @@ void PID(void)
     velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*T*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(poseErrYaw - poseErrYawPrev));
+    
+    if (velocity.linear.x>1){
+      velocity.linear.x=1;
+    }
+    else if(velocity.linear.x<-1){
+      velocity.linear.x=-1;
+    }
+    
+    if (velocity.linear.y>1){
+      velocity.linear.y=1;
+    }
+    else if(velocity.linear.y<-1){
+      velocity.linear.y=-1;
+    }
 }
 
 int main(int argc, char **argv)
