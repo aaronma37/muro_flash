@@ -5,11 +5,10 @@ count=1;
 fclose('all');
 fileID = fopen('input.txt');
 figure('units','normalized','outerposition',[0 0 1 1])
-timeMeasurement(1)=0;
+
 while 1==1
-    check=fscanf(fileID, '%f');
+    check=fscanf(fileID, '%f,');
     if isempty(check)
-        empty=1
         break;
     end
     timeMeasurement(count)=check;
