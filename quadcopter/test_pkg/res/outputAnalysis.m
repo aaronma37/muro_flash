@@ -1,9 +1,9 @@
-%%time,field.linear.x,field.linear.y,field.linear.z,field.angular.x,field.angular.y,field.angular.z
+%%%time,field.header.seq,field.header.stamp,field.header.frame_id,field.pose.position.x,field.pose.position.y,field.pose.position.z,field.pose.orientation.x,field.pose.orientation.y,field.pose.orientation.z,field.pose.orientation.w
 clear
 clc
 count=1;
 fclose('all');
-fileID = fopen('input.txt');
+fileID = fopen('Output.txt');
 figure('units','normalized','outerposition',[0 0 1 1])
 timeMeasurement(1)=0;
 while 1==1
@@ -16,7 +16,7 @@ while 1==1
 %     fscanf(fileID, '%f');
 %      fscanf(fileID, '%f,')
     scanner=fscanf(fileID, ',%f');
-    x(count)=scanner(1);
+    x(count)=scanner(4);
     y(count)=scanner(2);
 %     q1(count)=scanner(6);
 %     q2(count)=scanner(7);

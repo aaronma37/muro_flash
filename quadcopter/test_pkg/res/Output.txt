@@ -1,4 +1,3 @@
-%time,field.header.seq,field.header.stamp,field.header.frame_id,field.pose.position.x,field.pose.position.y,field.pose.position.z,field.pose.orientation.x,field.pose.orientation.y,field.pose.orientation.z,field.pose.orientation.w
 0,1,0,,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 0,2,0,,0.0,0.0,0.0,0.0,0.0,0.0,1.0
 0,3,0,,0.0,0.0,0.0,0.0,0.0,0.0,1.0

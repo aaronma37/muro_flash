@@ -5,10 +5,11 @@ count=1;
 fclose('all');
 fileID = fopen('input.txt');
 figure('units','normalized','outerposition',[0 0 1 1])
-
+timeMeasurement(1)=0;
 while 1==1
-    check=fscanf(fileID, '%f,');
+    check=fscanf(fileID, '%f');
     if isempty(check)
+        empty=1
         break;
     end
     timeMeasurement(count)=check;
@@ -17,27 +18,17 @@ while 1==1
     scanner=fscanf(fileID, ',%f');
     x(count)=scanner(1);
     y(count)=scanner(2);
-    q1(count)=scanner(6);
-    q2(count)=scanner(7);
-    [r1(count) r2(count) r3(count)] = quat2angle([(q2(count)) 0 0 q1(count)]);
-    r1(count)=r1(count)+3.14;
+%     q1(count)=scanner(6);
+%     q2(count)=scanner(7);
+%     [r1(count) r2(count) r3(count)] = quat2angle([(q2(count)) 0 0 q1(count)]);
+%     r1(count)=r1(count)+3.14;
     count=count+1;
 end
 timeMeasurement
 
-j=1;
-r=100;
-xb=350;
-yb=250;
-ang=0:0.01:2*pi; 
-xp=r*cos(ang);
-yp=r*sin(ang);
-plot(xb+xp,yb+yp);
 hold on;
-axis equal
-title('Kalman Filter Output (Backwards state dynamics)')
-axis([150,550,50,450]);
-axis square
+title('Quadcopter Dynamics')
+
 
 for i=2:length(timeMeasurement)
     if i==3
