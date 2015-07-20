@@ -77,6 +77,8 @@ geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
+geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
+
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
@@ -108,6 +110,9 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
     updatedPoseEst = true;
     poseEstimation.pose = posePtr -> pose;
+    poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
+    poseSysId.y = poseEstimation.pose.position.y;
+    poseSysId.z = poseEstimation.pose.position.z;
     poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI;
 }
 
@@ -184,11 +189,13 @@ int main(int argc, char **argv)
     ros::Subscriber poseGoalSub;
     ros::Subscriber pidGainSub;
     ros::Publisher velPub;
+    ros::Publisher poseSysIdPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
+    poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
 
     // Initialize msgs
     poseGoal.pose.position.x = 0;
@@ -215,6 +222,7 @@ int main(int argc, char **argv)
         PID();
 
         velPub.publish(velocity);
+        poseSysIdPub.publish(poseSysId);
 
         std::cout<<"Twist: \n"<<velocity<<"\n\n";
         std::cout<<"--------------------------------------------------------------------";
