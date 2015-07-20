@@ -165,7 +165,7 @@ void calculateError(void)
     
 }
 
-void calcMoveAvg(float newSampleX, float newSampleX, float newSampleZ, float newSampleYaw)
+void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float newSampleYaw)
 {
   
   //maArrayX [] = newSamplex;
