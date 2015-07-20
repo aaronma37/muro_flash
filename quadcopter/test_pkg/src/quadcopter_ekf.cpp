@@ -205,7 +205,6 @@ int main(int argc, char **argv)
         poseEstimation.pose.position.y = X(1);
         poseEstimation.pose.position.z = X(2);
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
-        poseEstimation.header.stamp=ros::Time::now;
         gl_pub_.publish(poseEstimation);
 
         std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
