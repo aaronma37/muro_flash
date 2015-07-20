@@ -168,7 +168,7 @@ void calculateError(void)
 void calcMoveAvg(float newSampleX, float newSampleX, float newSampleZ, float newSampleYaw)
 {
   
-  maArrayX [] = newSamplex;
+  //maArrayX [] = newSamplex;
   
 }
 
@@ -201,18 +201,18 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
-    if (velocity.linear.x>1){
-      velocity.linear.x=1;
+    if (velocity.linear.x > 1){
+      velocity.linear.x = 1;
     }
-    else if(velocity.linear.x<-1){
-      velocity.linear.x=-1;
+    else if(velocity.linear.x < -1){
+      velocity.linear.x = -1;
     }
     
-    if (velocity.linear.y>1){
-      velocity.linear.y=1;
+    if (velocity.linear.y > 1){
+      velocity.linear.y = 1; 
     }
-    else if(velocity.linear.y<-1){
-      velocity.linear.y=-1;
+    else if(velocity.linear.y < -1){
+      velocity.linear.y = -1;
     }
 }
 
