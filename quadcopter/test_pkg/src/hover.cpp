@@ -71,6 +71,8 @@ rostopic echo -p /topic_name > data.txt
 
 using namespace std;
 
+#define maas 100 // Defining size of the moving average array. JR
+
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
@@ -99,6 +101,15 @@ double poseGoalYaw = PI;
 double poseErrYaw = 0;
 double poseErrYawPrev; // for PID derivative term
 double pastYawErr = 0;
+
+// Moving Average terms
+const int numSamples = 10;
+float *maArrayX = new float[numSamples]; // Array of unknown size for moving average calculations.
+float *maArrayY = new float[numSamples];
+float *maArrayZ = new float[numSamples];
+float *maArrayYaw = new float[numSamples];
+float *maResults = new float[4];
+int maIndex = 1;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
@@ -150,7 +161,15 @@ void calculateError(void)
     poseError.pose.position.y = poseGoal.pose.position.y - poseEstimation.pose.position.y;
     poseError.pose.position.z = poseGoal.pose.position.z - poseEstimation.pose.position.z;
     poseErrYaw = poseGoalYaw - poseEstYaw;
-    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw);
+    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw); 
+    
+}
+
+void calcMoveAvg(float newSampleX, float newSampleX, float newSampleZ, float newSampleYaw)
+{
+  
+  maArrayX [] = newSamplex;
+  
 }
 
 // This is the PID method
@@ -171,11 +190,16 @@ void PID(void)
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*T*(poseError.pose.position.x - poseErrorPrev.pose.position.x));
-    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*T*(poseError.pose.position.y - poseErrorPrev.pose.position.y)) );
-    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*T*(poseError.pose.position.z - poseErrorPrev.pose.position.z));
+    calcMoveAvg(poseError.pose.position.x - poseErrorPrev.pose.position.x,
+                poseError.pose.position.y - poseErrorPrev.pose.position.y,
+                poseError.pose.position.z - poseErrorPrev.pose.position.z,
+                poseErrYaw - poseErrYawPrev);
     
-    velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(poseErrYaw - poseErrYawPrev));
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*T*(maResults[0])); 
+    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*T*(maResults[1])) );
+    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*T*(maResults[2]));
+    
+    velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
     if (velocity.linear.x>1){
       velocity.linear.x=1;
