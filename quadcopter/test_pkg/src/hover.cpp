@@ -77,9 +77,9 @@ double T = 50; // ROS loop rate
 
 // Constants
 const double PI = 3.141592653589793238463;
-const double DEFAULT_KP = 0.7;
+const double DEFAULT_KP = 0.3;
 const double DEFAULT_KI = 0;
-const double DEFAULT_KD = 1;
+const double DEFAULT_KD = 0;
 const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
