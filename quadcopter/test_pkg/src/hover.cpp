@@ -227,7 +227,7 @@ void PID(void)
                 poseErrYaw - poseErrYawPrev);
     
     // Check for integral windup
-    if( sqrt( pow(pastError.pose.position.x, 2) + pow(pastError.pose.position.y, 2) ) > WINDUP_BOUND )
+    if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
     {
       ki = 0;
     }
