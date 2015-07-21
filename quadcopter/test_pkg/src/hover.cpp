@@ -80,12 +80,18 @@ const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.3;
 const double DEFAULT_KI = 0;
 const double DEFAULT_KD = 0;
+const double DEFAULT_KPZ = 0.8;
+const double DEFAULT_KIZ = 1.5/50;
+const double DEFAULT_KDZ = 0;
 const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
 double kp = DEFAULT_KP; // Proportional gain
 double ki = DEFAULT_KI; // Integral gain
 double kd = DEFAULT_KD; // Differential gain
+double kpZ = DEFAULT_KPZ;
+double kiZ = DEFAULT_KIZ;
+double kdZ = DEFAULT_KDZ;
 
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
@@ -142,6 +148,14 @@ void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
       ki = (double) gainPtr -> y;
       kd = (double) gainPtr -> z;
     }
+}
+
+// Updates pid gain values for z dimension
+void pidGainZCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
+{
+    kpZ = (double) gainPtr -> x;
+    kiZ = (double) gainPtr -> y;
+    kdZ = (double) gainPtr -> z;
 }
 
 // Calculates updated error to be used by PID
@@ -207,13 +221,8 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
 void PID(void)
 {
     // FIXME: Tune PID constants
-    double kpZ = .8;
     double kpYaw = .5;
-    
-    double kiZ = 1.5/50;
     double kiYaw = 0;
-    
-    double kdZ = 0;
     double kdYaw = 0;
     
     pastError.pose.position.x += (1/T)*poseError.pose.position.x;
@@ -268,12 +277,14 @@ int main(int argc, char **argv)
     ros::Subscriber poseEstSub;
     ros::Subscriber poseGoalSub;
     ros::Subscriber pidGainSub;
+    ros::Subscriber pidGainZSub;
     ros::Publisher velPub;
     ros::Publisher poseSysIdPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
+    pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
 
