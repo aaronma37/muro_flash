@@ -104,10 +104,10 @@ double pastYawErr = 0;
 
 // Moving Average terms
 const int numSamples = 10;
-float *maArrayX = new float[numSamples]; // Array of unknown size for moving average calculations.
-float *maArrayY = new float[numSamples];
-float *maArrayZ = new float[numSamples];
-float *maArrayYaw = new float[numSamples];
+float maArrayX [numSamples] = {0}; // Array of size numSamples for moving average calculations.
+float maArrayY [numSamples] = {0};
+float maArrayZ [numSamples] = {0};
+float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
 int maIndex = 1;
 
@@ -167,9 +167,48 @@ void calculateError(void)
 
 void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float newSampleYaw)
 {
+  static bool divideSampling = false;
   
-  //maArrayX [] = newSamplex;
+  if ((maIndex-1) == 10)
+  {
+    maIndex = 1;
+    divideSampling = true; 
+  }
   
+  maArrayX[maIndex - 1] = newSampleX;
+  maArrayY[maIndex - 1] = newSampleY;
+  maArrayZ[maIndex - 1] = newSampleZ;
+  maArrayYaw[maIndex - 1] = newSampleYaw;
+  
+  maResults[0] = 0;
+  maResults[1] = 0;
+  maResults[2] = 0;
+  maResults[3] = 0;
+  
+  for (int i = 0; i < numSamples ; i++)
+  {
+    maResults[0] += maArrayX[i];
+    maResults[1] += maArrayY[i];
+    maResults[2] += maArrayZ[i];
+    maResults[3] += maArrayYaw[i];
+  }
+   
+  if (divideSampling != true)
+  {
+    maResults[0] = (maResults[0]/(maIndex-1));
+    maResults[1] = (maResults[1]/(maIndex-1));
+    maResults[2] = (maResults[2]/(maIndex-1));
+    maResults[3] = (maResults[3]/(maIndex-1));
+  }
+  else
+  {
+    maResults[0] = (maResults[0]/numSapling);
+    maResults[1] = (maResults[1]/numSapling);
+    maResults[2] = (maResults[2]/numSapling);
+    maResults[3] = (maResults[3]/numSapling);
+  }
+
+  maIndex++;
 }
 
 // This is the PID method
