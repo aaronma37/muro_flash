@@ -56,7 +56,7 @@ geometry_msgs::Twist twist;
 // Keep track of Quadcopter state
 bool got_pose_, stationary;
 double theta,x,y;
-double T = 1; // ROS loop rate
+double T = 50; // ROS loop rate
 int counter11 = 0;
 double yaw; // FIXME: What is this for?
 
