@@ -80,7 +80,7 @@ const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.7;
 const double DEFAULT_KI = 0;
 const double DEFAULT_KD = 1;
-const double WINDUP_BOUUND = 1.0;
+const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
 double kp = DEFAULT_KP; // Proportional gain
