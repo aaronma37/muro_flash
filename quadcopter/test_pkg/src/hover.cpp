@@ -23,15 +23,6 @@ its velocity, to be used by the ekf node for pose estimation.
 
 */
 
-//TODO: IMPLEMENT MOVING AVERAGE FOR DERIVATIVE TERM
-// http://www.analog.com/media/en/technical-documentation/dsp-book/dsp_book_Ch15.pdf
-// THIS WILL GET RID OF SPIKES AND NOISE (COMMONLY DONE)
-// Use this for the derivative part 
-// you will need to record that value as d[0]=poseError.pose.position.x - poseErrorPrev.pose.position.x
-// and then record up to 10 of them, then apply the moving average
-// I think that since the hover.cpp is going quicker than the ekf is publishing, the derivative term is either what its supposed to be
-// or 0 (since error - same error =0) This will help with that and I will speed up the ekf to match it
-//
 // We need to record using the command below so we can get a good system id
 //
 // we have add in controls for when yaw isnt 0. for example, we are still sending a pure x signal even when the yaw ~=0, meaning 
@@ -40,10 +31,8 @@ its velocity, to be used by the ekf node for pose estimation.
 // TOOLS AGAINST INTEGRAL WINDUP
 // GAIN SCHEDULING 
 // write a bash script to automatically launch all files
-// 
 
 /*
-More notes for Gerardo
 
 This is the command to record to a txt file
 rostopic echo -p /topic_name > data.txt
@@ -91,6 +80,9 @@ const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.7;
 const double DEFAULT_KI = 0;
 const double DEFAULT_KD = 1;
+const double WINDUP_BOUUND = 1.0;
+
+// Initialize pid gains
 double kp = DEFAULT_KP; // Proportional gain
 double ki = DEFAULT_KI; // Integral gain
 double kd = DEFAULT_KD; // Differential gain
@@ -234,9 +226,16 @@ void PID(void)
                 poseError.pose.position.z - poseErrorPrev.pose.position.z,
                 poseErrYaw - poseErrYawPrev);
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + (kd*T*(maResults[0])); 
-    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + (kd*T*(maResults[1])) );
-    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + (kdZ*T*(maResults[2]));
+    // Check for integral windup
+    if( sqrt( pow(pastError.pose.position.x, 2) + pow(pastError.pose.position.y, 2) ) > WINDUP_BOUND )
+    {
+      ki = 0;
+    }
+    else ki = DEFAULT_KI;
+    
+    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + ( kd*T*(maResults[0]) ); 
+    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + ( kd*T*(maResults[1]) ) );
+    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + ( kdZ*T*(maResults[2]) );
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
