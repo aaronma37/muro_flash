@@ -77,7 +77,7 @@ double T = 50; // ROS loop rate
 // Constants
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.1;
-const double DEFAULT_KI = 25.0;
+const double DEFAULT_KI = 1.0;
 const double DEFAULT_KD = 0.3;
 const double DEFAULT_KPZ = 5.0;
 const double DEFAULT_KIZ = 1.0;
@@ -177,7 +177,7 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
 {
   static bool divideSampling = false;
   
-  if ((maIndex-1) == 10)
+  if ((maIndex - 1) == 10)
   {
     maIndex = 1;
     divideSampling = true; 
@@ -247,16 +247,24 @@ void PID(void)
     {
       windupCap = 0;
     }
-    else windupCap = 0.2/ki;
+    else windupCap = 0.05/ki;
     
     if(pastError.pose.position.x > windupCap)
     {
       pastError.pose.position.x = windupCap;
     }
+    else if(pastError.pose.position.x < -windupCap)
+    {
+      pastError.pose.position.x = -windupCap;
+    }
     
     if(pastError.pose.position.y > windupCap)
     {
       pastError.pose.position.y = windupCap;
+    }
+    else if(pastError.pose.position.y < -windupCap)
+    {
+      pastError.pose.position.y = -windupCap;
     }
     
     velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + ( kd*T*(maResults[0]) ); 
