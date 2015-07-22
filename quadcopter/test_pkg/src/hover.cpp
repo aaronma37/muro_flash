@@ -69,6 +69,7 @@ geometry_msgs::PoseStamped poseError; // Difference between desired pose and cur
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
+geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 
 
 // Keep track of Quadcopter state
@@ -248,6 +249,10 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
+    // For modeling purposes
+    velPoseEstX.x = poseEstimation.pose.position.x;
+    velPoseEstX.y = velocity.linear.x;
+    
     if (velocity.linear.x > 1)
     {
       velocity.linear.x = 1;
@@ -280,6 +285,7 @@ int main(int argc, char **argv)
     ros::Subscriber pidGainZSub;
     ros::Publisher velPub;
     ros::Publisher poseSysIdPub;
+    ros::Publisher velPoseEstXPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
@@ -287,6 +293,7 @@ int main(int argc, char **argv)
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
+    velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
 
     // Initialize msgs
     poseGoal.pose.position.x = 0;
@@ -301,6 +308,8 @@ int main(int argc, char **argv)
     pastError.pose.position.y = 0;
     pastError.pose.position.z = 0;
 
+    velPoseEstX.z = 0;
+
     while (ros::ok()) 
     {
         updatedPoseEst = false;
@@ -314,6 +323,7 @@ int main(int argc, char **argv)
 
         velPub.publish(velocity);
         poseSysIdPub.publish(poseSysId);
+        velPoseEstXPub.publish(velPoseEstX);
 
         std::cout<<"Twist: \n"<<velocity<<"\n\n";
         std::cout<<"--------------------------------------------------------------------";
