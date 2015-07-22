@@ -79,7 +79,7 @@ double T = 50; // ROS loop rate
 // Constants
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.1;
-const double DEFAULT_KI = 3;
+const double DEFAULT_KI = 0;
 const double DEFAULT_KD = .3;
 const double DEFAULT_KPZ = 5;
 const double DEFAULT_KIZ = 1;
@@ -237,11 +237,11 @@ void PID(void)
                 poseErrYaw - poseErrYawPrev);
     
     // Check for integral windup
-    if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
+    /*if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
     {
       ki = 0;
     }
-    else ki = DEFAULT_KI;
+    else ki = DEFAULT_KI;*/
     
     velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + ( kd*T*(maResults[0]) ); 
     velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + ( kd*T*(maResults[1]) ) );
