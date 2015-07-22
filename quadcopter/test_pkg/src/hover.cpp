@@ -60,8 +60,6 @@ rostopic echo -p /topic_name > data.txt
 
 using namespace std;
 
-#define maas 100 // Defining size of the moving average array. JR
-
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
@@ -79,11 +77,11 @@ double T = 50; // ROS loop rate
 // Constants
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.1;
-const double DEFAULT_KI = 0;
-const double DEFAULT_KD = .3;
-const double DEFAULT_KPZ = 5;
-const double DEFAULT_KIZ = 1;
-const double DEFAULT_KDZ = 3;
+const double DEFAULT_KI = 25.0;
+const double DEFAULT_KD = 0.3;
+const double DEFAULT_KPZ = 5.0;
+const double DEFAULT_KIZ = 1.0;
+const double DEFAULT_KDZ = 3.0;
 const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
@@ -93,6 +91,9 @@ double kd = DEFAULT_KD; // Differential gain
 double kpZ = DEFAULT_KPZ;
 double kiZ = DEFAULT_KIZ;
 double kdZ = DEFAULT_KDZ;
+
+// Integral windup
+double windupCap;
 
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw; // twist or oscillation about a vertical axis
@@ -237,11 +238,26 @@ void PID(void)
                 poseErrYaw - poseErrYawPrev);
     
     // Check for integral windup
-    /*if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
+    if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
     {
       ki = 0;
     }
-    else ki = DEFAULT_KI;*/
+    
+    if(ki == 0)
+    {
+      windupCap = 0;
+    }
+    else windupCap = 0.2/ki;
+    
+    if(pastError.pose.position.x > windupCap)
+    {
+      pastError.pose.position.x = windupCap;
+    }
+    
+    if(pastError.pose.position.y > windupCap)
+    {
+      pastError.pose.position.y = windupCap;
+    }
     
     velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + ( kd*T*(maResults[0]) ); 
     velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + ( kd*T*(maResults[1]) ) );
