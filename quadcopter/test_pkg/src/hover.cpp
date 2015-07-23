@@ -277,7 +277,7 @@ void PID(void)
     velPoseEstX.x = poseEstimation.pose.position.x;
     velPoseEstX.y = velocity.linear.x;
     
-    if (velocity.linear.x > 1)
+/*    if (velocity.linear.x > 1)
     {
       velocity.linear.x = 1;
     }
@@ -293,7 +293,7 @@ void PID(void)
     else if(velocity.linear.y < -1)
     {
       velocity.linear.y = -1;
-    }
+    }*/
 }
 
 int main(int argc, char **argv)
