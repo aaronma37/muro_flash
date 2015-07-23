@@ -80,7 +80,7 @@ const double DEFAULT_KP = 0.1;
 const double DEFAULT_KI = 0;
 const double DEFAULT_KD = 0.15;
 const double DEFAULT_KPZ = 0.3;
-const double DEFAULT_KIZ = 0.05;
+const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = 0.1;
 const double WINDUP_BOUND = 1.0;
 
