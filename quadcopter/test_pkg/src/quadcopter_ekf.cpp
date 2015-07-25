@@ -245,7 +245,7 @@ int main(int argc, char **argv)
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
         twistEstimation.linear.x=vx;
         twistEstimation.linear.y=vy;
-        twistEstimation.linear.z=vz;
+      
         
         gl_pub_.publish(poseEstimation);
         vel_pub_.publish(twistEstimation);
