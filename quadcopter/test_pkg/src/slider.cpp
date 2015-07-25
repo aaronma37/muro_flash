@@ -238,7 +238,7 @@ void PID(void)
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    calcMoveAvg(poseError.pose.position.x-poseErrorprev.pose.position.x,
+    calcMoveAvg(poseError.pose.position.x-poseErrorPrev.pose.position.x,
                 poseError.pose.position.y - poseErrorPrev.pose.position.y,
                 poseError.pose.position.z - poseErrorPrev.pose.position.z,
                 poseErrYaw - poseErrYawPrev);
