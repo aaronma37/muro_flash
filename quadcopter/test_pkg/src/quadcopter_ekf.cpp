@@ -235,7 +235,7 @@ int main(int argc, char **argv)
         twistEstimation.linear.y=vy;
         
         gl_pub_.publish(poseEstimation);
-        vel_pub_.publish(twistEstimation)
+        vel_pub_.publish(twistEstimation);
 
         std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
         //std::cout<<"Twist: \n"<<twist<<"\n";
