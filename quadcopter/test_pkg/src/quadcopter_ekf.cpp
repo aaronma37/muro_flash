@@ -109,7 +109,12 @@ int main(int argc, char **argv)
     // Other member variables
     got_pose_ = false;
     stationary = false;
-
+    double ux=0;
+    double uy=0;
+    double vx=0;
+    double vy=0;
+    double maxVelFactor=1.25;
+    
     Q(0,0)=0;
     Q(1,1)=0;
     Q(2,2)=0;
@@ -179,10 +184,30 @@ int main(int argc, char **argv)
         }
 
         Matrix4f temp;
-
+            
         //Stage 1
+        ux=twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw);
+        uy=-twist.linear.y/T*cos(yaw)+twist.linear.x/T*sin(yaw);
+        
+        if (ux*maxVelFactor<vx && ux>0){
+            ux=0;
+        }
+        else if(ux*maxVelFactor>vx && ux<0){
+            ux=0;
+        }
+        
+        if (uy*maxVelFactor<vy && uy>0){
+            uy=0;
+        }
+        else if(uy*maxVelFactor>vy && uy<0){
+            uy=0;
+        }    
+        
+        
+        vx=vx+.6*ux/T;
+        vy=vy+.6*uy/T;
         Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
-        X << X(0)+twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw),X(1)-twist.linear.y/T*cos(yaw)+twist.linear.x/T*sin(yaw),X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
+        X << X(0)+ vx/T,X(1)+vy/T,X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
 
         //Stage 2
         if (got_pose_ == true)
