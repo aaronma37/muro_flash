@@ -54,6 +54,7 @@ using namespace std;
 
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
+geometry_msgs::Twist velEstimation;
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
 geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
@@ -83,7 +84,12 @@ double kd = DEFAULT_KD; // Differential gain
 double kpZ = DEFAULT_KPZ;
 double kiZ = DEFAULT_KIZ;
 double kdZ = DEFAULT_KDZ;
-
+double sX=0;
+double sY=0;
+double sZ=0;
+double pastX=0;
+double pastY=0;
+double pastZ=0;
 // Integral windup
 double windupCap;
 
@@ -111,6 +117,10 @@ geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the dervi
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
+    pastX=poseSysId.x;
+    pastY=poseSysId.y;
+    pastZ=poseSysId.z;
+    
     updatedPoseEst = true;
     poseEstimation.pose = posePtr -> pose;
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
@@ -119,6 +129,10 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI;
 }
 
+void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
+{
+    velEstimation.linear=twistPtr->linear;
+}
 // Updates goal position sent by android
 void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
@@ -224,7 +238,7 @@ void PID(void)
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
     
-    calcMoveAvg(poseError.pose.position.x - poseErrorPrev.pose.position.x,
+    calcMoveAvg(poseError.pose.position.x-poseErrorprev.pose.position.x,
                 poseError.pose.position.y - poseErrorPrev.pose.position.y,
                 poseError.pose.position.z - poseErrorPrev.pose.position.z,
                 poseErrYaw - poseErrYawPrev);
@@ -259,9 +273,13 @@ void PID(void)
       pastError.pose.position.y = -windupCap;
     }
     
-    velocity.linear.x = (kp*poseError.pose.position.x) + (ki*pastError.pose.position.x) + ( kd*T*(maResults[0]) ); 
-    velocity.linear.y = -( (kp*poseError.pose.position.y) + (ki*pastError.pose.position.y) + ( kd*T*(maResults[1]) ) );
-    velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + ( kdZ*T*(maResults[2]) );
+    sX=3.1*poseError.pose.position.x+velEstimation.linear.x;
+    sY=3.1*poseError.pose.position.y+velEstimation.linear.y;
+    sZ=3.1*poseError.pose.position.z+velEstimation.linear.z;
+    
+    velocity.linear.x=sX*-100;
+    velocity.linear.y=sX*-100;
+    velocity.linear.z=sX*-100;
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
@@ -304,6 +322,7 @@ int main(int argc, char **argv)
     ros::Publisher velPoseEstXPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
+    poseEstSub = n.subscribe<geometry_msgs::Twist>("/velocityEstimation", 1, velocityEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
