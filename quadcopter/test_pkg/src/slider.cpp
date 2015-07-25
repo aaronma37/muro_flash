@@ -274,11 +274,11 @@ void PID(void)
     }
     
     sX=-1*poseError.pose.position.x+velEstimation.linear.x;
-    sY=-1*poseError.pose.position.y+velEstimation.linear.y;
+    sY=1*poseError.pose.position.y+velEstimation.linear.y;
     sZ=-1*poseError.pose.position.z+velEstimation.linear.z;
     
     velocity.linear.x=sX*-10;
-    velocity.linear.y=sY*-10;
+    velocity.linear.y=sY*10;
     velocity.linear.z=sZ*-10;
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
