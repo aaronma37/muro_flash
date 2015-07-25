@@ -62,6 +62,11 @@ target_link_libraries(sample
 ${catkin_LIBRARIES}
 )
 
+add_executable(slider src/slider.cpp)
+add_dependencies(slider ${catkin_EXPORTED_TARGETS})
+target_link_libraries(slider
+${catkin_LIBRARIES}
+)
 add_executable(movementTest src/movementTest.cpp)
 add_dependencies(movementTest ${catkin_EXPORTED_TARGETS})
 target_link_libraries(movementTest
