@@ -273,9 +273,9 @@ void PID(void)
       pastError.pose.position.y = -windupCap;
     }
     
-    sX=3.1*poseError.pose.position.x+velEstimation.linear.x;
-    sY=3.1*poseError.pose.position.y+velEstimation.linear.y;
-    sZ=3.1*poseError.pose.position.z+velEstimation.linear.z;
+    sX=-3.1*poseError.pose.position.x+velEstimation.linear.x;
+    sY=-3.1*poseError.pose.position.y+velEstimation.linear.y;
+    sZ=-3.1*poseError.pose.position.z+velEstimation.linear.z;
     
     velocity.linear.x=sX*-1;
     velocity.linear.y=sY*-1;
