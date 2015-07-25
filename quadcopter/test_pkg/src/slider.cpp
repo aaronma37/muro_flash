@@ -315,6 +315,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Subscriber poseGoalSub;
+    ros::Subscriber velEstSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
     ros::Publisher velPub;
