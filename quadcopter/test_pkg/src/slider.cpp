@@ -274,7 +274,7 @@ void PID(void)
     }
     
     sX=-1*poseError.pose.position.x+velEstimation.linear.x;
-    sY=1*poseError.pose.position.y+velEstimation.linear.y;
+    sY=-1*poseError.pose.position.y+velEstimation.linear.y;
     sZ=-1*poseError.pose.position.z+velEstimation.linear.z;
     
     velocity.linear.x=sX*-10;
