@@ -322,7 +322,7 @@ int main(int argc, char **argv)
     ros::Publisher velPoseEstXPub;
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
-    poseEstSub = n.subscribe<geometry_msgs::Twist>("/velocityEstimation", 1, velocityEstCallback);
+    velEstSub = n.subscribe<geometry_msgs::Twist>("/velocityEstimation", 1, velocityEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
