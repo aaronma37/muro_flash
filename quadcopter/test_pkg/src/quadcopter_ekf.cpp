@@ -190,6 +190,18 @@ int main(int argc, char **argv)
         ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         
+        if (ux>1){
+            ux=1;
+        }
+        else if (ux<-1){
+            ux=-1;
+        }
+        if (uy>1){
+            uy=1;
+        }
+        else if (uy<-1){
+            uy=-1;
+        }
         if (ux*maxVelFactor<vx && ux>0){
             ux=0;
         }
