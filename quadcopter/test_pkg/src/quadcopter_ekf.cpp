@@ -202,7 +202,7 @@ int main(int argc, char **argv)
         else if (uy<-1){
             uy=-1;
         }
-        if (ux*maxVelFactor<vx && ux>0){
+        /*if (ux*maxVelFactor<vx && ux>0){
             ux=0;
         }
         else if(ux*maxVelFactor>vx && ux<0){
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
         }
         else if(uy*maxVelFactor>vy && uy<0){
             uy=0;
-        }    
+        }    */
         
         
         vx=vx+.6*ux/T;
