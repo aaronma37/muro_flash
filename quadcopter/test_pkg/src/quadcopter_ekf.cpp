@@ -146,7 +146,7 @@ int main(int argc, char **argv)
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
-    vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityestimation", 1000, true);
+    vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityEstimation", 1000, true);
     while (ros::ok()) 
     {
         got_pose_ = false;
@@ -245,6 +245,7 @@ int main(int argc, char **argv)
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
         twistEstimation.linear.x=vx;
         twistEstimation.linear.y=vy;
+        twistEstimation.linear.z=vz;
         
         gl_pub_.publish(poseEstimation);
         vel_pub_.publish(twistEstimation);
