@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh_, ph_, gnh_, ph("~");
     ros::Subscriber pos_sub_ ;
     ros::Subscriber ipt_sub_ ;
-    ros::Publisher gl_pub_ ;
+    ros::Publisher gl_pub_ , vel_pub_;
 
     void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
     void iptCallback(const geometry_msgs::Twist::ConstPtr&);
@@ -137,6 +137,7 @@ int main(int argc, char **argv)
     Z(3)=0;
 
     geometry_msgs::PoseStamped poseEstimation;
+    geometry_msgs::Twist twistEstimation;
     poseEstimation.pose.position.x=0;
     poseEstimation.pose.position.y=0;
     poseEstimation.pose.position.z=0;
@@ -145,7 +146,7 @@ int main(int argc, char **argv)
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
-
+    vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityestimation", 1000, true);
     while (ros::ok()) 
     {
         got_pose_ = false;
@@ -230,7 +231,11 @@ int main(int argc, char **argv)
         poseEstimation.pose.position.y = X(1);
         poseEstimation.pose.position.z = X(2);
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
+        twistEstimation.linear.x=vx;
+        twistEstimation.linear.y=vy;
+        
         gl_pub_.publish(poseEstimation);
+        vel_pub_.publish(twistEstimation)
 
         std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
         //std::cout<<"Twist: \n"<<twist<<"\n";
