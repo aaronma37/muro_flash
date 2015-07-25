@@ -361,7 +361,7 @@ int main(int argc, char **argv)
         poseSysIdPub.publish(poseSysId);
         velPoseEstXPub.publish(velPoseEstX);
 
-        std::cout<<"Twist: \n"<<velocityEstimation<<"\n\n";
+        std::cout<<"Twist: \n"<<velEstimation.linear<<"\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
