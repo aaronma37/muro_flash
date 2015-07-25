@@ -186,8 +186,8 @@ int main(int argc, char **argv)
         Matrix4f temp;
             
         //Stage 1
-        ux=twist.linear.x/T*cos(yaw)-twist.linear.y/T*sin(yaw);
-        uy=-twist.linear.y/T*cos(yaw)+twist.linear.x/T*sin(yaw);
+        ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
+        uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         
         if (ux*maxVelFactor<vx && ux>0){
             ux=0;
