@@ -269,7 +269,7 @@ int main(int argc, char **argv)
             V(2)=measurementTwist.linear.z;
         }
         twistEstimation.linear.x=V(0);
-            twistEstimation.linear.x=V(1);
+            twistEstimation.linear.y=V(1);
             twistEstimation.linear.z=V(2);
 
         poseEstimation.pose.position.x = X(0);
