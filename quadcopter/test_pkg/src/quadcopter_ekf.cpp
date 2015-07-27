@@ -111,6 +111,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh_, ph_, gnh_, ph("~");
     ros::Subscriber pos_sub_ ;
     ros::Subscriber ipt_sub_ ;
+    ros::Subscriber imu_sub_ ;
     ros::Publisher gl_pub_ , vel_pub_;
 
     void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
