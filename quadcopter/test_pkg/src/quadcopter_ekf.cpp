@@ -91,6 +91,7 @@ void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
 std::cout<<imuPtr;
     measurementTwist.linear.x= imuPtr->vx;    
     measurementTwist.linear.x= imuPtr->vy;
+    measurementTwist.linear.y= imuPtr->vz;
 }
 
 // FIXME: what does ipt stand for?
@@ -125,6 +126,7 @@ int main(int argc, char **argv)
     double uy=0;
     double vx=0;
     double vy=0;
+    double uz=0;
     double maxVelFactor=1.25;
     
     Q(0,0)=0;
@@ -210,6 +212,7 @@ int main(int argc, char **argv)
         //Stage 1
         ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
+        uz=twist.linear.z;
         
         if (ux>1){
             ux=1;
@@ -238,14 +241,10 @@ int main(int argc, char **argv)
         }    
         
         
-        vx=vx+.6*ux/T;
-        vy=vy+.6*uy/T;
-        V << V(0)+ .6*ux/T,V(1)+.6*uy/T,0;
+        V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
         VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
         Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
-        X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
-        
-        
+        X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
         
         //Stage 2
         if (got_pose_ == true)
@@ -267,13 +266,11 @@ int main(int argc, char **argv)
         if (got_vel_ ==true){
             V(0)=measurementTwist.linear.x;
             V(1)=measurementTwist.linear.y;
-            twistEstimation.linear.x=measurementTwist.linear.x;
-            twistEstimation.linear.x=measurementTwist.linear.y;
+            V(2)=measurementTwist.linear.z;
         }
-        else{
-        twistEstimation.linear.x=vx;
-        twistEstimation.linear.y=vy;
-        }
+        twistEstimation.linear.x=V(0);
+            twistEstimation.linear.x=V(1);
+            twistEstimation.linear.z=V(2);
 
         poseEstimation.pose.position.x = X(0);
         poseEstimation.pose.position.y = X(1);
