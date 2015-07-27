@@ -88,9 +88,9 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
 {
     got_vel_ = true;
-
-    measurementTwist.linear.x= imuPtr.vx;    
-    measurementTwist.linear.x= imuPtr.vy;   
+std::cout<<imuPtr;
+    /*measurementTwist.linear.x= imuPtr.vx;    
+    measurementTwist.linear.x= imuPtr.vy;*/   
 }
 
 // FIXME: what does ipt stand for?
