@@ -45,6 +45,8 @@ Matrix4f I= Matrix4f::Identity();
 Matrix4f P= Matrix4f::Zero();
 Matrix4f H= Matrix4f::Identity();
 MatrixXf X(4,1);
+MatrixXf V(3,1);
+MatrixXf VZ(3,1)
 Matrix4f A;
 Matrix4f K;
 VectorXf Z(4);
@@ -52,9 +54,9 @@ VectorXf Z(4);
 // Position and movement messages
 geometry_msgs::PoseStamped measurementPose;
 geometry_msgs::Twist twist;
-
+geometry_msgs::Twist measurementTwist;
 // Keep track of Quadcopter state
-bool got_pose_, stationary;
+bool got_pose_, stationary, got_vel_;
 double theta,x,y;
 double T = 50; // ROS loop rate
 int counter11 = 0;
@@ -82,6 +84,13 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     }
 }
 
+void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
+{
+    got_vel_ = true;
+
+    measurementTwist.linear.x= imuPtr.vx;    
+    measurementTwist.linear.x= imuPtr.vy;   
+}
 
 // FIXME: what does ipt stand for?
 void iptCallback(const geometry_msgs::Twist::ConstPtr& ipt)
@@ -105,6 +114,7 @@ int main(int argc, char **argv)
 
     void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
     void iptCallback(const geometry_msgs::Twist::ConstPtr&);
+    void imuCallback(const ardrone_autonomy::Navdata::ConstPtr&);
     // ROS stuff
     // Other member variables
     got_pose_ = false;
@@ -131,10 +141,17 @@ int main(int argc, char **argv)
     X(1)=0;
     X(2)=0;
     X(3)=0;
+    V(0)=0;
+    V(1)=0;
+    V(2)=0;
     Z(0)=0;
     Z(1)=0;
     Z(2)=0;
     Z(3)=0;
+    VZ(0)=0;
+    VZ(1)=0;
+    VZ(2)=0;
+    
 
     geometry_msgs::PoseStamped poseEstimation;
     geometry_msgs::Twist twistEstimation;
@@ -144,6 +161,7 @@ int main(int argc, char **argv)
     poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(0);
 
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
+    imu_sub_= nh_.subscribe<ardrone_autonomy::Navdata>("/ardrone/navdata", 1,imuCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
     vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityEstimation", 1000, true);
@@ -202,7 +220,7 @@ int main(int argc, char **argv)
         else if (uy<-1){
             uy=-1;
         }
-        /*if (ux*maxVelFactor<vx && ux>0){
+        if (ux*maxVelFactor<vx && ux>0){
             ux=0;
         }
         else if(ux*maxVelFactor>vx && ux<0){
@@ -214,14 +232,18 @@ int main(int argc, char **argv)
         }
         else if(uy*maxVelFactor>vy && uy<0){
             uy=0;
-        }    */
+        }    
         
         
         vx=vx+.6*ux/T;
         vy=vy+.6*uy/T;
+        V << V(0)+ .6*ux/T,V(1)+.6*uy/T,0;
+        VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
         Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
-        X << X(0)+ vx/T,X(1)+vy/T,X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
-
+        X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+twist.linear.z/T,X(3)+twist.angular.z/T;
+        
+        
+        
         //Stage 2
         if (got_pose_ == true)
         {
