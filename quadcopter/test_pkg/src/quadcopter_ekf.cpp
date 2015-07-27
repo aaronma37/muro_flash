@@ -84,7 +84,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     }
 }
 
-void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
+void imuCallback(const test_pkg::Navdata::ConstPtr& imuPtr)
 {
     got_vel_ = true;
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
     void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
     void iptCallback(const geometry_msgs::Twist::ConstPtr&);
-    void imuCallback(const ardrone_autonomy::Navdata::ConstPtr&);
+    void imuCallback(const test_pkg::Navdata::ConstPtr&);
     // ROS stuff
     // Other member variables
     got_pose_ = false;
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
     poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(0);
 
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
-    imu_sub_= nh_.subscribe<ardrone_autonomy::Navdata>("/ardrone/navdata", 1,imuCallback);
+    imu_sub_= nh_.subscribe<test_pkg::Navdata>("/ardrone/navdata", 1,imuCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::Twist>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
     vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityEstimation", 1000, true);
