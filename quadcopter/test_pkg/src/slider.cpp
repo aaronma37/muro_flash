@@ -273,13 +273,37 @@ void PID(void)
       pastError.pose.position.y = -windupCap;
     }
     
-    sX=-3.15*poseError.pose.position.x+velEstimation.linear.x;
-    sY=-3.15*poseError.pose.position.y+velEstimation.linear.y;
-    sZ=-3.15*poseError.pose.position.z+velEstimation.linear.z;
+    // Linear Sliding Average
+    //sX = -3.15*poseError.pose.position.x + velEstimation.linear.x;
+    //sY = -3.15*poseError.pose.position.y + velEstimation.linear.y;
+    //sZ = -3.15*poseError.pose.position.z + velEstimation.linear.z;
     
-    velocity.linear.x=sX*-100;
-    velocity.linear.y=sY*100;
-    velocity.linear.z=sZ*-100;
+    //*
+    // Piecewise Sliding Average
+    double a = 1.0;
+    
+    if(poseError.pose.position.x > a && poseError.pose.position.x < a)
+    {
+      sX = -3.15*poseError.pose.position.x + velEstimation.linear.x;
+    }
+    else sX= -pow(poseError.pose.position.x, 3) + velEstimation.linear.x;
+    
+    if(poseError.pose.position.y > a && poseError.pose.position.y < a)
+    {
+      sY = -3.15*poseError.pose.position.y + velEstimation.linear.y;
+    }
+    else sY= -pow(poseError.pose.position.y, 3) + velEstimation.linear.y;
+    
+    if(poseError.pose.position.z > a && poseError.pose.position.z < a)
+    {
+      sZ = -3.15*poseError.pose.position.z + velEstimation.linear.z;
+    }
+    else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
+    //*/
+      
+    velocity.linear.x = sX*-100;
+    velocity.linear.y = sY*100;
+    velocity.linear.z = sZ*-100;
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
