@@ -46,7 +46,7 @@ Matrix4f P= Matrix4f::Zero();
 Matrix4f H= Matrix4f::Identity();
 MatrixXf X(4,1);
 MatrixXf V(3,1);
-MatrixXf VZ(3,1)
+MatrixXf VZ(3,1);
 Matrix4f A;
 Matrix4f K;
 VectorXf Z(4);
