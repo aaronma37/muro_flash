@@ -80,4 +80,4 @@ target_link_libraries(hover
 ${catkin_LIBRARIES}
 )
 
-add_message_files(Navdata.msg)
+add_message_files(FILES Navdata.msg)
