@@ -282,21 +282,21 @@ void PID(void)
     // Piecewise Sliding Average
     double a = 1.0;
     
-    if(poseError.pose.position.x > a && poseError.pose.position.x < a)
+    if(poseError.pose.position.x > a && poseError.pose.position.x < -a)
     {
-      sX = -3.15*poseError.pose.position.x + velEstimation.linear.x;
+      sX = -1.5*poseError.pose.position.x + velEstimation.linear.x;
     }
     else sX= -pow(poseError.pose.position.x, 3) + velEstimation.linear.x;
     
-    if(poseError.pose.position.y > a && poseError.pose.position.y < a)
+    if(poseError.pose.position.y > a && poseError.pose.position.y < -a)
     {
-      sY = -3.15*poseError.pose.position.y + velEstimation.linear.y;
+      sY = -1.5*poseError.pose.position.y + velEstimation.linear.y;
     }
     else sY= -pow(poseError.pose.position.y, 3) + velEstimation.linear.y;
     
-    if(poseError.pose.position.z > a && poseError.pose.position.z < a)
+    if(poseError.pose.position.z > a && poseError.pose.position.z < -a)
     {
-      sZ = -3.15*poseError.pose.position.z + velEstimation.linear.z;
+      sZ = -1.5*poseError.pose.position.z + velEstimation.linear.z;
     }
     else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
     //*/
