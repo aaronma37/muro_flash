@@ -170,6 +170,7 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         got_pose_ = false;
+        got_vel_  = false;
         ros::spinOnce();
 
         //Conditionals
@@ -262,13 +263,24 @@ int main(int argc, char **argv)
             //Stage 5
             P = (I - K*W)*P;
         }
+        
+        if (got_vel_ ==true){
+            V(0)=measurementTwist.linear.x;
+            V(1)=measurementTwist.linear.y;
+            twistEstimation.linear.x=measurementTwist.linear.x;
+            twistEstimation.linear.x=measurementTwist.linear.y;
+        }
+        else{
+        twistEstimation.linear.x=vx;
+        twistEstimation.linear.y=vy;
+        }
 
         poseEstimation.pose.position.x = X(0);
         poseEstimation.pose.position.y = X(1);
         poseEstimation.pose.position.z = X(2);
         poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
-        twistEstimation.linear.x=vx;
-        twistEstimation.linear.y=vy;
+  
+        
       
         
         gl_pub_.publish(poseEstimation);
