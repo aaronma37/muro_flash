@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   move_base_msgs
   actionlib
   genmsg
+  message_generation
 )
 
 find_package(OpenCV REQUIRED)
@@ -78,3 +79,5 @@ add_dependencies(hover ${catkin_EXPORTED_TARGETS})
 target_link_libraries(hover
 ${catkin_LIBRARIES}
 )
+
+add_message_files(Navdata.msg)
