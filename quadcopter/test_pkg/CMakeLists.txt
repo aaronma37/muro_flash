@@ -80,4 +80,10 @@ target_link_libraries(hover
 ${catkin_LIBRARIES}
 )
 
+add_executable(flight src/flight.cpp)
+add_dependencies(flight ${catkin_EXPORTED_TARGETS})
+target_link_libraries(flight
+${catkin_LIBRARIES}
+)
+
 add_message_files(FILES Navdata.msg)
