@@ -348,11 +348,14 @@ int main(int argc, char **argv)
 
     while (ros::ok()) 
     {
+        ROS_INFO("hover.cpp: START while loop");
         while(goFlight.data == false)
         {
+          ROS_INFO("hover.cpp: IN while loop");
           ros::spinOnce();
           loop_rate.sleep();
         }
+        ROS_INFO("hover.cpp: END while loop");
         
         updatedPoseEst = false;
         updatedPoseGoal = false;
