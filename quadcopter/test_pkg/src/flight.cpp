@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   vel.linear.z = 0;
   for (int i=0;i<100;i++){ 
   velPub.publish(vel);
-  takeOffPub(Gerardo);
+  takeOffPub.publish(Gerardo);
   }
   ROS_INFO("flight: velocity published\n");
   
