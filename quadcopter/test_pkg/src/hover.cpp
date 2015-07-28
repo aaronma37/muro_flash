@@ -68,7 +68,7 @@ geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
-
+std_msgs::Bool goFlight;
 
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
@@ -158,6 +158,13 @@ void pidGainZCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
     kpZ = (double) gainPtr -> x;
     kiZ = (double) gainPtr -> y;
     kdZ = (double) gainPtr -> z;
+}
+
+//Tells hover file when the flight file has been launched.
+void flightCallback(const std_msgs::Bool::ConstPtr& goPtr)
+{
+    
+    goFlight.data = goPtr -> data;
 }
 
 // Calculates updated error to be used by PID
@@ -307,17 +314,21 @@ int main(int argc, char **argv)
     ros::Subscriber poseGoalSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
+    ros::Subscriber flightSub;
     ros::Publisher velPub;
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
+    
 
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
+    flightSUb = n.subscribe<std_msgs::Bool>("/flight", 1, flightCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
     velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
+    
 
     // Initialize msgs
     poseGoal.pose.position.x = 0;
@@ -331,13 +342,20 @@ int main(int argc, char **argv)
     pastError.pose.position.x = 0;
     pastError.pose.position.y = 0;
     pastError.pose.position.z = 0;
-
+    goFlight.data = false;
     velPoseEstX.z = 0;
 
     while (ros::ok()) 
     {
+        while(goFlight.data == false)
+        {
+          ros::spinOnce();
+          loop_rate.sleep();
+        }
+        
         updatedPoseEst = false;
         updatedPoseGoal = false;
+        
         
         ros::spinOnce();
         
