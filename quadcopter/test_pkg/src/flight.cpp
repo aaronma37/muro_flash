@@ -11,7 +11,7 @@ int main(int argc, char **argv)
   ros::Publisher velPub, takeOffPub, goPub;
   
   velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
-  takeOffPub = n.advertise<geometry_msgs::Twist>("/ardrone/takeoff", 1000, true);
+  takeOffPub = n.advertise<std_msgs::Empty>("/ardrone/takeoff", 1000, true);
   goPub = n.advertise<std_msgs::Bool>("/flight", 1000, true);
   ros::Rate loop_rate(1);
   ROS_INFO("flight.cpp initialized\n");
