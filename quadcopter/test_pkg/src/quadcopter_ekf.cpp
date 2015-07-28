@@ -214,38 +214,38 @@ int main(int argc, char **argv)
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         uz=twist.linear.z;
         
-        if (ux>1){
-            ux=1;
-        }
-        else if (ux<-1){
-            ux=-1;
-        }
-        if (uy>1){
-            uy=1;
-        }
-        else if (uy<-1){
-            uy=-1;
-        }
-        if (ux*maxVelFactor<vx && ux>0){
-            ux=0;
-        }
-        else if(ux*maxVelFactor>vx && ux<0){
-            ux=0;
-        }
+        // if (ux>1){
+        //     ux=1;
+        // }
+        // else if (ux<-1){
+        //     ux=-1;
+        // }
+        // if (uy>1){
+        //     uy=1;
+        // }
+        // else if (uy<-1){
+        //     uy=-1;
+        // }
+        // if (ux*maxVelFactor<vx && ux>0){
+        //     ux=0;
+        // }
+        // else if(ux*maxVelFactor>vx && ux<0){
+        //     ux=0;
+        // }
         
-        if (uy*maxVelFactor<vy && uy>0){
-            uy=0;
-        }
-        else if(uy*maxVelFactor>vy && uy<0){
-            uy=0;
-        }    
+        // if (uy*maxVelFactor<vy && uy>0){
+        //     uy=0;
+        // }
+        // else if(uy*maxVelFactor>vy && uy<0){
+        //     uy=0;
+        // }    
         
         
-        V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
-        VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
-        Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
-        X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
-        
+        // V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
+        // VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
+        // Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
+        // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
+        X << X(0)+ ux/T,X(1)+uy/T,X(2)+uz/T,X(3)+twist.angular.z/T;
         //Stage 2
         if (got_pose_ == true)
         {
