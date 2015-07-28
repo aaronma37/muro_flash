@@ -7,18 +7,25 @@ int main(int argc, char **argv)
   ROS_INFO("flight.cpp: START\n");
   ros::init(argc, argv, "flight");
   ros::NodeHandle n;
-  ros::Publisher velPub;
-  ros::Publisher goPub;
+  ros::Publisher velPub, takeOffPub, goPub;
+  
   velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
+  takeOffPub = n.advertise<geometry_msgs::Twist>("/ardrone/takeoff", 1000, true);
   goPub = n.advertise<std_msgs::Bool>("/flight", 1000, true);
   ros::Rate loop_rate(1);
   ROS_INFO("flight.cpp initialized\n");
 
   geometry_msgs::Twist vel;
+  std_msgs::Empty Gerardo;
+  
+  
   vel.linear.x = 0;
   vel.linear.y = 0;
   vel.linear.z = 0;
+  for (int i=0;i<100;i++){ 
   velPub.publish(vel);
+  takeOffPub(Gerardo);
+  }
   ROS_INFO("flight: velocity published\n");
   
   loop_rate.sleep();
@@ -35,7 +42,10 @@ int main(int argc, char **argv)
   
   std_msgs::Bool go;
   go.data = true;
-  goPub.publish(go);
+  for (int i=0;i<100;i++){ 
+    goPub.publish(go);
+  }
+  
   ROS_INFO("flight: go published\n");
   
   ros::spinOnce();
