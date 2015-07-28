@@ -267,6 +267,7 @@ int main(int argc, char **argv)
             V(0)=measurementTwist.linear.x;
             V(1)=measurementTwist.linear.y;
             V(2)=measurementTwist.linear.z;
+            std::cout<<"\n Measured Velocity: \n"<<V(0)<<"\n";
         }
         twistEstimation.linear.x=V(0);
             twistEstimation.linear.y=V(1);
