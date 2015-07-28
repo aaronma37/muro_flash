@@ -263,7 +263,7 @@ int main(int argc, char **argv)
             P = (I - K*W)*P;
         }
         
-        if (got_vel_ ==true){
+        if (got_vel_ ==true &&1==0){
             V(0)=measurementTwist.linear.x;
             V(1)=measurementTwist.linear.y;
             V(2)=measurementTwist.linear.z;
