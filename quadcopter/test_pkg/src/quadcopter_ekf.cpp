@@ -48,6 +48,7 @@ Matrix4f H= Matrix4f::Identity();
 MatrixXf X(4,1);
 MatrixXf V(3,1);
 MatrixXf VZ(3,1);
+MatrixXf Vmatrix(5,3);
 Matrix4f A;
 Matrix4f K;
 VectorXf Z(4);
@@ -60,6 +61,11 @@ geometry_msgs::Twist measurementTwist;
 bool got_pose_, stationary, got_vel_;
 double theta,x,y;
 double T = 50; // ROS loop rate
+double T1=0;
+double T2=0;
+double xOld=0;
+double yOld=0;
+double zOld=0;
 int counter11 = 0;
 double yaw; // FIXME: What is this for?
 
@@ -72,6 +78,9 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
+    xOld=measurementPose.pose.position.x;
+    yOld=measurementPose.pose.position.y;
+    zOld=measurementPose.pose.position.z;
     measurementPose.pose.position.x = msg.transforms[0].transform.translation.z;
     measurementPose.pose.position.y = msg.transforms[0].transform.translation.x;
     measurementPose.pose.position.z = -msg.transforms[0].transform.translation.y;
@@ -82,6 +91,9 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
    // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
     yaw = tf::getYaw(measurementPose.pose.orientation);
+    
+    T1=T2;
+    T2=ros::Time::now().toSec();
     }
 }
 
@@ -139,7 +151,7 @@ int main(int argc, char **argv)
     R(3,3)=.01;
     P(0,0)=1000;
     P(1,1)=1000;
-    P(2,2)=1000;
+    P(2,2)=1000;
     P(3,3)=1000;
     X(0)=0;
     X(1)=0;
@@ -155,6 +167,13 @@ int main(int argc, char **argv)
     VZ(0)=0;
     VZ(1)=0;
     VZ(2)=0;
+    Vmatrix(0)=0;
+    Vmatrix(1)=0;
+    Vmatrix(2)=0;
+    Vmatrix(3)=0;
+    Vmatrix(4)=0;
+    T1=ros::Time::now().toSec();
+    T2=ros::Time::now().toSec();
     
 
     geometry_msgs::PoseStamped poseEstimation;
@@ -213,6 +232,24 @@ int main(int argc, char **argv)
         ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         uz=twist.linear.z;
+        
+        V(4,1)=V(3,1);
+        V(3,1)=V(2,1);
+        V(2,1)=V(1,1);
+        V(1,1)=V(0,1);
+        V(0,1)=(measurementPose.pose.position.x-xOld)/(T2-T1);
+        
+        V(4,2)=V(3,2);
+        V(3,2)=V(2,2);
+        V(2,2)=V(1,2);
+        V(1,2)=V(0,2);
+        V(0,2)=(measurementPose.pose.position.y-yOld)/(T2-T1);
+        
+        V(4,3)=V(3,3);
+        V(3,3)=V(2,3);
+        V(2,3)=V(1,3);
+        V(1,3)=V(0,3);
+        V(0,3)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
         // if (ux>1){
         //     ux=1;
