@@ -65,6 +65,9 @@ double T1=0;
 double T2=0;
 double xOld=0;
 double yOld=0;
+double vXTot=0;
+double vYTot=0;
+double vZTot=0;
 double zOld=0;
 int counter11 = 0;
 double yaw; // FIXME: What is this for?
@@ -100,7 +103,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
 {
     got_vel_ = true;
-std::cout<<imuPtr;
+std::cout<<imuPtr;
     measurementTwist.linear.x= imuPtr->vx/1000;    
     measurementTwist.linear.y= imuPtr->vy/1000;
     measurementTwist.linear.z= imuPtr->vz/1000;
@@ -124,7 +127,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh_, ph_, gnh_, ph("~");
     ros::Subscriber pos_sub_ ;
     ros::Subscriber ipt_sub_ ;
-    ros::Subscriber imu_sub_ ;
+    ros::Subscriber imu_sub_ ;
     ros::Publisher gl_pub_ , vel_pub_;
 
     void poseCallback(const tf2_msgs::TFMessage::ConstPtr& pose);
@@ -167,11 +170,11 @@ int main(int argc, char **argv)
     VZ(0)=0;
     VZ(1)=0;
     VZ(2)=0;
-    Vmatrix(0)=0;
-    Vmatrix(1)=0;
-    Vmatrix(2)=0;
-    Vmatrix(3)=0;
-    Vmatrix(4)=0;
+    Vmatrix(0,0)=0;
+    Vmatrix(1,0)=0;
+    Vmatrix(2,0)=0;
+    Vmatrix(3,0)=0;
+    Vmatrix(4,0)=0;
     T1=ros::Time::now().toSec();
     T2=ros::Time::now().toSec();
     
@@ -233,24 +236,30 @@ int main(int argc, char **argv)
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         uz=twist.linear.z;
         
+        Vmatrix(4,0)=Vmatrix(3,0);
+        Vmatrix(3,0)=Vmatrix(2,0);
+        Vmatrix(2,0)=Vmatrix(1,0);
+        Vmatrix(1,0)=Vmatrix(0,0);
+        Vmatrix(0,0)=(measurementPose.pose.position.x-xOld)/(T2-T1);
+        
         Vmatrix(4,1)=Vmatrix(3,1);
         Vmatrix(3,1)=Vmatrix(2,1);
         Vmatrix(2,1)=Vmatrix(1,1);
         Vmatrix(1,1)=Vmatrix(0,1);
-        Vmatrix(0,1)=(measurementPose.pose.position.x-xOld)/(T2-T1);
+        Vmatrix(0,1)=(measurementPose.pose.position.y-yOld)/(T2-T1);
         
         Vmatrix(4,2)=Vmatrix(3,2);
         Vmatrix(3,2)=Vmatrix(2,2);
         Vmatrix(2,2)=Vmatrix(1,2);
         Vmatrix(1,2)=Vmatrix(0,2);
-        Vmatrix(0,2)=(measurementPose.pose.position.y-yOld)/(T2-T1);
+        Vmatrix(0,2)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
-        Vmatrix(4,3)=Vmatrix(3,3);
-        Vmatrix(3,3)=Vmatrix(2,3);
-        Vmatrix(2,3)=Vmatrix(1,3);
-        Vmatrix(1,3)=Vmatrix(0,3);
-        Vmatrix(0,3)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
+        vXTot=(Vmatrix(4,0)+Vmatrix(3,0)+Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/5;
+        vYTot=(Vmatrix(4,1)+Vmatrix(3,1)+Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
+        vZTot=(Vmatrix(4,2)+Vmatrix(3,2)+Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
+        
+         std::cout<<"\n Measured Velocity: \n"<<VxTot<<"\n";
         // if (ux>1){
         //     ux=1;
         // }
@@ -300,7 +309,7 @@ int main(int argc, char **argv)
             P = (I - K*W)*P;
         }
         
-        if (got_vel_ ==true){
+        if (got_vel_ ==true && 1==0){
             V(0)=measurementTwist.linear.x;
             V(1)=measurementTwist.linear.y;
             V(2)=measurementTwist.linear.z;
