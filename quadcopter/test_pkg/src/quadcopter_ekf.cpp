@@ -259,7 +259,7 @@ int main(int argc, char **argv)
         vYTot=(Vmatrix(4,1)+Vmatrix(3,1)+Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
         vZTot=(Vmatrix(4,2)+Vmatrix(3,2)+Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
         
-         std::cout<<"\n Measured Velocity: \n"<<VxTot<<"\n";
+         std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
         //     ux=1;
         // }
