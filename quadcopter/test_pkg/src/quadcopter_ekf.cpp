@@ -233,23 +233,23 @@ int main(int argc, char **argv)
         uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         uz=twist.linear.z;
         
-        V(4,1)=V(3,1);
-        V(3,1)=V(2,1);
-        V(2,1)=V(1,1);
-        V(1,1)=V(0,1);
-        V(0,1)=(measurementPose.pose.position.x-xOld)/(T2-T1);
+        Vmatrix(4,1)=Vmatrix(3,1);
+        Vmatrix(3,1)=Vmatrix(2,1);
+        Vmatrix(2,1)=Vmatrix(1,1);
+        Vmatrix(1,1)=Vmatrix(0,1);
+        Vmatrix(0,1)=(measurementPose.pose.position.x-xOld)/(T2-T1);
         
-        V(4,2)=V(3,2);
-        V(3,2)=V(2,2);
-        V(2,2)=V(1,2);
-        V(1,2)=V(0,2);
-        V(0,2)=(measurementPose.pose.position.y-yOld)/(T2-T1);
+        Vmatrix(4,2)=Vmatrix(3,2);
+        Vmatrix(3,2)=Vmatrix(2,2);
+        Vmatrix(2,2)=Vmatrix(1,2);
+        Vmatrix(1,2)=Vmatrix(0,2);
+        Vmatrix(0,2)=(measurementPose.pose.position.y-yOld)/(T2-T1);
         
-        V(4,3)=V(3,3);
-        V(3,3)=V(2,3);
-        V(2,3)=V(1,3);
-        V(1,3)=V(0,3);
-        V(0,3)=(measurementPose.pose.position.z-zOld)/(T2-T1);
+        Vmatrix(4,3)=Vmatrix(3,3);
+        Vmatrix(3,3)=Vmatrix(2,3);
+        Vmatrix(2,3)=Vmatrix(1,3);
+        Vmatrix(1,3)=Vmatrix(0,3);
+        Vmatrix(0,3)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
         // if (ux>1){
         //     ux=1;
