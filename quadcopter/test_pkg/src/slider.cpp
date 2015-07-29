@@ -64,7 +64,6 @@ geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 
 
 // Keep track of Quadcopter state
-bool updatedPoseEst, updatedPoseGoal;
 double T = 50; // ROS loop rate
 
 // Constants
@@ -84,12 +83,16 @@ double kd = DEFAULT_KD; // Differential gain
 double kpZ = DEFAULT_KPZ;
 double kiZ = DEFAULT_KIZ;
 double kdZ = DEFAULT_KDZ;
-double sX=0;
-double sY=0;
-double sZ=0;
-double pastX=0;
-double pastY=0;
-double pastZ=0;
+double sX = 0;
+double sY = 0;
+double sZ = 0;
+double pastX = 0;
+double pastY = 0;
+double pastZ = 0;
+double sliderSlope = 0.05;
+double sliderGain = 1.0;
+double sliderRange = 1.0;
+
 // Integral windup
 double windupCap;
 
@@ -117,11 +120,10 @@ geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the dervi
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-    pastX=poseSysId.x;
-    pastY=poseSysId.y;
-    pastZ=poseSysId.z;
+    pastX = poseSysId.x;
+    pastY = poseSysId.y;
+    pastZ = poseSysId.z;
     
-    updatedPoseEst = true;
     poseEstimation.pose = posePtr -> pose;
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
@@ -131,12 +133,11 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
 {
-    velEstimation.linear=twistPtr->linear;
+    velEstimation.linear = twistPtr->linear;
 }
 // Updates goal position sent by android
 void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-    updatedPoseGoal = true;
     poseGoal.pose = posePtr -> pose;
     poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
 }
@@ -144,18 +145,9 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 // Updates pid gain values
 void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
 {
-    if(gainPtr -> x == 0.0 && gainPtr -> y == 0.0 && gainPtr -> z == 0.0)
-    {
-      kp = DEFAULT_KP;
-      ki = DEFAULT_KI;
-      kd = DEFAULT_KD;
-    }
-    else
-    {
-      kp = (double) gainPtr -> x;
-      ki = (double) gainPtr -> y;
-      kd = (double) gainPtr -> z;
-    }
+    sliderSlope = (double) gainPtr -> x;
+    sliderGain = (double) gainPtr -> y;
+    sliderRange = (double) gainPtr -> z;
 }
 
 // Updates pid gain values for z dimension
@@ -280,47 +272,48 @@ void PID(void)
     
     //*
     // Piecewise Sliding Average
-    double a = 1.0;
     
-    if(poseError.pose.position.x < a && poseError.pose.position.x > -a)
+    if(poseError.pose.position.x < sliderRange && poseError.pose.position.x > -sliderRange)
     {
-      sX = -.05*poseError.pose.position.x + velEstimation.linear.x;
+      sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
     }
     else sX= -pow(poseError.pose.position.x, 3) + velEstimation.linear.x;
     
-    if(poseError.pose.position.y < a && poseError.pose.position.y > -a)
+    if(poseError.pose.position.y < sliderRange && poseError.pose.position.y > -sliderRange)
     {
-      sY = -.05*poseError.pose.position.y + velEstimation.linear.y;
+      sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
     }
     else sY= -pow(poseError.pose.position.y, 3) + velEstimation.linear.y;
     
-    if(poseError.pose.position.z < a && poseError.pose.position.z > -a)
+    if(poseError.pose.position.z < sliderRange && poseError.pose.position.z > -sliderRange)
     {
-      sZ = -.05*poseError.pose.position.z + velEstimation.linear.z;
+      sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     }
     else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
     //*/
       
-    velocity.linear.x = sX*-1;
-    if (velocity.linear.x>1){
-      velocity.linear.x=1;
+    velocity.linear.x = sX*(-sliderGain);
+    if (velocity.linear.x > 1){
+      velocity.linear.x = 1;
     }
-    else if (velocity.linear.x<-1){
-      velocity.linear.x=-1;
+    else if (velocity.linear.x < -1){
+      velocity.linear.x = -1;
     }
-    velocity.linear.y = sY*1;
-    if (velocity.linear.y>1){
-      velocity.linear.y=1;
+    
+    velocity.linear.y = sY*sliderGain;
+    if (velocity.linear.y > 1){
+      velocity.linear.y = 1;
     }
-    else if (velocity.linear.y<-1){
-      velocity.linear.y=-1;
+    else if (velocity.linear.y < -1){
+      velocity.linear.y = -1;
     }
-    velocity.linear.z = sZ*-1;
-    if (velocity.linear.z>1){
-      velocity.linear.z=1;
+    
+    velocity.linear.z = sZ*-(sliderGain);
+    if (velocity.linear.z > 1){
+      velocity.linear.z = 1;
     }
-    else if (velocity.linear.z<-1){
-      velocity.linear.z=-1;
+    else if (velocity.linear.z < -1){
+      velocity.linear.z = -1;
     }
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
@@ -328,25 +321,6 @@ void PID(void)
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
     velPoseEstX.y = velocity.linear.x;
-    
-    /*
-    if (velocity.linear.x > 1)
-    {
-      velocity.linear.x = 1;
-    }
-    else if(velocity.linear.x < -1)
-    {
-      velocity.linear.x = -1;
-    }
-    
-    if (velocity.linear.y > 1)
-    {
-      velocity.linear.y = 1; 
-    }
-    else if(velocity.linear.y < -1)
-    {
-      velocity.linear.y = -1;
-    }*/
 }
 
 int main(int argc, char **argv)
@@ -391,8 +365,6 @@ int main(int argc, char **argv)
 
     while (ros::ok()) 
     {
-        updatedPoseEst = false;
-        updatedPoseGoal = false;
         
         ros::spinOnce();
         
