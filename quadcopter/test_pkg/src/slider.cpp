@@ -284,19 +284,19 @@ void PID(void)
     
     if(poseError.pose.position.x < a && poseError.pose.position.x > -a)
     {
-      sX = -.5*poseError.pose.position.x + velEstimation.linear.x;
+      sX = -.05*poseError.pose.position.x + velEstimation.linear.x;
     }
     else sX= -pow(poseError.pose.position.x, 3) + velEstimation.linear.x;
     
     if(poseError.pose.position.y < a && poseError.pose.position.y > -a)
     {
-      sY = -.5*poseError.pose.position.y + velEstimation.linear.y;
+      sY = -.05*poseError.pose.position.y + velEstimation.linear.y;
     }
     else sY= -pow(poseError.pose.position.y, 3) + velEstimation.linear.y;
     
     if(poseError.pose.position.z < a && poseError.pose.position.z > -a)
     {
-      sZ = -.5*poseError.pose.position.z + velEstimation.linear.z;
+      sZ = -.05*poseError.pose.position.z + velEstimation.linear.z;
     }
     else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
     //*/
