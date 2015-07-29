@@ -17,15 +17,15 @@ int main(int argc, char **argv)
   ROS_INFO("flight.cpp initialized\n");
 
   geometry_msgs::Twist vel;
-  std_msgs::Empty Gerardo;
+  std_msgs::Empty takeOff;
   
   
   vel.linear.x = 0;
   vel.linear.y = 0;
   vel.linear.z = 0;
-  for (int i=0;i<100;i++){ 
-  velPub.publish(vel);
-  takeOffPub.publish(Gerardo);
+  for (int i = 0; i < 100; i++){ 
+    velPub.publish(vel);
+    takeOffPub.publish(takeOff);
   }
   ROS_INFO("flight: velocity published\n");
   
@@ -37,13 +37,11 @@ int main(int argc, char **argv)
   ROS_INFO("3 sec\n");
   loop_rate.sleep();
   ROS_INFO("4 sec\n");
-  loop_rate.sleep();
-  ROS_INFO("5 sec\n");
   ROS_INFO("flight: finished sleeping\n");
   
   std_msgs::Bool go;
   go.data = true;
-  for (int i=0;i<100;i++){ 
+  for (int i = 0; i < 100; i++){ 
     goPub.publish(go);
   }
   
