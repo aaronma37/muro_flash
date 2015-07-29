@@ -301,21 +301,21 @@ void PID(void)
     else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
     //*/
       
-    velocity.linear.x = sX*-100;
+    velocity.linear.x = sX*-1;
     if (velocity.linear.x>1){
       velocity.linear.x=1;
     }
     else if (velocity.linear.x<-1){
       velocity.linear.x=-1;
     }
-    velocity.linear.y = sY*100;
+    velocity.linear.y = sY*1;
     if (velocity.linear.y>1){
       velocity.linear.y=1;
     }
     else if (velocity.linear.y<-1){
       velocity.linear.y=-1;
     }
-    velocity.linear.z = sZ*-100;
+    velocity.linear.z = sZ*-1;
     if (velocity.linear.z>1){
       velocity.linear.z=1;
     }
