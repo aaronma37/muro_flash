@@ -360,7 +360,7 @@ int main(int argc, char **argv)
     //*
     // Flag method 1
     ROS_INFO("hover.cpp: START while loop");
-    ros::Rate loop_rate(1);
+    loop_rate(3);
     while(goFlight.data == false)
     {
       ROS_INFO("hover.cpp: IN while loop");
@@ -368,7 +368,7 @@ int main(int argc, char **argv)
       loop_rate.sleep();
     }
     ROS_INFO("hover.cpp: END while loop");
-    ros::Rate loop_rate(T);
+    loop_rate(T);
     //*/
 
     while (ros::ok()) 
