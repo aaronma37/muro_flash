@@ -91,8 +91,8 @@ double pastY = 0;
 double pastZ = 0;
 double sliderSlope = 0.6;
 double sliderGain = 0.8;
-double sliderRange = 0.2;
-double sliderAmp = 0.5;
+double sliderRange = 0.25;
+double sliderAmp = 0.35;
 
 // Integral windup
 double windupCap;
