@@ -277,19 +277,19 @@ void PID(void)
     {
       sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
     }
-    else sX = -( poseError.pose.position.x/( sqrt(abs(poseError.pose.position.x)) ) ) + velEstimation.linear.x;
+    else sX = -0.5*( ( poseError.pose.position.x/( sqrt(abs(poseError.pose.position.x)) ) ) + velEstimation.linear.x );
     
     if(poseError.pose.position.y < sliderRange && poseError.pose.position.y > -sliderRange)
     {
       sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
     }
-    else sY = -( poseError.pose.position.y/( sqrt(abs(poseError.pose.position.y)) ) ) + velEstimation.linear.y;
+    else sY = -0.5*( ( poseError.pose.position.y/( sqrt(abs(poseError.pose.position.y)) ) ) + velEstimation.linear.y );
     
     if(poseError.pose.position.z < sliderRange && poseError.pose.position.z > -sliderRange)
     {
       sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     }
-    else sZ = -( poseError.pose.position.z/( sqrt(abs(poseError.pose.position.z)) ) ) + velEstimation.linear.z;
+    else sZ = -0.5*( ( poseError.pose.position.z/( sqrt(abs(poseError.pose.position.z)) ) ) + velEstimation.linear.z );
     //*/
       
     velocity.linear.x = sX*(-sliderGain);
