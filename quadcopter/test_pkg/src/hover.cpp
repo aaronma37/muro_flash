@@ -357,7 +357,7 @@ int main(int argc, char **argv)
     goFlight.data = false;
     velPoseEstX.z = 0;
     
-    /*
+    //*
     // Flag method 1
     ROS_INFO("hover.cpp: START while loop");
     ros::Rate loop_rate(1);
@@ -369,7 +369,7 @@ int main(int argc, char **argv)
     }
     ROS_INFO("hover.cpp: END while loop");
     ros::Rate loop_rate(T);
-    */
+    //*/
 
     while (ros::ok()) 
     {
