@@ -255,9 +255,9 @@ int main(int argc, char **argv)
         Vmatrix(0,2)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
         
-        vXTot=(Vmatrix(4,0)+Vmatrix(3,0)+Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/5;
-        vYTot=(Vmatrix(4,1)+Vmatrix(3,1)+Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
-        vZTot=(Vmatrix(4,2)+Vmatrix(3,2)+Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
+        vXTot=(Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/5;
+        vYTot=(Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
+        vZTot=(Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
         
          std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
         // }    
         
         
-        // V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
+         V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
         // VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
          Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
         // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
@@ -307,21 +307,14 @@ int main(int argc, char **argv)
 
             //Stage 5
             P = (I - K*W)*P;
+            V(0)=vXTot;
+            V(1)=vYTot;
+            V(2)=vZTot;
         }
-        
-        if (got_vel_ ==true && 1==0){
-            V(0)=measurementTwist.linear.x;
-            V(1)=measurementTwist.linear.y;
-            V(2)=measurementTwist.linear.z;
-            std::cout<<"\n Measured Velocity: \n"<<V(0)<<"\n";
-        }
-        // twistEstimation.linear.x=V(0);
-        //     twistEstimation.linear.y=V(1);
-        //     twistEstimation.linear.z=V(2);
-        
-        twistEstimation.linear.x=vXTot;
-            twistEstimation.linear.y=vYTot;
-            twistEstimation.linear.z=vZTot;
+
+            twistEstimation.linear.x=V(0);
+            twistEstimation.linear.y=V(1);
+            twistEstimation.linear.z=V(2);
 
         poseEstimation.pose.position.x = X(0);
         poseEstimation.pose.position.y = X(1);
