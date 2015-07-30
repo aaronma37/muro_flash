@@ -143,11 +143,11 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
 }
 
-// Updates pid gain values
+// Updates slider gain values
 void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
 {
     sliderSlope = (double) gainPtr -> x;
-    sliderAmp = (double) gainPtr -> y;
+    sliderGain = (double) gainPtr -> y;
     sliderRange = (double) gainPtr -> z;
 }
 
@@ -267,11 +267,11 @@ void PID(void)
     }
     
     // Linear Sliding Average
-    //sX = -3.15*poseError.pose.position.x + velEstimation.linear.x;
-    //sY = -3.15*poseError.pose.position.y + velEstimation.linear.y;
-    //sZ = -3.15*poseError.pose.position.z + velEstimation.linear.z;
+    sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
+    sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
+    sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     
-    //*
+    /*
     // Piecewise Sliding Average
     
     if(poseError.pose.position.x < sliderRange && poseError.pose.position.x > -sliderRange)
