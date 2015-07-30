@@ -89,8 +89,8 @@ double sZ = 0;
 double pastX = 0;
 double pastY = 0;
 double pastZ = 0;
-double sliderSlope = 0.05;
-double sliderGain = 1.0;
+double sliderSlope = 0.8;
+double sliderGain = 0.4;
 double sliderRange = 1.0;
 
 // Integral windup
@@ -277,19 +277,19 @@ void PID(void)
     {
       sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
     }
-    else sX= -pow(poseError.pose.position.x, 3) + velEstimation.linear.x;
+    else sX = -( poseError.pose.position.x/( sqrt(abs(poseError.pose.position.x)) ) ) + velEstimation.linear.x;
     
     if(poseError.pose.position.y < sliderRange && poseError.pose.position.y > -sliderRange)
     {
       sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
     }
-    else sY= -pow(poseError.pose.position.y, 3) + velEstimation.linear.y;
+    else sY = -( poseError.pose.position.y/( sqrt(abs(poseError.pose.position.y)) ) ) + velEstimation.linear.y;
     
     if(poseError.pose.position.z < sliderRange && poseError.pose.position.z > -sliderRange)
     {
       sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     }
-    else sZ= -pow(poseError.pose.position.z, 3) + velEstimation.linear.z;
+    else sZ = -( poseError.pose.position.z/( sqrt(abs(poseError.pose.position.z)) ) ) + velEstimation.linear.z;
     //*/
       
     velocity.linear.x = sX*(-sliderGain);
