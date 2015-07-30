@@ -287,7 +287,7 @@ int main(int argc, char **argv)
         // }    
         
         
-         V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
+        // V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
         // VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
          Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
         // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
