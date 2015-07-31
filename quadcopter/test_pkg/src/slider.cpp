@@ -86,6 +86,9 @@ double kdZ = DEFAULT_KDZ;
 double sX = 0;
 double sY = 0;
 double sZ = 0;
+double sXprev = 0;
+double sYprev = 0;
+double sZprev = 0;
 double pastX = 0;
 double pastY = 0;
 double pastZ = 0;
@@ -148,7 +151,7 @@ void pidGainCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
 {
     sliderSlope = (double) gainPtr -> x;
     sliderGain = (double) gainPtr -> y;
-    sliderRange = (double) gainPtr -> z;
+    kd = (double) gainPtr -> z;
 }
 
 // Updates pid gain values for z dimension
@@ -202,10 +205,10 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
    
   if (divideSampling != true)
   {
-    maResults[0] = (maResults[0]/(maIndex-1));
-    maResults[1] = (maResults[1]/(maIndex-1));
-    maResults[2] = (maResults[2]/(maIndex-1));
-    maResults[3] = (maResults[3]/(maIndex-1));
+    maResults[0] = maResults[0]/maIndex;
+    maResults[1] = maResults[1]/maIndex;
+    maResults[2] = maResults[2]/maIndex;
+    maResults[3] = maResults[3]/maIndex;
   }
   else
   {
@@ -221,7 +224,6 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
 // This is the PID method
 void PID(void)
 {
-    // FIXME: Tune PID constants
     double kpYaw = .5;
     double kiYaw = 0;
     double kdYaw = 0;
@@ -230,11 +232,6 @@ void PID(void)
     pastError.pose.position.y += (1/T)*poseError.pose.position.y;
     pastError.pose.position.z += (1/T)*poseError.pose.position.z;
     pastYawErr += (1/T)*poseErrYaw;
-    
-    calcMoveAvg(poseError.pose.position.x-poseErrorPrev.pose.position.x,
-                poseError.pose.position.y - poseErrorPrev.pose.position.y,
-                poseError.pose.position.z - poseErrorPrev.pose.position.z,
-                poseErrYaw - poseErrYawPrev);
     
     // Check for integral windup
     if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
@@ -266,13 +263,18 @@ void PID(void)
       pastError.pose.position.y = -windupCap;
     }
     
-    // Linear Sliding Average
+    // Store previous s value to determine derivative term
+    sXprev = sX;
+    sYprev = sY;
+    sZprev = sZ;
+    
+    // Linear Sliding Mode
     sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
     sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
     sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     
     /*
-    // Piecewise Sliding Average
+    // Piecewise Sliding Mode
     
     if(poseError.pose.position.x < sliderRange && poseError.pose.position.x > -sliderRange)
     {
@@ -292,8 +294,10 @@ void PID(void)
     }
     else sZ = -sliderAmp*( ( poseError.pose.position.z/( sqrt(abs(poseError.pose.position.z)) ) ) + velEstimation.linear.z );
     //*/
+    
+    calcMoveAvg(sX - sXprev, sY - sYprev, sZ - sZprev, poseErrYaw - poseErrYawPrev);
       
-    velocity.linear.x = sX*(-sliderGain);
+    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0]);
     if (velocity.linear.x > 1){
       velocity.linear.x = 1;
     }
@@ -301,7 +305,7 @@ void PID(void)
       velocity.linear.x = -1;
     }
     
-    velocity.linear.y = sY*sliderGain;
+    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1]);
     if (velocity.linear.y > 1){
       velocity.linear.y = 1;
     }
@@ -309,7 +313,7 @@ void PID(void)
       velocity.linear.y = -1;
     }
     
-    velocity.linear.z = sZ*-(sliderGain);
+    velocity.linear.z = sZ*-(sliderGain) + (kdZ*T*(maResults[2]);
     if (velocity.linear.z > 1){
       velocity.linear.z = 1;
     }
