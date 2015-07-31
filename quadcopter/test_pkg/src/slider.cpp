@@ -297,7 +297,7 @@ void PID(void)
     
     calcMoveAvg(sX - sXprev, sY - sYprev, sZ - sZprev, poseErrYaw - poseErrYawPrev);
       
-    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0]);
+    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0]));
     if (velocity.linear.x > 1){
       velocity.linear.x = 1;
     }
@@ -305,7 +305,7 @@ void PID(void)
       velocity.linear.x = -1;
     }
     
-    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1]);
+    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1]));
     if (velocity.linear.y > 1){
       velocity.linear.y = 1;
     }
@@ -313,7 +313,7 @@ void PID(void)
       velocity.linear.y = -1;
     }
     
-    velocity.linear.z = sZ*-(sliderGain) + (kdZ*T*(maResults[2]);
+    velocity.linear.z = sZ*-(sliderGain) + (kdZ*T*(maResults[2]));
     if (velocity.linear.z > 1){
       velocity.linear.z = 1;
     }
