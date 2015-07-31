@@ -70,7 +70,7 @@ double T = 50; // ROS loop rate
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.5;
 const double DEFAULT_KI = 0.01;
-const double DEFAULT_KD = 1.2;
+const double DEFAULT_KD = 0,03;
 const double DEFAULT_KPZ = 4;
 const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = .1;
@@ -92,8 +92,8 @@ double sZprev = 0;
 double pastX = 0;
 double pastY = 0;
 double pastZ = 0;
-double sliderSlope = 0.7;
-double sliderGain = 0.8;
+double sliderSlope = 0.27;
+double sliderGain = 2.0;
 double sliderRange = 0.25;
 double sliderAmp = 0.35;
 
@@ -313,7 +313,7 @@ void PID(void)
       velocity.linear.y = -1;
     }
     
-    velocity.linear.z = sZ*-(sliderGain) + (kdZ*T*(maResults[2]));
+    velocity.linear.z = sZ*-(sliderGain);
     if (velocity.linear.z > 1){
       velocity.linear.z = 1;
     }
