@@ -54,23 +54,25 @@ Matrix4f K;
 VectorXf Z(4);
 
 // Position and movement messages
-geometry_msgs::PoseStamped measurementPose;
-geometry_msgs::Twist twist;
-geometry_msgs::Twist measurementTwist;
+geometry_msgs::PoseStamped measurementPose[2];
+geometry_msgs::Twist twist[2];
+geometry_msgs::Twist measurementTwist[2];
 // Keep track of Quadcopter state
-bool got_pose_, stationary, got_vel_;
+bool got_pose_[2], stationary, got_vel_[2];
 double theta,x,y;
 double T = 50; // ROS loop rate
-double T1=0;
-double T2=0;
-double xOld=0;
-double yOld=0;
+double T1[2]={0,0};
+double T2[2]={0,0};
+int k=0;
+int num=2;
+double xOld[2]={0,0};
+double yOld[2]={0,0};
 double vXTot=0;
 double vYTot=0;
 double vZTot=0;
-double zOld=0;
+double zOld[2]={0,0};
 int counter11 = 0;
-double yaw; // FIXME: What is this for?
+double yaw[2]={0,0}; // FIXME: What is this for?
 
 // Updates position coordinates
 void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
@@ -81,22 +83,32 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
-    xOld=measurementPose.pose.position.x;
-    yOld=measurementPose.pose.position.y;
-    zOld=measurementPose.pose.position.z;
-    measurementPose.pose.position.x = msg.transforms[0].transform.translation.z;
-    measurementPose.pose.position.y = msg.transforms[0].transform.translation.x;
-    measurementPose.pose.position.z = -msg.transforms[0].transform.translation.y;
-    measurementPose.pose.orientation.x = msg.transforms[0].transform.rotation.z;
-    measurementPose.pose.orientation.y = msg.transforms[0].transform.rotation.x;
-    measurementPose.pose.orientation.z = -msg.transforms[0].transform.rotation.y;
-    measurementPose.pose.orientation.w = msg.transforms[0].transform.rotation.w;
+    if(msg.transforms[0].child_frame_id.compare("Gypsy Danger")==0){
+        k=0;
+    }
+    else if (msg.transforms[0].child_frame_id.compare("Typhoon")==0){
+        k=1;
+    }
+    else{
+        return;
+    }
+    measurementPose[k].header.frame_id=msg.transforms[0].child_frame_id;
+    xOld[k]=measurementPose[k].pose.position.x;
+    yOld[k]=measurementPose[k].pose.position.y;
+    zOld[k]=measurementPose[k].pose.position.z;
+    measurementPose[k].pose.position.x = msg.transforms[0].transform.translation.z;
+    measurementPose[k].pose.position.y = msg.transforms[0].transform.translation.x;
+    measurementPose[k].pose.position.z = -msg.transforms[0].transform.translation.y;
+    measurementPose[k].pose.orientation.x = msg.transforms[0].transform.rotation.z;
+    measurementPose[k].pose.orientation.y = msg.transforms[0].transform.rotation.x;
+    measurementPose[k].pose.orientation.z = -msg.transforms[0].transform.rotation.y;
+    measurementPose[k].pose.orientation.w = msg.transforms[0].transform.rotation.w;
    // measurementPose.pose.orientation = posePtr->transforms.transform.rotation;
 
-    yaw = tf::getYaw(measurementPose.pose.orientation);
+    yaw[k] = tf::getYaw(measurementPose[k].pose.orientation);
     
-    T1=T2;
-    T2=ros::Time::now().toSec();
+    T1[k]=T2[k];
+    T2[k]=ros::Time::now().toSec();
     }
 }
 
@@ -112,8 +124,8 @@ std::cout<<imuPtr;
 // FIXME: what does ipt stand for?
 void iptCallback(const geometry_msgs::Twist::ConstPtr& ipt)
 {
-    twist.linear=ipt->linear;
-    twist.angular=ipt->angular;
+    twist[k].linear=ipt->linear;
+    twist[k].angular=ipt->angular;
 }
 
 
@@ -193,14 +205,18 @@ int main(int argc, char **argv)
     vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityEstimation", 1000, true);
     while (ros::ok()) 
     {
-        got_pose_ = false;
-        got_vel_  = false;
+        for (int i=0;i<num;i++){
+        got_pose_[i] = false;
+        got_vel_[i]  = false;
+        }
+        
         ros::spinOnce();
 
-        //Conditionals
-        if (got_pose_ == true)
+        for (int i=0;i<num;i++){
+            //Conditionals
+        if (got_pose_[i] == true)
         {
-            cout<<"got_pose_: "<<got_pose_<<"\n";
+            cout<<"got_pose_: "<<got_pose_[i]<<"\n";
             R(0,0)=1;
             R(1,1)=1;
             R(2,2)=1;
@@ -232,32 +248,32 @@ int main(int argc, char **argv)
         Matrix4f temp;
             
         //Stage 1
-        ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
-        uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
-        uz=twist.linear.z;
+        ux=twist[i].linear.x*cos(yaw[i])-twist[i].linear.y*sin(yaw[i]);
+        uy=-twist[i].linear.y*cos(yaw[i])+twist[i].linear.x*sin(yaw[i]);
+        uz=twist[i].linear.z;
         
         Vmatrix(4,0)=Vmatrix(3,0);
         Vmatrix(3,0)=Vmatrix(2,0);
         Vmatrix(2,0)=Vmatrix(1,0);
         Vmatrix(1,0)=Vmatrix(0,0);
-        Vmatrix(0,0)=(measurementPose.pose.position.x-xOld)/(T2-T1);
+        Vmatrix(0,0)=(measurementPose[i].pose.position.x-xOld[i])/(T2[i]-T1[i]);
         
         Vmatrix(4,1)=Vmatrix(3,1);
         Vmatrix(3,1)=Vmatrix(2,1);
         Vmatrix(2,1)=Vmatrix(1,1);
         Vmatrix(1,1)=Vmatrix(0,1);
-        Vmatrix(0,1)=(measurementPose.pose.position.y-yOld)/(T2-T1);
+        Vmatrix(0,1)=(measurementPose[i].pose.position.y-yOld[i])/(T2[i]-T1[i]);
         
         Vmatrix(4,2)=Vmatrix(3,2);
         Vmatrix(3,2)=Vmatrix(2,2);
         Vmatrix(2,2)=Vmatrix(1,2);
         Vmatrix(1,2)=Vmatrix(0,2);
-        Vmatrix(0,2)=(measurementPose.pose.position.z-zOld)/(T2-T1);
+        Vmatrix(0,2)=(measurementPose[i].pose.position.z-zOld[i])/(T2[i]-T1[i]);
         
         
-        vXTot=(Vmatrix(4,0)+Vmatrix(3,0)+Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/5;
-        vYTot=(Vmatrix(4,1)+Vmatrix(3,1)+Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
-        vZTot=(Vmatrix(4,2)+Vmatrix(3,2)+Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
+        vXTot=(Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/3;
+        vYTot=(Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/3;
+        vZTot=(Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/3;
         
          std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
@@ -289,13 +305,13 @@ int main(int argc, char **argv)
         
         // V << V(0)+ .6*ux/T,V(1)+.6*uy/T,V(2)+.6*uz/T;
         // VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
-         Z << measurementPose.pose.position.x,measurementPose.pose.position.y,measurementPose.pose.position.z,yaw;
+         Z << measurementPose[i].pose.position.x,measurementPose[i].pose.position.y,measurementPose[i].pose.position.z,yaw[i];
         // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
-        X << X(0)+ ux/T,X(1)+uy/T,X(2)+uz/T,X(3)+twist.angular.z/T;
+        X << X(0)+ ux/T,X(1)+uy/T,X(2)+uz/T,X(3)+twist[i].angular.z/T;
         //Stage 2
         if (got_pose_ == true)
         {
-            A << 1, 0,0, -twist.linear.x/T*sin(yaw)-twist.linear.y/T*cos(yaw),0, 1,0, twist.linear.x/T*cos(yaw)+twist.linear.y/T*sin(yaw),0, 0, 1,0, 0,0,0,-1;
+            A << 1, 0,0, -twist[i].linear.x/T*sin(yaw[i])-twist[i].linear.y/T*cos(yaw[i]),0, 1,0, twist[i].linear.x/T*cos(yaw[i])+twist[i].linear.y/T*sin(yaw[i]),0, 0, 1,0, 0,0,0,-1;
             P = A*P*A.transpose() + W*Q*W.transpose();
 
             //Stage 3
@@ -307,35 +323,34 @@ int main(int argc, char **argv)
 
             //Stage 5
             P = (I - K*W)*P;
+            V(0)=vXTot;
+            V(1)=vYTot;
+            V(2)=vZTot;
         }
-        
-        if (got_vel_ ==true && 1==0){
-            V(0)=measurementTwist.linear.x;
-            V(1)=measurementTwist.linear.y;
-            V(2)=measurementTwist.linear.z;
-            std::cout<<"\n Measured Velocity: \n"<<V(0)<<"\n";
-        }
-        twistEstimation.linear.x=V(0);
-            twistEstimation.linear.y=V(1);
-            twistEstimation.linear.z=V(2);
 
-        poseEstimation.pose.position.x = X(0);
-        poseEstimation.pose.position.y = X(1);
-        poseEstimation.pose.position.z = X(2);
-        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
+            twistEstimation[i].linear.x=V(0);
+            twistEstimation[i].linear.y=V(1);
+            twistEstimation[i].linear.z=V(2);
+
+        poseEstimation[i].pose.position.x = X(0);
+        poseEstimation[i].pose.position.y = X(1);
+        poseEstimation[i].pose.position.z = X(2);
+        poseEstimation[i].pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
   
         
       
         
-        gl_pub_.publish(poseEstimation);
-        vel_pub_.publish(twistEstimation);
+        gl_pub_.publish(poseEstimation[i]);
+        vel_pub_.publish(twistEstimation[i]);
 
-        std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
+        std::cout<<"\n Measured: \n"<<measurementPose[i]<<"\n";
         //std::cout<<"Twist: \n"<<twist<<"\n";
-        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n";
-        std::cout<<"Yaw: "<<yaw<<"\n---------\n\n";
+        std::cout<<"Best Estimation\n"<<poseEstimation[i]<<"\n---------\n\n";
+        std::cout<<"Yaw: "<<yaw[i]<<"\n---------\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
+        }
+        
 }
 //END

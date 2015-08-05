@@ -166,6 +166,14 @@ void flightCallback(const std_msgs::Bool::ConstPtr& goPtr)
 {
     
     goFlight.data = goPtr -> data;
+    
+    /*
+    // Flag method 2
+    if( (goFlight.data = goPtr -> data) == true )
+    {
+      ros::shutdown();
+    }
+    */
 }
 
 // Calculates updated error to be used by PID
@@ -284,29 +292,32 @@ void PID(void)
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
     velPoseEstX.y = velocity.linear.x;
-    
-/*    if (velocity.linear.x > 1)
-    {
-      velocity.linear.x = 1;
-    }
-    else if(velocity.linear.x < -1)
-    {
-      velocity.linear.x = -1;
-    }
-    
-    if (velocity.linear.y > 1)
-    {
-      velocity.linear.y = 1; 
-    }
-    else if(velocity.linear.y < -1)
-    {
-      velocity.linear.y = -1;
-    }*/
 }
 
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "Quadcopter Hover: version 1, EKF pose estimations only"); //Ros Initialize
+    
+    /*
+    // Flag method 2
+    ros::start();
+    ros::NodeHandle n;
+    ros::Subscriber flightSub;
+    flightSub = n.subscribe<std_msgs::Bool>("/flight", 1, flightCallback);
+    goFlight.data = false;
+    ROS_INFO("hover.cpp: START while loop");
+    ros::Rate loop_rate(2);
+    while(ros::ok())
+    {
+      ROS_INFO("hover.cpp: IN while loop");
+      ros::spinOnce();
+      loop_rate.sleep();
+    }
+    ROS_INFO("hover.cpp: END while loop");
+    ros::Rate loop_rate(T);
+    // END flag method 2
+    */
+    
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
@@ -345,18 +356,21 @@ int main(int argc, char **argv)
     pastError.pose.position.z = 0;
     goFlight.data = false;
     velPoseEstX.z = 0;
+    
+    /*
+    // Flag method 1
+    ROS_INFO("hover.cpp: START while loop");
+    while(goFlight.data == false)
+    {
+      ROS_INFO("hover.cpp: IN while loop");
+      ros::spinOnce();
+      loop_rate.sleep();
+    }
+    ROS_INFO("hover.cpp: END while loop");
+    //*/
 
     while (ros::ok()) 
     {
-        /*ROS_INFO("hover.cpp: START while loop");
-        while(goFlight.data == false)
-        {
-          ROS_INFO("hover.cpp: IN while loop");
-          ros::spinOnce();
-          loop_rate.sleep();
-        }
-        ROS_INFO("hover.cpp: END while loop");*/
-        
         updatedPoseEst = false;
         updatedPoseGoal = false;
         
