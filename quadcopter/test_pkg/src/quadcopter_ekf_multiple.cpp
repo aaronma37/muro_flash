@@ -79,7 +79,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
     const tf2_msgs::TFMessage& msg=*posePtr;
     if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
-    got_pose_ = true;
+    
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
@@ -92,6 +92,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     else{
         return;
     }
+    got_pose_[k] = true;
     measurementPose[k].header.frame_id=msg.transforms[0].child_frame_id;
     xOld[k]=measurementPose[k].pose.position.x;
     yOld[k]=measurementPose[k].pose.position.y;
@@ -114,7 +115,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 
 void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
 {
-    got_vel_ = true;
+    got_vel_[k] = true;
 std::cout<<imuPtr;
     measurementTwist[k].linear.x= imuPtr->vx/1000;    
     measurementTwist[k].linear.y= imuPtr->vy/1000;
