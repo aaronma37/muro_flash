@@ -81,6 +81,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     std::cout<<"pass";
     // FIXME: Set found agent's position
     // FIXME: NOT SURE ABOUT PITCH AND ROLL
+    measurementPose.header.frame_id=msg.transforms[0].child_frame_id;
     xOld=measurementPose.pose.position.x;
     yOld=measurementPose.pose.position.y;
     zOld=measurementPose.pose.position.z;
