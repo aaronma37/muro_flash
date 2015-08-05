@@ -201,6 +201,7 @@ int main(int argc, char **argv)
     T1[i]=ros::Time::now().toSec();
     T2[i]=ros::Time::now().toSec();
     got_pose_[i] = false;
+    poseEstimation[i].header.frame_id="Gypsy Danger";
     }
     
 
