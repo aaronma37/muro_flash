@@ -296,3 +296,44 @@ int main(int argc, char **argv)
         //Stage 2
         if (got_pose_ == true)
         {
+            A << 1, 0,0, -twist.linear.x/T*sin(yaw)-twist.linear.y/T*cos(yaw),0, 1,0, twist.linear.x/T*cos(yaw)+twist.linear.y/T*sin(yaw),0, 0, 1,0, 0,0,0,-1;
+            P = A*P*A.transpose() + W*Q*W.transpose();
+
+            //Stage 3
+            temp = (W*P*W.transpose() + W*R*W.transpose());
+            K = P*W.transpose()*temp.inverse();
+
+            //Stage 4
+            X = X + K*(Z-X);
+
+            //Stage 5
+            P = (I - K*W)*P;
+            V(0)=vXTot;
+            V(1)=vYTot;
+            V(2)=vZTot;
+        }
+
+            twistEstimation.linear.x=V(0);
+            twistEstimation.linear.y=V(1);
+            twistEstimation.linear.z=V(2);
+
+        poseEstimation.pose.position.x = X(0);
+        poseEstimation.pose.position.y = X(1);
+        poseEstimation.pose.position.z = X(2);
+        poseEstimation.pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
+  
+        
+      
+        
+        gl_pub_.publish(poseEstimation);
+        vel_pub_.publish(twistEstimation);
+
+        std::cout<<"\n Measured: \n"<<measurementPose<<"\n";
+        //std::cout<<"Twist: \n"<<twist<<"\n";
+        std::cout<<"Best Estimation\n"<<poseEstimation<<"\n---------\n\n";
+        std::cout<<"Yaw: "<<yaw<<"\n---------\n\n";
+        std::cout<<"--------------------------------------------------------------------";
+        loop_rate.sleep();
+    }
+}
+//END
