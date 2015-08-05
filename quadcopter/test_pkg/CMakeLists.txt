@@ -86,4 +86,10 @@ target_link_libraries(flight
 ${catkin_LIBRARIES}
 )
 
+add_executable(quadcopter_ekf_multiple src/quadcopter_ekf_multiple.cpp)
+add_dependencies(quadcopter_ekf_multiple ${catkin_EXPORTED_TARGETS})
+target_link_libraries(quadcopter_ekf_multiple
+${catkin_LIBRARIES}
+)
+
 add_message_files(FILES Navdata.msg)
