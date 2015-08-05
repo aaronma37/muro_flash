@@ -50,7 +50,6 @@ MatrixXf V(3,1);
 MatrixXf VZ(3,1);
 MatrixXf Vmatrix(5,3);
 Matrix4f A;
-MatrixXf V2(3,1)[2];
 Matrix4f K;
 VectorXf Z(4);
 
@@ -61,7 +60,7 @@ geometry_msgs::Twist measurementTwist[2];
 // Keep track of Quadcopter state
 bool got_pose_[2], stationary, got_vel_[2];
 double theta,x,y;
-double T = 50; // ROS loop rate
+double T = 500; // ROS loop rate
 double T1[2]={0,0};
 double T2[2]={0,0};
 int k=0;
