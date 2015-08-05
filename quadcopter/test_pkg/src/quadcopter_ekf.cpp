@@ -256,9 +256,9 @@ int main(int argc, char **argv)
         Vmatrix(0,2)=(measurementPose.pose.position.z-zOld)/(T2-T1);
         
         
-        vXTot=(Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/5;
-        vYTot=(Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/5;
-        vZTot=(Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/5;
+        vXTot=(Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/3;
+        vYTot=(Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/3;
+        vZTot=(Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/3;
         
          std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
