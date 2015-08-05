@@ -50,7 +50,7 @@ MatrixXf V(3,1);
 MatrixXf VZ(3,1);
 MatrixXf Vmatrix(5,3);
 Matrix4f A;
-Matrix4f BB[2];
+MatrixXf V2(3,1)[2];
 Matrix4f K;
 VectorXf Z(4);
 
