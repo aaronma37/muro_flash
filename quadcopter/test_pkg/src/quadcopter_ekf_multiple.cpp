@@ -64,7 +64,7 @@ double T = 500; // ROS loop rate
 double T1[2]={0,0};
 double T2[2]={0,0};
 int k=0;
-int num=2;
+int num=1;
 double xOld[2]={0,0};
 double yOld[2]={0,0};
 double vXTot=0;
@@ -201,6 +201,7 @@ int main(int argc, char **argv)
     T1[i]=ros::Time::now().toSec();
     T2[i]=ros::Time::now().toSec();
     got_pose_[i] = false;
+    poseEstimation[i].header.frame_id="Gypsy Danger";
     }
     
 
