@@ -49,7 +49,7 @@ MatrixXf X(4,1);
 MatrixXf V(3,1);
 MatrixXf VZ(3,1);
 MatrixXf Vmatrix(5,3);
-Matrix4f A;
+Matrix4f A[2];
 Matrix4f K;
 VectorXf Z(4);
 
