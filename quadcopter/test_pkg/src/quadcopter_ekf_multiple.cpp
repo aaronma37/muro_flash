@@ -187,16 +187,20 @@ int main(int argc, char **argv)
     Vmatrix(2,0)=0;
     Vmatrix(3,0)=0;
     Vmatrix(4,0)=0;
-    T1=ros::Time::now().toSec();
-    T2=ros::Time::now().toSec();
+    
     
 
-    geometry_msgs::PoseStamped poseEstimation;
-    geometry_msgs::Twist twistEstimation;
-    poseEstimation.pose.position.x=0;
-    poseEstimation.pose.position.y=0;
-    poseEstimation.pose.position.z=0;
-    poseEstimation.pose.orientation=tf::createQuaternionMsgFromYaw(0);
+    geometry_msgs::PoseStamped poseEstimation[num];
+    geometry_msgs::Twist twistEstimation[num];
+    for (int i=0;i<num;i++){
+    poseEstimation[i].pose.position.x=0;
+    poseEstimation[i].pose.position.y=0;
+    poseEstimation[i].pose.position.z=0;
+    poseEstimation[i].pose.orientation=tf::createQuaternionMsgFromYaw(0);
+    T1[i]=ros::Time::now().toSec();
+    T2[i]=ros::Time::now().toSec();
+    }
+    
 
     pos_sub_= nh_.subscribe<tf2_msgs::TFMessage>("/tf", 1,poseCallback);
     imu_sub_= nh_.subscribe<ardrone_autonomy::Navdata>("/ardrone/navdata", 1,imuCallback);
