@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     void imuCallback(const ardrone_autonomy::Navdata::ConstPtr&);
     // ROS stuff
     // Other member variables
-    got_pose_ = false;
+    
     stationary = false;
     double ux=0;
     double uy=0;
@@ -199,6 +199,7 @@ int main(int argc, char **argv)
     poseEstimation[i].pose.orientation=tf::createQuaternionMsgFromYaw(0);
     T1[i]=ros::Time::now().toSec();
     T2[i]=ros::Time::now().toSec();
+    got_pose_[i] = false;
     }
     
 
@@ -313,7 +314,7 @@ int main(int argc, char **argv)
         // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
         X << X(0)+ ux/T,X(1)+uy/T,X(2)+uz/T,X(3)+twist[i].angular.z/T;
         //Stage 2
-        if (got_pose_ == true)
+        if (got_pose_[i] == true)
         {
             A << 1, 0,0, -twist[i].linear.x/T*sin(yaw[i])-twist[i].linear.y/T*cos(yaw[i]),0, 1,0, twist[i].linear.x/T*cos(yaw[i])+twist[i].linear.y/T*sin(yaw[i]),0, 0, 1,0, 0,0,0,-1;
             P = A*P*A.transpose() + W*Q*W.transpose();
@@ -352,8 +353,9 @@ int main(int argc, char **argv)
         std::cout<<"Best Estimation\n"<<poseEstimation[i]<<"\n---------\n\n";
         std::cout<<"Yaw: "<<yaw[i]<<"\n---------\n\n";
         std::cout<<"--------------------------------------------------------------------";
-        loop_rate.sleep();
-    }
+       
+            }
+     loop_rate.sleep();
         }
         
 }
