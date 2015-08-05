@@ -116,9 +116,9 @@ void imuCallback(const ardrone_autonomy::Navdata::ConstPtr& imuPtr)
 {
     got_vel_ = true;
 std::cout<<imuPtr;
-    measurementTwist.linear.x= imuPtr->vx/1000;    
-    measurementTwist.linear.y= imuPtr->vy/1000;
-    measurementTwist.linear.z= imuPtr->vz/1000;
+    measurementTwist[k].linear.x= imuPtr->vx/1000;    
+    measurementTwist[k].linear.y= imuPtr->vy/1000;
+    measurementTwist[k].linear.z= imuPtr->vz/1000;
 }
 
 // FIXME: what does ipt stand for?
