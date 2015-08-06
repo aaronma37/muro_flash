@@ -20,7 +20,7 @@ goal pose in order to execute a path following algorithm.
 #include <sstream>
 
 // Quadcopter state data
-geometry_msgs::PoseStamped[] poseEst; 
+geometry_msgs::PoseStamped* poseEst; 
 
 // Path data
 geometry_msgs::Pose[] pathPose;
