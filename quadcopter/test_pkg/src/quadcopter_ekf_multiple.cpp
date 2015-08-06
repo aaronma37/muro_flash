@@ -47,7 +47,7 @@ Matrix4f W= Matrix4f::Identity();
 Matrix4f I= Matrix4f::Identity();
 Matrix4f P= Matrix4f::Zero();
 Matrix4f H= Matrix4f::Identity();
-MatrixXf X(4,1);
+MatrixXf X[num];
 MatrixXf V(3,1);
 MatrixXf VZ(3,1);
 MatrixXf Vmatrix[num];
@@ -189,16 +189,19 @@ int main(int argc, char **argv)
     geometry_msgs::PoseStamped poseEstimation[num];
     geometry_msgs::Twist twistEstimation[num];
     poseEstimation[0].header.frame_id="Gypsy Danger";
+    
+    
     for (int i=0;i<num;i++){
-    poseEstimation[i].pose.position.x=0;
-    poseEstimation[i].pose.position.y=0;
-    poseEstimation[i].pose.position.z=0;
-    poseEstimation[i].pose.orientation=tf::createQuaternionMsgFromYaw(0);
-    T1[i]=ros::Time::now().toSec();
-    T2[i]=ros::Time::now().toSec();
-    got_pose_[i] = false;
-    Vmatrix[i].resize(5,3);
-    active[i]=false;
+            poseEstimation[i].pose.position.x=0;
+            poseEstimation[i].pose.position.y=0;
+            poseEstimation[i].pose.position.z=0;
+            poseEstimation[i].pose.orientation=tf::createQuaternionMsgFromYaw(0);
+            T1[i]=ros::Time::now().toSec();
+            T2[i]=ros::Time::now().toSec();
+            got_pose_[i] = false;
+            Vmatrix[i].resize(5,3);
+            X[i].resize(4,1);
+            active[i]=false;
     }
     
 
@@ -220,6 +223,7 @@ int main(int argc, char **argv)
             
             if (active[i]==true){
                 MatrixXf& b = Vmatrix[i];
+                MatrixXf& Xx = X[i];
             
             //Conditionals
         if (got_pose_[i] == true)
@@ -317,7 +321,7 @@ int main(int argc, char **argv)
         // VZ << measurementTwist.linear.x,measurementTwist.linear.y,measurementTwist.linear.y;
          Z << measurementPose[i].pose.position.x,measurementPose[i].pose.position.y,measurementPose[i].pose.position.z,yaw[i];
         // X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
-        X << X(0)+ ux/T,X(1)+uy/T,X(2)+uz/T,X(3)+twist[i].angular.z/T;
+        Xx << Xx(0)+ ux/T,Xx(1)+uy/T,Xx(2)+uz/T,Xx(3)+twist[i].angular.z/T;
         //Stage 2
         if (got_pose_[i] == true)
         {
@@ -329,7 +333,7 @@ int main(int argc, char **argv)
             K = P*W.transpose()*temp.inverse();
 
             //Stage 4
-            X = X + K*(Z-X);
+            Xx = Xx + K*(Z-Xx);
 
             //Stage 5
             P = (I - K*W)*P;
@@ -342,9 +346,9 @@ int main(int argc, char **argv)
             twistEstimation[i].linear.y=V(1);
             twistEstimation[i].linear.z=V(2);
 
-        poseEstimation[i].pose.position.x = X(0);
-        poseEstimation[i].pose.position.y = X(1);
-        poseEstimation[i].pose.position.z = X(2);
+        poseEstimation[i].pose.position.x = Xx(0);
+        poseEstimation[i].pose.position.y = Xx(1);
+        poseEstimation[i].pose.position.z = Xx(2);
         poseEstimation[i].pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
   
         
