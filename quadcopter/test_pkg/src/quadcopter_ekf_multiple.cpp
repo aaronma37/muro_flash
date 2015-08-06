@@ -39,6 +39,8 @@ using namespace Eigen;
 using Eigen::MatrixXd;
 
 // Declare matrixes used in the Kalman Filter
+int k=0;
+int num=1;
 Matrix4f Q= Matrix4f::Zero();
 Matrix4f R= Matrix4f::Zero();
 Matrix4f W= Matrix4f::Identity();
@@ -63,8 +65,6 @@ double theta,x,y;
 double T = 500; // ROS loop rate
 double T1[2]={0,0};
 double T2[2]={0,0};
-int k=0;
-int num=1;
 double xOld[2]={0,0};
 double yOld[2]={0,0};
 double vXTot=0;
