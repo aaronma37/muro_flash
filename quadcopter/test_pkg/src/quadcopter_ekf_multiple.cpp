@@ -229,6 +229,28 @@ int main(int argc, char **argv)
             R(1,1)=1;
             R(2,2)=1;
             R(3,3)=1;
+            
+            
+        b(4,0)=b(3,0);
+        b(3,0)=b(2,0);
+        b(2,0)=b(1,0);
+        b(1,0)=b(0,0);
+        b(0,0)=(measurementPose[i].pose.position.x-xOld[i])/(T2[i]-T1[i]);
+        
+        b(4,1)=b(3,1);
+        b(3,1)=b(2,1);
+        b(2,1)=b(1,1);
+        b(1,1)=b(0,1);
+        b(0,1)=(measurementPose[i].pose.position.y-yOld[i])/(T2[i]-T1[i]);
+        
+        b(4,2)=b(3,2);
+        b(3,2)=b(2,2);
+        b(2,2)=b(1,2);
+        b(1,2)=b(0,2);
+        b(0,2)=(measurementPose[i].pose.position.z-zOld[i])/(T2[i]-T1[i]);
+        
+        
+        
         }
         else
         {
@@ -260,29 +282,9 @@ int main(int argc, char **argv)
         uy=-twist[i].linear.y*cos(yaw[i])+twist[i].linear.x*sin(yaw[i]);
         uz=twist[i].linear.z;
         
-        b(4,0)=b(3,0);
-        b(3,0)=b(2,0);
-        b(2,0)=b(1,0);
-        b(1,0)=b(0,0);
-        b(0,0)=(measurementPose[i].pose.position.x-xOld[i])/(T2[i]-T1[i]);
-        
-        b(4,1)=b(3,1);
-        b(3,1)=b(2,1);
-        b(2,1)=b(1,1);
-        b(1,1)=b(0,1);
-        b(0,1)=(measurementPose[i].pose.position.y-yOld[i])/(T2[i]-T1[i]);
-        
-        b(4,2)=b(3,2);
-        b(3,2)=b(2,2);
-        b(2,2)=b(1,2);
-        b(1,2)=b(0,2);
-        b(0,2)=(measurementPose[i].pose.position.z-zOld[i])/(T2[i]-T1[i]);
-        
-        
         vXTot=(b(2,0)+b(1,0)+b(0,0))/3;
         vYTot=(b(2,1)+b(1,1)+b(0,1))/3;
         vZTot=(b(2,2)+b(1,2)+b(0,2))/3;
-        
          std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
         //     ux=1;
