@@ -48,7 +48,7 @@ Matrix4f H= Matrix4f::Identity();
 MatrixXf X(4,1);
 MatrixXf V(3,1);
 MatrixXf VZ(3,1);
-MatrixXf Vmatrix(5,3);
+MatrixXf Vmatrix[num];
 Matrix4f A;
 Matrix4f K;
 VectorXf Z(4);
@@ -183,14 +183,7 @@ int main(int argc, char **argv)
     VZ(0)=0;
     VZ(1)=0;
     VZ(2)=0;
-    Vmatrix(0,0)=0;
-    Vmatrix(1,0)=0;
-    Vmatrix(2,0)=0;
-    Vmatrix(3,0)=0;
-    Vmatrix(4,0)=0;
     
-    
-
     geometry_msgs::PoseStamped poseEstimation[num];
     geometry_msgs::Twist twistEstimation[num];
     for (int i=0;i<num;i++){
@@ -202,6 +195,7 @@ int main(int argc, char **argv)
     T2[i]=ros::Time::now().toSec();
     got_pose_[i] = false;
     poseEstimation[i].header.frame_id="Gypsy Danger";
+    Vmatrix[i].resize(5,3);
     }
     
 
@@ -220,6 +214,8 @@ int main(int argc, char **argv)
         ros::spinOnce();
 
         for (int i=0;i<num;i++){
+            MatrixXf& b = Vmatrix[i];
+            
             //Conditionals
         if (got_pose_[i] == true)
         {
@@ -259,28 +255,28 @@ int main(int argc, char **argv)
         uy=-twist[i].linear.y*cos(yaw[i])+twist[i].linear.x*sin(yaw[i]);
         uz=twist[i].linear.z;
         
-        Vmatrix(4,0)=Vmatrix(3,0);
-        Vmatrix(3,0)=Vmatrix(2,0);
-        Vmatrix(2,0)=Vmatrix(1,0);
-        Vmatrix(1,0)=Vmatrix(0,0);
-        Vmatrix(0,0)=(measurementPose[i].pose.position.x-xOld[i])/(T2[i]-T1[i]);
+        b(4,0)=b(3,0);
+        b(3,0)=b(2,0);
+        b(2,0)=b(1,0);
+        b(1,0)=b(0,0);
+        b(0,0)=(measurementPose[i].pose.position.x-xOld[i])/(T2[i]-T1[i]);
         
-        Vmatrix(4,1)=Vmatrix(3,1);
-        Vmatrix(3,1)=Vmatrix(2,1);
-        Vmatrix(2,1)=Vmatrix(1,1);
-        Vmatrix(1,1)=Vmatrix(0,1);
-        Vmatrix(0,1)=(measurementPose[i].pose.position.y-yOld[i])/(T2[i]-T1[i]);
+        b(4,1)=b(3,1);
+        b(3,1)=b(2,1);
+        b(2,1)=b(1,1);
+        b(1,1)=b(0,1);
+        b(0,1)=(measurementPose[i].pose.position.y-yOld[i])/(T2[i]-T1[i]);
         
-        Vmatrix(4,2)=Vmatrix(3,2);
-        Vmatrix(3,2)=Vmatrix(2,2);
-        Vmatrix(2,2)=Vmatrix(1,2);
-        Vmatrix(1,2)=Vmatrix(0,2);
-        Vmatrix(0,2)=(measurementPose[i].pose.position.z-zOld[i])/(T2[i]-T1[i]);
+        b(4,2)=b(3,2);
+        b(3,2)=b(2,2);
+        b(2,2)=b(1,2);
+        b(1,2)=b(0,2);
+        b(0,2)=(measurementPose[i].pose.position.z-zOld[i])/(T2[i]-T1[i]);
         
         
-        vXTot=(Vmatrix(2,0)+Vmatrix(1,0)+Vmatrix(0,0))/3;
-        vYTot=(Vmatrix(2,1)+Vmatrix(1,1)+Vmatrix(0,1))/3;
-        vZTot=(Vmatrix(2,2)+Vmatrix(1,2)+Vmatrix(0,2))/3;
+        vXTot=(b(2,0)+b(1,0)+b(0,0))/3;
+        vYTot=(b(2,1)+b(1,1)+b(0,1))/3;
+        vZTot=(b(2,2)+b(1,2)+b(0,2))/3;
         
          std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
         // if (ux>1){
