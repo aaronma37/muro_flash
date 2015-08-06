@@ -93,4 +93,10 @@ target_link_libraries(quadcopter_ekf_multiple
 ${catkin_LIBRARIES}
 )
 
+add_executable(path_follower src/path_follower.cpp)
+add_dependencies(path_follower ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower
+${catkin_LIBRARIES}
+)
+
 add_message_files(FILES Navdata.msg)
