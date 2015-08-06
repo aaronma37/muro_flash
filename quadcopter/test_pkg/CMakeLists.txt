@@ -21,7 +21,8 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
-#add_message_files( DIRECTORY msg FILES PoseWithName.msg )
+#add_message_files( DIRECTORY msg FILES  pathData.msg )
+                                        #PoseWithName.msg
 
 #generate_messages(
 #  DEPENDENCIES
@@ -89,6 +90,12 @@ ${catkin_LIBRARIES}
 add_executable(quadcopter_ekf_multiple src/quadcopter_ekf_multiple.cpp)
 add_dependencies(quadcopter_ekf_multiple ${catkin_EXPORTED_TARGETS})
 target_link_libraries(quadcopter_ekf_multiple
+${catkin_LIBRARIES}
+)
+
+add_executable(path_follower src/path_follower.cpp)
+add_dependencies(path_follower ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower
 ${catkin_LIBRARIES}
 )
 

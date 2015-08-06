@@ -70,7 +70,7 @@ double T = 50; // ROS loop rate
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.5;
 const double DEFAULT_KI = 0.01;
-const double DEFAULT_KD = 0.03;
+const double DEFAULT_KD = 0.1;
 const double DEFAULT_KPZ = 4;
 const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = .1;
@@ -92,8 +92,8 @@ double sZprev = 0;
 double pastX = 0;
 double pastY = 0;
 double pastZ = 0;
-double sliderSlope = 0.27;
-double sliderGain = 2.0;
+double sliderSlope = 0.8;
+double sliderGain = 0.8;
 double sliderRange = 0.25;
 double sliderAmp = 0.35;
 
@@ -322,9 +322,9 @@ void PID(void)
     }
     
     // Coordinate transformation from global to local coordinates
-    double tempX = velocity.linear.x;
-    velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
-    velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
+    //double tempX = velocity.linear.x;
+    //velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
+    //velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
