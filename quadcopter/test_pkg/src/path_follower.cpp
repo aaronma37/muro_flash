@@ -3,24 +3,14 @@
 This node processes an array of pose and publishes necessary 
 goal pose in order to execute a path following algorithm.
 
-WARNING: This code utilizes a lot of spinOnce(), minimize use
-of callbacks to avoid lengthy computations.
-
 */
 
 #include <iostream>
 #include <stdio.h>
 #include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
-#include <tf2_msgs/TFMessage.h>
-#include "geometry_msgs/TransformStamped.h"
-#include "geometry_msgs/PoseWithCovarianceStamped.h"
+#include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PoseStamped.h>
-#include <tf/tf.h>
-#include <fstream>
 #include <math.h>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include <vector>
 #include <stdlib.h>
 #include "std_msgs/String.h"
@@ -28,8 +18,10 @@ of callbacks to avoid lengthy computations.
 #include <std_msgs/Bool.h>
 #include <sstream>
 
+// Quadcopter state data
+geometry_msgs::PoseStamped poseEst; 
+
 // Path data
-int pathLength = 0;
 geometry_msgs::Pose[] pathPose;
 
 // Constants
@@ -41,10 +33,22 @@ bool newPath;
 bool isOpenLoop; 
 
 
-// Unpack array of pose and determine type of path
-void pathCallback(const geometry_msgs::PoseStamped::ConstPtr& pathPtr)
+// Determine type of path and unpack array of pose
+void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
 {
   newPath = true;
+  
+  // Process path data
+  if( (pathPtr -> header.frame_id).compare("open") == 0) // check if open loop
+  {
+    isOpenLoop = true;
+    pathPose = pathPtr -> poses;
+  }
+  else
+  {
+    isOpenLoop = false;
+    pathPose = pathPtr -> poses;
+  }
 }
 
 int main(int argc, char **argv)
@@ -57,7 +61,7 @@ int main(int argc, char **argv)
     ros::Subscriber pathSub;
     ros::Publisher goalPub;
 
-    pathSub = n.subscribe<geometry_msgs::PoseStamped>("/path", 1, pathCallback); // FIXME: change msg type
+    pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
     goalPub = n.advertise<geometry_msgs::Pose>("/goal_pose", 1000, true);
 
     // Initialize msgs and flags
@@ -74,7 +78,7 @@ int main(int argc, char **argv)
             newPath = false; // reset flag
             
             // Publish array of pose
-            for(int i = 0; i < pathLength; i++) // FIXME: pseudocode
+            for(int i = 0; i < pathPose.size; i++)
             {
               ros::spinOnce();
               if(newPath)
@@ -91,7 +95,7 @@ int main(int argc, char **argv)
             while(!newPath) // while no new path has been published
             {
               // Publish array of pose
-              for(int i = 0; i < pathlength; i++) // FIXME: pseudocode
+              for(int i = 0; i < pathPose.size; i++)
               {
                 ros::spinOnce();
                 if(newPath)
