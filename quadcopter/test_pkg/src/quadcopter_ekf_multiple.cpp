@@ -345,7 +345,7 @@ int main(int argc, char **argv)
         poseEstimation[i].pose.position.x = Xx(0);
         poseEstimation[i].pose.position.y = Xx(1);
         poseEstimation[i].pose.position.z = Xx(2);
-        poseEstimation[i].pose.orientation = tf::createQuaternionMsgFromYaw(X(3));
+        poseEstimation[i].pose.orientation = tf::createQuaternionMsgFromYaw(Xx(3));
   
         
       
