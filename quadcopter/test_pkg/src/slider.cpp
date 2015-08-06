@@ -322,9 +322,9 @@ void PID(void)
     }
     
     // Coordinate transformation from global to local coordinates
-    double tempX = velocity.linear.x;
-    velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
-    velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
+    //double tempX = velocity.linear.x;
+    //velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
+    //velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
