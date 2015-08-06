@@ -10,6 +10,7 @@ goal pose in order to execute a path following algorithm.
 #include <ros/ros.h>
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Pose.h>
 #include <math.h>
 #include <vector>
 #include <stdlib.h>
