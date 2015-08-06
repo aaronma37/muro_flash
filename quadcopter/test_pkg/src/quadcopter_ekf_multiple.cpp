@@ -40,7 +40,7 @@ using Eigen::MatrixXd;
 
 // Declare matrixes used in the Kalman Filter
 int k=0;
-const int num=1;
+const int num=1000;
 Matrix4f Q= Matrix4f::Zero();
 Matrix4f R= Matrix4f::Zero();
 Matrix4f W= Matrix4f::Identity();
@@ -63,16 +63,17 @@ geometry_msgs::Twist measurementTwist[2];
 bool got_pose_[2], stationary, got_vel_[2];
 double theta,x,y;
 double T = 500; // ROS loop rate
-double T1[2]={0,0};
-double T2[2]={0,0};
-double xOld[2]={0,0};
-double yOld[2]={0,0};
+double T1[num];
+double T2[num];
+double xOld[num];
+double yOld[num];
+bool   active[num];
 double vXTot=0;
 double vYTot=0;
 double vZTot=0;
-double zOld[2]={0,0};
+double zOld[num];
 int counter11 = 0;
-double yaw[2]={0,0}; // FIXME: What is this for?
+double yaw[num]; // FIXME: What is this for?
 
 // Updates position coordinates
 void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
@@ -93,6 +94,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
         return;
     }
     got_pose_[k] = true;
+    active[k]=true;
     measurementPose[k].header.frame_id=msg.transforms[0].child_frame_id;
     xOld[k]=measurementPose[k].pose.position.x;
     yOld[k]=measurementPose[k].pose.position.y;
@@ -186,6 +188,7 @@ int main(int argc, char **argv)
     
     geometry_msgs::PoseStamped poseEstimation[num];
     geometry_msgs::Twist twistEstimation[num];
+    poseEstimation[0].header.frame_id="Gypsy Danger";
     for (int i=0;i<num;i++){
     poseEstimation[i].pose.position.x=0;
     poseEstimation[i].pose.position.y=0;
@@ -194,8 +197,8 @@ int main(int argc, char **argv)
     T1[i]=ros::Time::now().toSec();
     T2[i]=ros::Time::now().toSec();
     got_pose_[i] = false;
-    poseEstimation[i].header.frame_id="Gypsy Danger";
     Vmatrix[i].resize(5,3);
+    active[i]=false;
     }
     
 
@@ -214,7 +217,9 @@ int main(int argc, char **argv)
         ros::spinOnce();
 
         for (int i=0;i<num;i++){
-            MatrixXf& b = Vmatrix[i];
+            
+            if (active[i]==true){
+                MatrixXf& b = Vmatrix[i];
             
             //Conditionals
         if (got_pose_[i] == true)
@@ -352,6 +357,8 @@ int main(int argc, char **argv)
         std::cout<<"Yaw: "<<yaw[i]<<"\n---------\n\n";
         std::cout<<"--------------------------------------------------------------------";
        
+            }
+            
             }
      loop_rate.sleep();
         }
