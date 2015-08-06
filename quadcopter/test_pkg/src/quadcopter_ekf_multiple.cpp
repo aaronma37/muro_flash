@@ -185,7 +185,7 @@ int main(int argc, char **argv)
     geometry_msgs::PoseStamped poseEstimation[num];
     geometry_msgs::Twist twistEstimation[num];
     poseEstimation[0].header.frame_id="Gypsy Danger";
-    
+    poseEstimation[1].header.frame_id="Typhoon";
     
     for (int i=0;i<num;i++){
             poseEstimation[i].pose.position.x=0;
