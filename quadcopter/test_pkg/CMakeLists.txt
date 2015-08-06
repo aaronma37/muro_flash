@@ -21,7 +21,8 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
-#add_message_files( DIRECTORY msg FILES PoseWithName.msg )
+add_message_files( DIRECTORY msg FILES  pathData.msg )
+                                        #PoseWithName.msg
 
 #generate_messages(
 #  DEPENDENCIES
