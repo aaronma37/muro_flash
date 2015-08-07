@@ -23,7 +23,7 @@ goal pose in order to execute a path following algorithm.
 geometry_msgs::PoseStamped poseEst; 
 
 // Path data
-geometry_msgs::Pose pathPose[];
+geometry_msgs::Pose* pathPose;
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -41,7 +41,7 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   newPath = true;
   
   // Process path data
-  pathPose = new geometry_msgs::Pose[100];
+  //pathPose = new geometry_msgs::Pose[100];
   if( (pathPtr -> header.frame_id).compare("open") == 0) // check if open loop
   {
     isOpenLoop = true;
