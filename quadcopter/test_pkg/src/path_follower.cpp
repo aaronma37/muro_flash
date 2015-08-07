@@ -23,7 +23,7 @@ goal pose in order to execute a path following algorithm.
 geometry_msgs::PoseStamped poseEst; 
 
 // Path data
-geometry_msgs::Pose* pathPose;
+geometry_msgs::Pose pathPose[];
 
 // Constants
 const double PI = 3.141592653589793238463;
