@@ -41,7 +41,6 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   newPath = true;
   
   // Process path data
-  //pathPose = new geometry_msgs::Pose[100];
   if( (pathPtr -> header.frame_id).compare("open") == 0) // check if open loop
   {
     isOpenLoop = true;
