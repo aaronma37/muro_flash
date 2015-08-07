@@ -27,6 +27,7 @@ geometry_msgs::Pose pathPose[];
 
 // Constants
 const double PI = 3.141592653589793238463;
+const int T = 50;
 
 
 // Flags
