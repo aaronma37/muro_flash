@@ -59,6 +59,8 @@ VectorXf Z(4);
 geometry_msgs::PoseStamped measurementPose[num];
 geometry_msgs::Twist twist[num];
 geometry_msgs::Twist measurementTwist[num];
+geometry_msgs::PoseStamped poseEstimation[num];
+geometry_msgs::Twist twistEstimation[num];
 // Keep track of Quadcopter state
 bool got_pose_[num], stationary, got_vel_[num];
 double theta,x,y;
@@ -188,8 +190,7 @@ int main(int argc, char **argv)
     VZ(1)=0;
     VZ(2)=0;
     
-    geometry_msgs::PoseStamped poseEstimation[num];
-    geometry_msgs::Twist twistEstimation[num];
+    
     poseEstimation[0].header.frame_id="Gypsy Danger";
     poseEstimation[1].header.frame_id="Typhoon";
     
