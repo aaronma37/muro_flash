@@ -87,7 +87,7 @@ int main(int argc, char **argv)
               {
                 break;
               }
-              goalPub.pub(pathPose[i]);
+              goalPub.publish(pathPose[i]);
               loop_rate.sleep();
             }
           }
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
                 {
                   break;
                 }
-                goalPub.pub(pathPose[i]);
+                goalPub.publish(pathPose[i]);
                 loop_rate.sleep();
               }
             }
