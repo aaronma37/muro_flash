@@ -23,10 +23,11 @@ goal pose in order to execute a path following algorithm.
 geometry_msgs::PoseStamped poseEst; 
 
 // Path data
-geometry_msgs::Pose[] pathPose;
+geometry_msgs::PoseArray pathPose;
 
 // Constants
 const double PI = 3.141592653589793238463;
+const int T = 50;
 
 
 // Flags
@@ -43,12 +44,12 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   if( (pathPtr -> header.frame_id).compare("open") == 0) // check if open loop
   {
     isOpenLoop = true;
-    pathPose = pathPtr -> poses;
+    pathPose = *pathPtr;
   }
   else
   {
     isOpenLoop = false;
-    pathPose = pathPtr -> poses;
+    pathPose = *pathPtr;
   }
 }
 
@@ -79,14 +80,14 @@ int main(int argc, char **argv)
             newPath = false; // reset flag
             
             // Publish array of pose
-            for(int i = 0; i < pathPose.size; i++)
+            for(int i = 0; i < pathPose.poses.size(); i++)
             {
               ros::spinOnce();
               if(newPath)
               {
                 break;
               }
-              goalPub.pub(pathPose[i]);
+              goalPub.publish( (pathPose.poses)[i] );
               loop_rate.sleep();
             }
           }
@@ -96,14 +97,14 @@ int main(int argc, char **argv)
             while(!newPath) // while no new path has been published
             {
               // Publish array of pose
-              for(int i = 0; i < pathPose.size; i++)
+              for(int i = 0; i < pathPose.poses.size(); i++)
               {
                 ros::spinOnce();
                 if(newPath)
                 {
                   break;
                 }
-                goalPub.pub(pathPose[i]);
+                goalPub.publish( (pathPose.poses)[i] );
                 loop_rate.sleep();
               }
             }
