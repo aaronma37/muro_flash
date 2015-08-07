@@ -81,7 +81,7 @@ int main(int argc, char **argv)
             newPath = false; // reset flag
             
             // Publish array of pose
-            for(int i = 0; i < pathPose.poses.size; i++)
+            for(int i = 0; i < pathPose.poses.size(); i++)
             {
               ros::spinOnce();
               if(newPath)
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
             while(!newPath) // while no new path has been published
             {
               // Publish array of pose
-              for(int i = 0; i < pathPose.poses.size; i++)
+              for(int i = 0; i < pathPose.poses.size(); i++)
               {
                 ros::spinOnce();
                 if(newPath)
