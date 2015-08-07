@@ -98,8 +98,10 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
         dummyNumber++;
         std::ostringstream ss;
         ss << dummyNumber;
+        string s = "dummy";
+        s+=ss.str();
         k=100+dummyNumber;
-        poseEstimation[k].header.frame_id="7";
+        poseEstimation[k].header.frame_id=s;
     }
     else{
         return;
