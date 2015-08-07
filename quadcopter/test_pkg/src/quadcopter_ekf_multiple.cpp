@@ -73,6 +73,7 @@ double vYTot=0;
 double vZTot=0;
 double zOld[num];
 int counter11 = 0;
+int dummyNumber=0;
 double yaw[num]; // FIXME: What is this for?
 
 // Updates position coordinates
@@ -89,6 +90,10 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     }
     else if (msg.transforms[0].child_frame_id.compare("Typhoon")==0){
         k=1;
+    }
+    else if (msg.transforms[0].child_frame_id.compare("Dummy")==0){
+        dummyNumber++;
+        k=100+dummyNumber;
     }
     else{
         return;
