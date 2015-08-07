@@ -96,8 +96,10 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     }
     else if (msg.transforms[0].child_frame_id.compare("Dummy")==0){
         dummyNumber++;
+        std::ostringstream ss;
+        ss << dummyNumber;
         k=100+dummyNumber;
-        poseEstimation[k].header.frame_id=to_string(dummyNumber);
+        poseEstimation[k].header.frame_id=to_string(ss);
     }
     else{
         return;
