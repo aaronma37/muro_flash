@@ -56,11 +56,11 @@ Matrix4f K;
 VectorXf Z(4);
 
 // Position and movement messages
-geometry_msgs::PoseStamped measurementPose[2];
-geometry_msgs::Twist twist[2];
-geometry_msgs::Twist measurementTwist[2];
+geometry_msgs::PoseStamped measurementPose[num];
+geometry_msgs::Twist twist[num];
+geometry_msgs::Twist measurementTwist[num];
 // Keep track of Quadcopter state
-bool got_pose_[2], stationary, got_vel_[2];
+bool got_pose_[num], stationary, got_vel_[num];
 double theta,x,y;
 double T = 500; // ROS loop rate
 double T1[num];
