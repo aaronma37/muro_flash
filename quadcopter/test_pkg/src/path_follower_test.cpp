@@ -33,9 +33,9 @@ int main(int argc, char **argv)
     testPose.header.frame_id = "OPEN";
     for(int i = 0; i < 10; i++)
     {
-      (testPose.poses)[i].position.x = i;
-      (testPose.poses)[i].position.y = i;
-      (testPose.poses)[i].position.z = i;
+      (testPose.poses[i]).position.x = i;
+      (testPose.poses[i]).position.y = i;
+      (testPose.poses[i]).position.z = i;
     }
     
     while(ros::ok())
