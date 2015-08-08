@@ -99,4 +99,10 @@ target_link_libraries(path_follower
 ${catkin_LIBRARIES}
 )
 
+add_executable(path_follower_tes src/path_follower_test.cpp)
+add_dependencies(path_follower_test ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower_test
+${catkin_LIBRARIES}
+)
+
 add_message_files(FILES Navdata.msg)
