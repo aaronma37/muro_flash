@@ -15,6 +15,9 @@
 // Test msg
 geometry_msgs::PoseArray testPose;
 
+// Constants
+const double T = 50;
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "path_follower"); //Ros Initialize
