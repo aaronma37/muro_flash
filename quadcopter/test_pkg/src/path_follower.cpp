@@ -24,6 +24,7 @@ geometry_msgs::PoseStamped poseEst;
 
 // Path data
 geometry_msgs::PoseArray pathPose;
+geometry_msgs::PoseStamped goalPose;
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -64,8 +65,9 @@ int main(int argc, char **argv)
     ros::Publisher goalPub;
 
     pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
-    goalPub = n.advertise<geometry_msgs::Pose>("/goal_pose", 1000, true);
+    goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
 
+   
     // Initialize msgs and flags
     newPath = false;
 
@@ -87,7 +89,8 @@ int main(int argc, char **argv)
               {
                 break;
               }
-              goalPub.publish( (pathPose.poses)[i] );
+              goalPose.pose = (pathPose.poses)[i];
+              goalPub.publish(goalPose);
               loop_rate.sleep();
             }
           }
@@ -104,7 +107,8 @@ int main(int argc, char **argv)
                 {
                   break;
                 }
-                goalPub.publish( (pathPose.poses)[i] );
+                goalPose.pose = (pathPose.poses)[i];
+                goalPub.publish(goalPose);
                 loop_rate.sleep();
               }
             }
