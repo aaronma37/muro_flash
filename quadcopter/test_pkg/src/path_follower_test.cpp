@@ -38,7 +38,7 @@ int main(int argc, char **argv)
       (testPose.poses)[i].position.z = i;
     }
     
-    goalPub.publish(testPose);
+    testPub.publish(testPose);
     
     loop_rate.sleep();
 }
