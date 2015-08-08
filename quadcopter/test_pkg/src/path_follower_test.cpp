@@ -39,6 +39,7 @@ int main(int argc, char **argv)
     }
     
     testPub.publish(testPose);
+    ros::shutdown();
     
     return 0;
 }
