@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Publisher testPub;
 
-    goalPub = n.advertise<geometry_msgs::PoseArray>("/path", 1000, true);
+    testPub = n.advertise<geometry_msgs::PoseArray>("/path", 1000, true);
 
     // Initialize test msg
     testPose.header.frame_id = "OPEN";
