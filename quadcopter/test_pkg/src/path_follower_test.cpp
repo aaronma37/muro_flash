@@ -40,6 +40,6 @@ int main(int argc, char **argv)
     
     testPub.publish(testPose);
     
-    loop_rate.sleep();
+    return 0;
 }
 //END
