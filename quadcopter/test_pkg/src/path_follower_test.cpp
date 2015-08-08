@@ -16,7 +16,7 @@
 geometry_msgs::PoseArray testPose;
 
 // Constants
-const double T = 50;
+const double T = 1;
 
 int main(int argc, char **argv)
 {
@@ -38,8 +38,11 @@ int main(int argc, char **argv)
       (testPose.poses)[i].position.z = i;
     }
     
-    testPub.publish(testPose);
-    ros::shutdown();
+    while(ros::ok())
+    {
+        testPub.publish(testPose);
+        loop_rate.sleep();
+    }
     
     return 0;
 }
