@@ -100,6 +100,10 @@ int main(int argc, char **argv)
             newPath = false; // reset flag and set stopping condition for while loop
             while(!newPath) // while no new path has been published
             {
+              if(!ros::ok())
+              {
+                break;
+              }
               // Publish array of pose
               for(int i = 0; i < pathPose.poses.size(); i++)
               {
