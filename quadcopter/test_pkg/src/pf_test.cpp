@@ -45,12 +45,10 @@ int main(int argc, char **argv)
       (testPose.poses[i]).position.z = i;
     }
     
-    while(ros::ok())
-    {
-        testPub.publish(testPose);
-        loop_rate.sleep();
-    }
+    testPub.publish(testPose);
+    loop_rate.sleep();
     
+    ros::shutdown();
     return 0;
 }
 //END
