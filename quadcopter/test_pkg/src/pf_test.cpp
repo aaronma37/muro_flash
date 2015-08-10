@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Publisher testPub;
     
-    testPose.poses = new geometry_msgs::Pose[10];
+    testPose.poses = poseArray;
 
     testPub = n.advertise<geometry_msgs::PoseArray>("/path", 1000, true);
 
