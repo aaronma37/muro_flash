@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     testPub = n.advertise<geometry_msgs::PoseArray>("/path", 1000, true);
 
     // Initialize test msg
-    testPose.header.frame_id = "OPEN";
+    testPose.header.frame_id = "CLOSED";
     for(int i = 0; i < 10; i++)
     {
         testPose.poses.push_back(poseArray[i]);
