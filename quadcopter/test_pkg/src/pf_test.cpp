@@ -14,7 +14,7 @@
 
 // Test msg
 geometry_msgs::PoseArray testPose;
-geometry_msgs::Pose[10] poseArray;
+geometry_msgs::Pose poseArray[10];
 
 // Constants
 const double T = 1;
