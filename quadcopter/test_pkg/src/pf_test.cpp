@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     testPose.header.frame_id = "OPEN";
     for(int i = 0; i < 10; i++)
     {
-        testPose.poses.push_back( new geomtry_msgs::Pose() );
+        testPose.poses.push_back(poseArray[i]);
     }
     for(int i = 0; i < 10; i++)
     {
