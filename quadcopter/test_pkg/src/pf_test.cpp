@@ -48,6 +48,12 @@ int main(int argc, char **argv)
     testPub.publish(testPose);
     loop_rate.sleep();
     
+    testPose.header.frame_id = "OPEN";
+    for(int i = 0; i < 10; i++)
+    {
+        testPose.poses.push_back(poseArray[i]);
+    }
+    
     ros::shutdown();
     return 0;
 }
