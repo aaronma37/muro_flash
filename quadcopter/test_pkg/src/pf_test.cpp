@@ -28,12 +28,16 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Publisher testPub;
     
-    testPose.poses = poseArray;
+    //testPose.poses = poseArray;
 
     testPub = n.advertise<geometry_msgs::PoseArray>("/path", 1000, true);
 
     // Initialize test msg
     testPose.header.frame_id = "OPEN";
+    for(int i = 0; i < 10; i++)
+    {
+        testPose.poses.push_back(new geomtry_msgs::Pose);
+    }
     for(int i = 0; i < 10; i++)
     {
       (testPose.poses[i]).position.x = i;
