@@ -110,6 +110,7 @@ int main(int argc, char **argv)
                 }
                 goalPose.pose = (pathPose.poses)[i];
                 goalPub.publish(goalPose);
+                ROS_INFO("%d\n", i); //FIXME: testing
                 loop_rate.sleep();
               }
             }
