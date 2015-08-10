@@ -33,7 +33,7 @@ geometry_msgs::PoseStamped Pose;
 geometry_msgs::PoseStamped Pose2;
 geometry_msgs::PoseStamped Pose3;
 geometry_msgs::PoseStamped Pose4;
-geometry_msgs::PoseStamped Pose5;
+geometry_msgs::PoseStamped Pose5;		
 //turtlebot_deployment::PoseWithName Pose;
 Pose.header.seq=1;
 Pose2.header.seq=2;
