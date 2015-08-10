@@ -11,6 +11,7 @@
 #include <std_msgs/Float64.h>
 #include <std_msgs/Bool.h>
 #include <sstream>
+#include <duration.h>
 
 // Test msg
 geometry_msgs::PoseArray testPose;
@@ -46,7 +47,9 @@ int main(int argc, char **argv)
     }
     
     testPub.publish(testPose);
-    loop_rate.sleep();
+   
+    ros::Duration d = ros::Duration(10, 0);
+    d.sleep();
     
     testPose.header.frame_id = "OPEN";
     for(int i = 0; i < 10; i++)
