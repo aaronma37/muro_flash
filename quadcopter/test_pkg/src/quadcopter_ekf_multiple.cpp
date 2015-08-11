@@ -20,20 +20,8 @@
 #include <std_msgs/Float64.h>
 #include <sstream>
 /* -----------------------------------------------------------------------------------------
-CREDIT
-Credit to
-Eigen for their opensource linear algebra library and headers
-Allen for previous iteration of Kalman filter
-ROS opensource
-*/
-/*
-Notes for meeting-
--Genesis
-*/
-/*
-Changelog
------------------------------------------------------------------------------------------
-BEGIN
+This file is for building an Extended Kalman filter for multiple drones.
+
 */
 using namespace std;
 using namespace Eigen;
@@ -86,8 +74,6 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
     
     std::cout<<"pass";
-    // FIXME: Set found agent's position
-    // FIXME: NOT SURE ABOUT PITCH AND ROLL
     if(msg.transforms[0].child_frame_id.compare("Gypsy Danger")==0){
         k=0;
     }
@@ -137,7 +123,6 @@ std::cout<<imuPtr;
     measurementTwist[k].linear.z= imuPtr->vz/1000;
 }
 
-// FIXME: what does ipt stand for?
 void iptCallback(const geometry_msgs::Twist::ConstPtr& ipt)
 {
     twist[k].linear=ipt->linear;
