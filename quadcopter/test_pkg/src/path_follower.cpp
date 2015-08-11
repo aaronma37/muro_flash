@@ -26,8 +26,6 @@ geometry_msgs::PoseStamped poseEst;
 // Path data
 geometry_msgs::PoseArray pathPose;
 geometry_msgs::PoseStamped goalPose;
-//geometry_msgs::PoseArray closestPosition; //To store closest position to Quadcopter
-//geometry_msgs::Vector2 closestPosition; //To calculates closest position to quadCopter.
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -41,6 +39,12 @@ double startingPointIndex = 0;
 // Flags
 bool newPath;
 bool isOpenLoop; 
+
+// Updates current position estimate sent by the ekf
+void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
+{
+    poseEst.pose = posePtr -> pose;
+}
 
 // Determine type of path and unpack array of pose
 void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
@@ -60,9 +64,13 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
+// This function calculates whther the current position is within a certain boundary of the
+// goal position. If it is, then the next position in the path should be published.
+bool isOutsideBoundary
+
 double distanceFormula (double x2, double x1, double y2, double y1)
 {
-  double c =0;
+  double c = 0;
   c = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
   return c;
 }
@@ -73,8 +81,9 @@ void closestDistance (void)
 {
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
-    closestPosition = distanceFormula (pathPose.poses[i].position.x,poseEst.pose.position.x,pathPose.poses[i].position.y,poseEst.pose.position.y);
-    //closestPosition = sqrt ( pow(pathPose.poses[i].position.x - poseEst.pose.position.x, 2) + pow(pathPose.poses[i].position.y - poseEst.pose.position.y, 2) );
+    closestPosition = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
+                                        pathPose.poses[i].position.y, poseEst.pose.position.y );
+
     if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
       { 
         distanceClosest = closestPosition; 
@@ -91,9 +100,11 @@ int main(int argc, char **argv)
 
     ros::NodeHandle n;
     ros::Subscriber pathSub;
+    ros::Subscriber poseEstSub;
     ros::Publisher goalPub;
 
     pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
+    poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
 
    
@@ -113,16 +124,19 @@ int main(int argc, char **argv)
             // Publish array of pose
             for(int i = 0; i < pathPose.poses.size(); i++)
             {
-              ros::spinOnce();
-              if(newPath)
+              if(newPath || !ros::ok())
               {
                 break;
               }
               goalPose.pose = (pathPose.poses)[i];
               goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
               goalPub.publish(goalPose);
-              ROS_INFO("%d\n", i); //FIXME: testing
-              loop_rate.sleep();
+              while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
+                                      pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+              {
+                ros::spinOnce();
+                loop_rate.sleep();
+              }
             }
           }
           else
@@ -130,23 +144,21 @@ int main(int argc, char **argv)
             newPath = false; // reset flag and set stopping condition for while loop
             while(!newPath) // while no new path has been published
             {
-              if(!ros::ok())
-              {
-                break;
-              }
               // Publish array of pose
               for(int i = 0; i < pathPose.poses.size(); i++)
               {
-                ros::spinOnce();
-                if(newPath)
+                if(newPath || !ros::ok())
                 {
                   break;
                 }
                 goalPose.pose = (pathPose.poses)[i];
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                ROS_INFO("%d\n", i); //FIXME: testing
-                loop_rate.sleep();
+                while(isOutsideBoundary())
+                {
+                  ros::spinOnce();
+                  loop_rate.sleep();
+                }
               }
             }
           }
