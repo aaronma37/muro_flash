@@ -62,19 +62,17 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
 
 //This function will calculate the shortest distance between the quadcopter and the position points.
 //id shorterstDistanceCalc()
-void closestDistance ()
+void closestDistance (void)
 {
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
     
-  closestPosition = (sqrt ( ((pathPose.poses)[i].position.x - poseEst.x)^2 + ( (pathPose.poses)[i].position.y - poseEst.y )^2 ) )
- 
-      if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
-        { 
+    closestPosition = sqrt ( pow(pathPose.poses[i].position.x - poseEst.x, 2) + pow( pathPose.poses[i].position.y - poseEst.y, 2) );
+    if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
+      { 
         distanceClosest = closestPosition; 
         startingPointIndex = i;
-        } 
-  
+      }
   }
 }
 
