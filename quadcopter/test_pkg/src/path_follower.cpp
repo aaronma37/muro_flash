@@ -25,16 +25,22 @@ geometry_msgs::PoseStamped poseEst;
 // Path data
 geometry_msgs::PoseArray pathPose;
 geometry_msgs::PoseStamped goalPose;
+//geometry_msgs::PoseArray closestPosition; //To store closest position to Quadcopter
+//geometry_msgs::Vector2 closestPosition; //To calculates closest position to quadCopter.
 
 // Constants
 const double PI = 3.141592653589793238463;
 const int T = 50;
 
+//Variables
+/*double closestX = 0;
+double closestY = 0;
+double distanceClosest = 0;
+double closestPositionsArray [1] = {0}; //To compare results and store the smallest distance. */
 
 // Flags
 bool newPath;
 bool isOpenLoop; 
-
 
 // Determine type of path and unpack array of pose
 void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
@@ -53,6 +59,28 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
     pathPose = *pathPtr;
   }
 }
+
+//This function will calculate the shortest distance between the quadcopter and the position points.
+/*void shorterstDistanceCalc(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
+{
+  for(int i = 0; i < pathPose.poses.size(); i++)
+  {
+   pathPose = *pathPtr;
+   
+   closestPosition.x = pathPose.pose.position.x;
+   closestPosition.y = pathPose.pose.position.y;
+   
+   closestPositionsArray = (sqrt ( (closestPosition.x - ) + (closestPostion.y - ) ) )
+ 
+    if (distanceClosest > closestPositionsArray[i])
+      { 
+        pathPose[0] = closestPositionsArray [i];
+      } 
+  
+  }
+  
+} */
+
 
 int main(int argc, char **argv)
 {
