@@ -57,6 +57,8 @@ int main(int argc, char **argv)
         testPose.poses.push_back(poseArray[i]);
     }
     
+    testPub.publish(testPose);
+    
     ros::shutdown();
     return 0;
 }
