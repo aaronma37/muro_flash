@@ -60,6 +60,13 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
+double distanceFormula (double x2, double x1, double y2, double y1)
+{
+  double c =0;
+  distance = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
+  return c;
+}
+
 //This function will calculate the shortest distance between the quadcopter and the position points.
 //id shorterstDistanceCalc()
 void closestDistance (void)
@@ -74,13 +81,6 @@ void closestDistance (void)
         startingPointIndex = i;
       }
   }
-}
-
-double distanceFormula (double x2, double x1, double y2, double y1)
-{
-  double c =0;
-  distance = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
-  return c;
 }
 
 int main(int argc, char **argv)
