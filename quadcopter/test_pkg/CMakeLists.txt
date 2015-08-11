@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   move_base_msgs
   actionlib
   genmsg
+  message_generation
 )
 
 find_package(OpenCV REQUIRED)
@@ -20,7 +21,8 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
-#add_message_files( DIRECTORY msg FILES PoseWithName.msg )
+#add_message_files( DIRECTORY msg FILES  pathData.msg )
+                                        #PoseWithName.msg
 
 #generate_messages(
 #  DEPENDENCIES
@@ -62,6 +64,11 @@ target_link_libraries(sample
 ${catkin_LIBRARIES}
 )
 
+add_executable(slider src/slider.cpp)
+add_dependencies(slider ${catkin_EXPORTED_TARGETS})
+target_link_libraries(slider
+${catkin_LIBRARIES}
+)
 add_executable(movementTest src/movementTest.cpp)
 add_dependencies(movementTest ${catkin_EXPORTED_TARGETS})
 target_link_libraries(movementTest
@@ -73,3 +80,29 @@ add_dependencies(hover ${catkin_EXPORTED_TARGETS})
 target_link_libraries(hover
 ${catkin_LIBRARIES}
 )
+
+add_executable(flight src/flight.cpp)
+add_dependencies(flight ${catkin_EXPORTED_TARGETS})
+target_link_libraries(flight
+${catkin_LIBRARIES}
+)
+
+add_executable(quadcopter_ekf_multiple src/quadcopter_ekf_multiple.cpp)
+add_dependencies(quadcopter_ekf_multiple ${catkin_EXPORTED_TARGETS})
+target_link_libraries(quadcopter_ekf_multiple
+${catkin_LIBRARIES}
+)
+
+add_executable(path_follower src/path_follower.cpp)
+add_dependencies(path_follower ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower
+${catkin_LIBRARIES}
+)
+
+add_executable(pf_test src/pf_test.cpp)
+add_dependencies(pf_test ${catkin_EXPORTED_TARGETS})
+target_link_libraries(pf_test
+${catkin_LIBRARIES}
+)
+
+add_message_files(FILES Navdata.msg)
