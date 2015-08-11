@@ -67,7 +67,7 @@ void closestDistance (void)
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
     
-    closestPosition = sqrt ( pow(pathPose.poses[i].pose.position.x - poseEst.x, 2) + pow( pathPose.poses[i].pose.position.y - poseEst.y, 2) );
+    closestPosition = sqrt ( pow(pathPose.poses[i].position.x - poseEst.x, 2) + pow(pathPose.poses[i].position.y - poseEst.y, 2) );
     if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
       { 
         distanceClosest = closestPosition; 
