@@ -66,8 +66,8 @@ void closestDistance (void)
 {
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
-    
-    closestPosition = sqrt ( pow(pathPose.poses[i].position.x - poseEst.pose.position.x, 2) + pow(pathPose.poses[i].position.y - poseEst.pose.position.y, 2) );
+    closestPosition = distanceFormula (pathPose.poses[i].position.x,poseEst.pose.position.x,pathPose.poses[i].position.y,poseEst.pose.position.y);
+    //closestPosition = sqrt ( pow(pathPose.poses[i].position.x - poseEst.pose.position.x, 2) + pow(pathPose.poses[i].position.y - poseEst.pose.position.y, 2) );
     if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
       { 
         distanceClosest = closestPosition; 
@@ -76,6 +76,12 @@ void closestDistance (void)
   }
 }
 
+double distanceFormula (double x2, double x1, double y2, double y1)
+{
+  double c =0;
+  distance = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
+  return c;
+}
 
 int main(int argc, char **argv)
 {
