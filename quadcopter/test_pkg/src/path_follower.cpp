@@ -29,6 +29,7 @@ geometry_msgs::PoseStamped goalPose;
 
 // Constants
 const double PI = 3.141592653589793238463;
+const double BOUNDARY_RADIUS = 0.01;
 const int T = 50;
 
 //Variables
