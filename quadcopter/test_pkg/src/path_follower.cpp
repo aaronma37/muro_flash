@@ -18,6 +18,7 @@ goal pose in order to execute a path following algorithm.
 #include <std_msgs/Float64.h>
 #include <std_msgs/Bool.h>
 #include <sstream>
+#include <tf/tf.h>
 
 // Quadcopter state data
 geometry_msgs::PoseStamped poseEst; 
@@ -118,6 +119,7 @@ int main(int argc, char **argv)
                 break;
               }
               goalPose.pose = (pathPose.poses)[i];
+              goalPose.pose.orientation = tf::CreateQuaternionMsgFromYaw(0);
               goalPub.publish(goalPose);
               ROS_INFO("%d\n", i); //FIXME: testing
               loop_rate.sleep();
@@ -141,6 +143,7 @@ int main(int argc, char **argv)
                   break;
                 }
                 goalPose.pose = (pathPose.poses)[i];
+                goalPose.pose.orientation = tf::CreateQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
                 ROS_INFO("%d\n", i); //FIXME: testing
                 loop_rate.sleep();
