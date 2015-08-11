@@ -34,10 +34,9 @@ const double PI = 3.141592653589793238463;
 const int T = 50;
 
 //Variables
-//double closestX = 0;
-//double closestY = 0;
 double distanceClosest = 0;
-double closestPositionsArray [1] = {0}; //To compare results and store the smallest distance. 
+double closestPosition = 0; //To compare results and store the smallest distance. 
+double startingPointIndex = 0;
 
 // Flags
 bool newPath;
@@ -63,24 +62,21 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
 
 //This function will calculate the shortest distance between the quadcopter and the position points.
 //id shorterstDistanceCalc()
+void closestDistance ()
 {
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
-    (pathPose.poses)[i]
-    closestPosition.x = pathPose.pose.position.x;
-    closestPosition.y = pathPose.pose.position.y;
-   
-    closestPositionsArray = (sqrt ( (closestPosition.x - poseEst.x)^2 + (closestPostion.y - poseEst.y )^2 ) )
+    
+  closestPosition = (sqrt ( ((pathPose.poses)[i].position.x - poseEst.x)^2 + ( (pathPose.poses)[i].position.y - poseEst.y )^2 ) )
  
-    if (distanceClosest > closestPositionsArray[i])
-      { 
-      distanceClosest = closestPositionArray[i]; 
-      pathPose[0] = closestPositionsArray [i];
-      } 
+      if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
+        { 
+        distanceClosest = closestPosition; 
+        startingPointIndex = i;
+        } 
   
   }
-  
-} 
+}
 
 
 int main(int argc, char **argv)
