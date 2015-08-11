@@ -119,7 +119,7 @@ int main(int argc, char **argv)
                 break;
               }
               goalPose.pose = (pathPose.poses)[i];
-              goalPose.pose.orientation = tf::CreateQuaternionMsgFromYaw(0);
+              goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
               goalPub.publish(goalPose);
               ROS_INFO("%d\n", i); //FIXME: testing
               loop_rate.sleep();
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
                   break;
                 }
                 goalPose.pose = (pathPose.poses)[i];
-                goalPose.pose.orientation = tf::CreateQuaternionMsgFromYaw(0);
+                goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
                 ROS_INFO("%d\n", i); //FIXME: testing
                 loop_rate.sleep();
