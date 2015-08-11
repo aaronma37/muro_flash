@@ -63,7 +63,7 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
 double distanceFormula (double x2, double x1, double y2, double y1)
 {
   double c =0;
-  distance = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
+  c = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
   return c;
 }
 
