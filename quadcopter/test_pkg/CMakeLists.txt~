@@ -105,9 +105,9 @@ target_link_libraries(pf_test
 ${catkin_LIBRARIES}
 )
 
-add_executable(CentroidGenerator src/CentroidGenerator.cpp)
-add_dependencies(CentroidGenerator ${catkin_EXPORTED_TARGETS})
-target_link_libraries(CentroidGenerator
+add_executable(CentroidGeneratorRos src/CentroidGeneratorRos.cpp src/VoronoiDiagramGenerator.cpp)
+add_dependencies(CentroidGeneratorRos ${catkin_EXPORTED_TARGETS})
+target_link_libraries(CentroidGeneratorRos
 ${catkin_LIBRARIES}
 )
 

@@ -32,6 +32,7 @@
 #include "CentroidGenerator.h"
 
 using namespace std;
+double T=50;
 
 Matrix uniqueVertices(50,2);
 
@@ -111,7 +112,7 @@ void CentroidGenerator::getUniqVertices(std::vector<float> allVerticesVector)
     }
     //allVerticesMatrix.printArray("All Vertices");
     
-    std::vector<int> repeatIndex={};    //vector to store the indices(rows) of repeated vertices
+    std::vector<int> repeatIndex;    //vector to store the indices(rows) of repeated vertices
     
     //find indices(rows) that repeats its elements == vertices that appears more than once
     for (int i=0; i<allVerticesMatrix.rows; i++){

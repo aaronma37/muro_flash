@@ -32,6 +32,7 @@
 #include "CentroidGenerator.h"
 
 using namespace std;
+double T=50;
 
 Matrix uniqueVertices(50,2);
 
@@ -388,8 +389,8 @@ int main(int argc, char **argv)
     return 0;
 }
 
-	}
 }
+
 
 
 
