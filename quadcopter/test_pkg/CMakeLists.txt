@@ -32,7 +32,7 @@ include_directories(
 
 catkin_package(
   #INCLUDE_DIRS include
-  LIBRARIES turtlebot_deployment
+  LIBRARIES turtlebot_deployment test_pkg
   CATKIN_DEPENDS roscpp cv_bridge opencv2 std_msgs geometry_msgs nav_msgs move_base_msgs actionlib message_runtime
   DEPENDS
 )
@@ -104,5 +104,13 @@ add_dependencies(pf_test ${catkin_EXPORTED_TARGETS})
 target_link_libraries(pf_test
 ${catkin_LIBRARIES}
 )
+
+add_executable(CentroidGenerator src/CentroidGenerator.cpp src/VoronoiDiagramGenerator.cpp)
+add_dependencies(CentroidGenerator ${catkin_EXPORTED_TARGETS})
+target_link_libraries(CentroidGenerator
+${catkin_LIBRARIES}
+)
+
+	
 
 add_message_files(FILES Navdata.msg)
