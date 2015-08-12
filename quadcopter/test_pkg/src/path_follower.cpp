@@ -65,10 +65,6 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
-// This function calculates whther the current position is within a certain boundary of the
-// goal position. If it is, then the next position in the path should be published.
-bool isOutsideBoundary
-
 double distanceFormula (double x2, double x1, double y2, double y1)
 {
   double c = 0;
