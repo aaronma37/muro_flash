@@ -125,10 +125,8 @@ int main(int argc, char **argv)
               {
                 break;
               }
-              
-              goalPose.pose = (pathPose.poses)[i];
-              for(int j = 0; j < pathPose.poses.size(); j++){
-                  std::cout<<"pose : "<<j<<":"<<(pathPose.poses[j])<<"\n";
+              if (pathPose.poses[i].position.x!=0&&pathPose.poses[i].position.y!=0){
+                  goalPose.pose = (pathPose.poses)[i];
               }
               
               goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
