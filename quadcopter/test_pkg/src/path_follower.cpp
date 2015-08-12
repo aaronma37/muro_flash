@@ -151,10 +151,11 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[i];
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                while(isOutsideBoundary())
+                while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
+                                    pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
                 {
-                  ros::spinOnce();
-                  loop_rate.sleep();
+                    ros::spinOnce();
+                    loop_rate.sleep();
                 }
               }
             }
