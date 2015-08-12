@@ -184,7 +184,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         mRenderer.tempFun(xGL, yGL);
 
-        switch (e.getActionMasked()) {
+        switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mRenderer.tToggle=1;
 
@@ -323,12 +323,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gFlag2=1;
                     mRenderer.setgToggle2(gFlag2);
 
-                    System.out.println("GAUSSIAN INDEX: " +gInd);
+                    //System.out.println("GAUSSIAN INDEX: " +gInd);
                     //mRenderer.setWayPointValues(xGL, yGL);
-                    mRenderer.setGaussValues(xGL, yGL, gInd);
+                    //mRenderer.setGaussValues(xGL, yGL, gInd);
+                    //mRenderer.setGaussScale(1f);
+                    if (gInd<99){
+                        mRenderer.addGaussStuff(xGL, yGL, 1f,gInd);
+                    }
                     gInd++;
-                    mRenderer.setGaussScale(2f, 2f, 2f);
-
                 }
 
 
@@ -340,7 +342,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     grab=0;
                 }*/
 
-            case MotionEvent.ACTION_POINTER_DOWN:
+/*            case MotionEvent.ACTION_POINTER_DOWN:
                 System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
                     System.out.println("GAUSS");
@@ -359,8 +361,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                     float gaussScale = dgauss/.2f;
 
-                    mRenderer.setGaussScale(gaussScale, gaussScale, 1);
-                }
+                    mRenderer.setGaussScale(gaussScale);
+                }*/
 
 
             case MotionEvent.ACTION_MOVE:

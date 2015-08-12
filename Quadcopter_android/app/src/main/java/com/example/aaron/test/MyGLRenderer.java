@@ -77,7 +77,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private FloatBuffer textureBuffer;
     public Context context;
 
-    private int g;
+    private int g = 1;
 
     private int vToggle=0;
     private int fToggle=0;
@@ -108,7 +108,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             1.0f, 0.0f      // bottom right (V3)
     };
 
-    gauss[] gList = new gauss[15];
+    //gauss[] gList = new gauss[15];
+
+    public gauss gaussArrayList;
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
@@ -179,7 +181,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         wp= new waypoint(context);
         myAr=new ardroneImage(context);
-        gg = new gauss(context);
+        //gg = new gauss(context);
         scaleVis=new scalevis(context);
         selected=new selection(context);
         mArena2.setColor(c);
@@ -291,7 +293,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
 
-
+        gaussArrayList=new gauss(context);
 
 
 
@@ -431,27 +433,38 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //DRAW GAUSSIAN
         if (gToggle==1 && gToggle2==1){
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-            Matrix.translateM(scratch, 0, pX, pY, 0);
-            Matrix.scaleM(scratch, 0, sX, sY, sZ);
-            System.out.println("GUASS ARRAY: " + g);
 
-            if (g <15){  //BANDAID
-                if (gList[g] == null)            { //NOTE FOR SUMEGA: CRASHES HERE (OUT OF INDEX ARRAY EXCEPTION)
-                    System.out.println("NULL");
-                    gList[g] = new gauss(context);
-                    //gList[g].Draw(scratch);
+
+
+                for (int i = 0; i < 100; i++) {
+                    if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
+                        float[] s = new float[16];
+                        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+                        Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                        Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
+                        Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
+
+                        gaussArrayList.Draw(s);
+                        //System.out.println("DRAW");
+                    }
                 }
 
 
-                gList[g].Draw(scratch);
-            }
+
+
+/*            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+            Matrix.translateM(scratch, 0, pX, pY, 0);
+            Matrix.scaleM(scratch, 0, sX, sY, sZ);
+            gg.Draw(scratch);*/
+
+
+        }
 
 
             //gList[g].Draw(scratch);
             //gg.Draw(scratch);
-        }
+
 
 
         //START DRAWING TEXT BLOCK
@@ -685,14 +698,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         scale=s;
     }
 
-    public void setGaussScale(float x, float y, float z) {
+    public void setGaussScale(float x) {
         sX = x;
-        sY = y;
-        sZ = z;
+
     }
 
     public void setgInd(int i){
         g = i;
+    }
+    public void addGaussStuff(float xPos, float yPos, float scale,int gInd){
+        gaussArrayList.locY[gInd]=yPos;
+        gaussArrayList.locX[gInd]=xPos;
+        gaussArrayList.scale[gInd]=scale;
     }
 
 
