@@ -156,9 +156,6 @@ int main(int argc, char **argv)
                 {
                   break;
                 }
-                while (pathPose.poses[i].position.x!=0&&pathPose.poses[i].position.y!=0&&i<pathPose.poses.size()){
-                  i++;
-              }
             
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
