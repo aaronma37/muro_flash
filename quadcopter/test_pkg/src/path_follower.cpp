@@ -126,7 +126,8 @@ int main(int argc, char **argv)
               {
                 break;
               }
-              if (pathPose.poses[i].position.x!=0&&pathPose.poses[i].position.y!=0){
+              if ( (pathPose.poses[i].position.x !=0) && (pathPose.poses[i].position.y != 0) )
+              {
                   goalPose.pose = (pathPose.poses)[i];
               }
               
@@ -149,6 +150,10 @@ int main(int argc, char **argv)
             newPath = false; // reset flag and set stopping condition for while loop
             while(!newPath) // while no new path has been published
             {
+              if(newPath || !ros::ok())
+                {
+                    break;
+                }
               // Publish array of pose
               for(int i = 0; i < pathPose.poses.size(); i++)
               {
@@ -156,10 +161,10 @@ int main(int argc, char **argv)
                 {
                   break;
                 }
-                if (pathPose.poses[i].position.x==0&&pathPose.poses[i].position.y==0){
+                if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) ){
                     break;
                 }
-            goalPose.pose = (pathPose.poses)[i];
+                goalPose.pose = (pathPose.poses)[i];
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
                 while(distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
@@ -168,9 +173,9 @@ int main(int argc, char **argv)
                     ros::spinOnce();
                     loop_rate.sleep();
                     if(newPath || !ros::ok())
-                {
-                  break;
-                }
+                    {
+                        break;
+                    }
                 }
               }
             }
