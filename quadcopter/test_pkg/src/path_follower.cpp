@@ -126,6 +126,7 @@ int main(int argc, char **argv)
                 break;
               }
               goalPose.pose = (pathPose.poses)[i];
+              std::cout<<"pose I"<<(pathPose.poses)[i]<<"\n";
               goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
               goalPub.publish(goalPose);
               while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
@@ -153,6 +154,7 @@ int main(int argc, char **argv)
                   break;
                 }
                 goalPose.pose = (pathPose.poses)[i];
+                
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
                 while(distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
