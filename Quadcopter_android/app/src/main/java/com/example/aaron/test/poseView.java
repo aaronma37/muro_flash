@@ -43,11 +43,14 @@ public class poseView<T> implements NodeMain {
     public String topicName;
     public String messageType,frame_id;
     public int newMeasurementFlag;
+    final int maxBots=100;
     public double x,y,z,k,w,id,i,j;
     public PoseStamped pose;
     public float poseData[]={0,0,0,0,0,0,0,0,0};
     public Point p;
-    public turtle turtleList[]=new turtle[10];
+    public int num=0;
+    public boolean newRobot=false;
+    public turtle turtleList[]=new turtle[maxBots];
     //private MessageCallable<String, T> callable;
 
     public poseView() {
@@ -59,7 +62,7 @@ public class poseView<T> implements NodeMain {
         this.i=0;
         this.j=0;
         messageType= geometry_msgs.PoseStamped._TYPE;
-        for (int i=0;i<10;i++){
+        for (int i=0;i<maxBots;i++){
             turtleList[i]=new turtle();
         }
     }
@@ -126,15 +129,41 @@ public class poseView<T> implements NodeMain {
                 poseData[2]=(float)z;
                 poseData[3]=-(float)(Math.atan2(-2*(i*j-w*k), w*w+i*i-j*j-k*k)*57.2957795);
                 poseData[5]=0;
-                if (frame_id.equals("Bob")){poseData[4]=0;}else if(frame_id.equals("Frank")){poseData[4]=1;}
-                else if(frame_id.equals("Eric")){poseData[4]=4;}
-                else if(frame_id.equals("Aaron")){poseData[4]=3;}
-                else if(frame_id.equals("Richard")){poseData[4]=2;}
-                else{poseData[4]=0;}
-
                 poseData[6]=1;
                 poseData[7]=(float)((Math.atan2(-2*(j*k-w*i), w*w-i*i-j*j+k*k))*57.2957795);
-                poseData[8]=(float)((Math.asin(2*(i*k + w*j)))*57.2957795);
+                poseData[8]=(float)((Math.asin(2 * (i * k + w * j)))*57.2957795);
+
+
+                System.out.println(frame_id);
+                newRobot=true;
+                if (num==0){
+                    num++;
+                    poseData[4]=0;
+                    newRobot=false;
+                }
+                else{
+                    for (int i=0;i<num;i++){
+                        if (turtleList[i].getIdentification().equals(frame_id)){
+                            poseData[4]=i;
+                            newRobot=false;
+                        }
+                    }
+                }
+                if (newRobot==true){
+                    poseData[4]=num;
+                    num++;
+                }
+
+
+                /*if (frame_id.equals("Bob")){poseData[4]=0;}else if(frame_id.equals("Frank")){poseData[4]=1;}
+                else if(frame_id.equals("Eric")){poseData[4]=4;}
+                else if(frame_id.equals("Gypsy Danger")){poseData[4]=3;}
+                else if(frame_id.equals("Typhoon")){poseData[4]=2;}
+                else{poseData[4]=0;}*/
+
+
+
+
                 turtleList[(int)poseData[4]].setData(poseData,frame_id,0);
 
 

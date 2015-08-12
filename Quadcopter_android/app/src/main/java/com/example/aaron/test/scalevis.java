@@ -13,11 +13,9 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-import std_msgs.Char;
-
 /**
  * Created by aaron on 6/16/15.
- */public class buttons
+ */public class scalevis
 {
     //Reference to Activity Context
     private final Context mActivityContext;
@@ -27,8 +25,7 @@ import std_msgs.Char;
     private int mTextureUniformHandle;
     private int mTextureCoordinateHandle;
     private final int mTextureCoordinateDataSize = 2;
-    private int mTextureDataHandle, mTextureDataHandleundercase;
-
+    private int mTextureDataHandle, selectedTextureDataHandle;
 
     private final String vertexShaderCode =
 //Test
@@ -63,13 +60,14 @@ import std_msgs.Char;
     private int mColorHandle;
     private int mMVPMatrixHandle;
 
+
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
     static float spriteCoords[] = {
-            -0.02f,  0.02f,   // top left
-            -0.02f, -0.02f,   // bottom left
-            0.02f, -0.02f,   // bottom right
-            0.02f,  0.02f}; //top right
+            -0.1f,  0.02f,   // top left
+            -0.1f, -0.02f,   // bottom left
+            0.1f, -0.02f,   // bottom right
+            0.1f,  0.02f}; //top right
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; //Order to draw vertices
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
@@ -77,7 +75,7 @@ import std_msgs.Char;
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 255f, 255f, 255f, 1.0f };
 
-    public buttons(final Context activityContext, int s)
+    public scalevis(final Context activityContext)
     {
         mActivityContext = activityContext;
 
@@ -97,19 +95,6 @@ import std_msgs.Char;
         // Because images have a Y axis pointing downward (values increase as you move down the image) while
         // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
         // What's more is that the texture coordinates are the same for every face.
-        /*final float[] cubeTextureCoordinateData =
-                {
-                        0f,  1f,
-                        .05f, 1f,
-                        .05f, 0f,
-                        0f, 0f
-
-                };*/
-            /*0f,  1f,
-            1f, 1f,
-            1f, 0f,
-            0f, 0f*/
-
         final float[] cubeTextureCoordinateData =
                 {
                         //Front face
@@ -120,13 +105,11 @@ import std_msgs.Char;
             1.0f, 1.0f,
             1.0f, 0.0f*/
 
-                        1f,  0f,
+                        1f, 0f,
                         1f, 1f,
                         0f, 1f,
                         0f, 0f
                 };
-
-
 
         mCubeTextureCoordinates = ByteBuffer.allocateDirect(cubeTextureCoordinateData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
         mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
@@ -151,25 +134,13 @@ import std_msgs.Char;
         GLES20.glLinkProgram(shaderProgram);
 
         //Load the texture
-        if (s==0){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.plus);
-        }
-        else if (s==1){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.minus);
-        }
-        else if (s==2){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.arrow);
-        }
+        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.scalevis);
+        selectedTextureDataHandle = loadTexture(mActivityContext, R.drawable.scalevis);
 
     }
 
-    public void Draw(float[] mvpMatrix, int k)
+    public void Draw(float[] mvpMatrix, int s)
     {
-        int j=0;
-        j=k*8;
-
-
-
         GLES20.glUseProgram(shaderProgram);
 
         //Get handle to vertex shader's vPosition member
@@ -193,10 +164,17 @@ import std_msgs.Char;
 
         //Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        j=j+8;
-        //Bind the texture to this unit.
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
 
+        //Bind the texture to this unit.
+
+        if (s==1){
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, selectedTextureDataHandle);}
+        else{
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        }
+
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         //Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(mTextureUniformHandle, 0);
 
@@ -239,8 +217,8 @@ import std_msgs.Char;
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 
             // Set filtering
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 
             // Load the bitmap into the bound texture.
             GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);

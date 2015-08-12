@@ -45,7 +45,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     private final MyGLRenderer mRenderer;
     public float poseData[];
-    public turtle tList[]=new turtle[10];
+    final int maxBots=50;
+    public turtle tList[]=new turtle[maxBots];
     private float width1;
     private float height1;
     private float pX=0;
@@ -54,23 +55,28 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private Vibrator v;
     private int grab=0;
     public int vFlag=0;
+    public int dummyFlag=0;
     private int connectable=0;
     private float firstPointFreeDraw[] ={-1000,-1000};
     public int fFlag=0;
+    public int gFlag = 0;
+    public int gFlag2 = 0;
     public int pFlag=0;
     public int pFlag2=0;
+    public boolean pathPublisherFlag=false;
     public int antispam=0;
     private int freeDrawCount=0;
     ArrayList<Double> temp= new ArrayList<Double>();
     ArrayList<Double> temp2= new ArrayList<Double>();
 
+    private int gInd = 0;
 
     /*private double temp[]=new double[10];
     private double temp2[]=new double[10];*/
 
     public Voronoi vor;
     private List<GraphEdge> voronoiEdges;
-    private int state[]= {0,0,0,0,0,0,0,0,0,0,0};
+    private int state[]=new int[maxBots];
     public MyGLSurfaceView(Context context, float f[], turtle turtleList[]) {
         super(context);
 
@@ -89,8 +95,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
         poseData=f;
         // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
-        for (int i=0;i<10;i++){
+        for (int i=0;i<maxBots;i++){
             tList[i]=new turtle();
+            state[i]=0;
         }
 
         // Set the Renderer for drawing on the GLSurfaceView
@@ -105,7 +112,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
 
     public void updateRen(turtle[] t){
-        for (int i=0;i<10;i++) {
+        for (int i=0;i<maxBots;i++) {
             if (t[i] != null) {
                 float temp[]=t[i].getData();
                 temp[5]=state[i];
@@ -123,27 +130,32 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void tick(){
         antispam=antispam+1;
         int count=0;
-        for (int i=0;i<10;i++){
+        for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
                 if (count>1){
-                    mRenderer.textList.get(2).setText("Multiple Robots Selected");
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("Multiple Robots Selected");
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
                 }
                 else{
-                    mRenderer.textList.get(2).setText(tList[i].getIdentification());
-                    mRenderer.textList.get(4).setText(" X:" + truncateDecimal(tList[i].getX(),3));
-                    mRenderer.textList.get(5).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
-                    mRenderer.textList.get(6).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText(tList[i].getIdentification());
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:" + truncateDecimal(tList[i].getX(),3));
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
+                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
                 }
             }
         }
         if (count==0){
-            mRenderer.textList.get(2).setText("No Robots Selected");
-            mRenderer.textList.get(4).setText(" X:");
-            mRenderer.textList.get(5).setText(" Y:");
-            mRenderer.textList.get(6).setText(" Z:");
+            mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("No Robots Selected");
+            mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
+            mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
+            mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
         }
+
     }
+
 
     public float getWidth1(){
         return width1;
@@ -172,17 +184,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         mRenderer.tempFun(xGL, yGL);
 
-        System.out.println("turtleLocation: "+tList[1].getX());
-        switch (e.getAction()) {
+        switch (e.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                System.out.println("X: "+xGL+" Y: "+yGL);
                 mRenderer.tToggle=1;
 
                 for (int i=0;i<10;i++){
                     if(tList[i].getOn()==1) {
                         cc=cc+1;
                         if (Math.abs(tList[i].getX()*getScale() - xGL) < .1f && Math.abs(tList[i].getY()*getScale() - yGL) < .1f) {
-                            System.out.println("Turtle Press");
                             if (state[i] == 0) {
                                 state[i]=1;
                             } else {
@@ -193,7 +202,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     }
                 }
 
-                if (antispam>4) {
+                if (antispam>1) {
+                    //Turn on voronoi toggle
                     if (xGL<-(width1-115)/(height1*2)-.01f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.11f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
                     if (mRenderer.getvToggle() == 1) {
                         mRenderer.setvToggle(0);
@@ -204,7 +214,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     vFlag = mRenderer.getvToggle();
 
 
-
+                    //Turn on Free Draw Toggle
                     if (xGL<-(width1-115)/(height1*2)-.12f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.22f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f)
                         if (mRenderer.getfToggle() == 1) {
                             mRenderer.setfToggle(0);
@@ -223,7 +233,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
-
+                    //Turn on Way Point Toggle
                     if (xGL<-(width1-115)/(height1*2)-.23f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.32f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
                         if (mRenderer.getpToggle() == 1) {
                             mRenderer.setpToggle(0);
@@ -240,6 +250,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         }
                     pFlag = mRenderer.getpToggle();
 
+                    //Turn on AndroneToggle
                     if (xGL<-(width1-115)/(height1*2)-.34f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.43f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
                         if (mRenderer.getAPToggle() == 1) {
                             mRenderer.setAPToggle(0);
@@ -249,12 +260,53 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
+                    if (xGL<-(width1-115)/(height1*2)-.45f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.54f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    {
+                        dummyFlag=1;
+                        v.vibrate(50);
+                    }
+
+                    //IF GAUSS TOGGLE SELECTED
+                    if (xGL<-(width1-115)/(height1*2)-.56f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.65f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                        if (mRenderer.getgToggle() == 1) {
+                            mRenderer.setgToggle(0);
+                            gFlag2 = 0;
+                            mRenderer.setgToggle2(gFlag2);
+                            //mRenderer.tToggle=1;
+                            v.vibrate(50);
+                        } else {
+                            //mRenderer.tToggle=0;
+
+                            mRenderer.setgToggle(1);
+
+                            v.vibrate(50);
+                        }
+                    gFlag = mRenderer.getgToggle();
+
+
+
 
 /*                    if (xGL<-(width1-90)/height1+.05f && xGL>-(width1-90)/height1 && yGL >-(height1-10)/(height1)-mRenderer.slider  && yGL < -(height1-10)/(height1)+05f-mRenderer.slider ){
 
                     }*/
 
+                    if (xGL< .85 && xGL>.65 && yGL > -.95 && yGL < -.75 ){
+                            mRenderer.scale=mRenderer.scale+.5f;
+                            mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                            mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
+                            v.vibrate(75);
+                        }
+                    if (xGL< 1.2f && xGL>.95f && yGL > -.85f && yGL < -.75 && mRenderer.scale>.5f){
+                        mRenderer.scale=mRenderer.scale-.5f;
+                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                        mRenderer.textList.get(2).setText( truncateDecimal(2 / mRenderer.scale,2) + " ft");
+                        v.vibrate(75);
+                    }
+
                 }
+
+
+
 
 
                 if (pFlag==1 && xGL>workspace  && xGL < mapLeft && yGL < mapTop && yGL > mapBottom){
@@ -265,12 +317,50 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     mRenderer.setWayPointValues(pX,pY);
                 }
 
+                if (gFlag==1 && xGL>workspace  && xGL < mapLeft && yGL < mapTop && yGL > mapBottom){
+                    //pX=xGL;
+                    //pY=yGL;
+                    gFlag2=1;
+                    mRenderer.setgToggle2(gFlag2);
+
+                    System.out.println("GAUSSIAN INDEX: " +gInd);
+                    //mRenderer.setWayPointValues(xGL, yGL);
+                    mRenderer.setGaussValues(xGL, yGL, gInd);
+                    gInd++;
+                    mRenderer.setGaussScale(2f, 2f, 2f);
+
+                }
+
+
+
                 /*if (yGL > -(height1)/(height1*2)-mRenderer.slider && yGL < -(height1-100)/(height1*2)-mRenderer.slider &&xGL>-(-200)/height1 && xGL < (200)/height1){
                     grab=1;
                 }
                 else{
                     grab=0;
                 }*/
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+                System.out.println("GAUSS 0");
+                if (e.getActionIndex() == 1) {
+                    System.out.println("GAUSS");
+                    float gaussX = e.getX(1);
+                    System.out.println(gaussX);
+                    float gaussY = e.getY(1);
+                    System.out.println(gaussY);
+
+                    float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
+                    float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
+
+                    float gauss_dx = gauss_xGL - xGL;
+                    float gauss_dy = gauss_yGL - yGL;
+
+                    float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
+
+                    float gaussScale = dgauss/.2f;
+
+                    mRenderer.setGaussScale(gaussScale, gaussScale, 1);
+                }
 
 
             case MotionEvent.ACTION_MOVE:
@@ -291,12 +381,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         }
                         else if (connectable==1){
                             fFlag=0;
-                            setFreeDrawCoordinates(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy);
+                            setFreeDrawCoordinates(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy,true);
                             v.vibrate(50);
                         }
 
                         if (fFlag == 1) {
-                            setFreeDrawCoordinates(xGL,yGL, previousx, previousy);
+                            setFreeDrawCoordinates(xGL,yGL, previousx, previousy,false);
                         }
 
                     }
@@ -340,6 +430,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     mRenderer.setpToggle2(pFlag2);
                     mRenderer.setWayPointValues(pX,pY);
                 }
+                if (gFlag==1 && xGL>workspace  && xGL < mapLeft && yGL < mapTop && yGL > mapBottom){
+                    pX=xGL;
+                    pY=yGL;
+                    gFlag2=1;
+                    mRenderer.setpToggle2(gFlag2);
+                    mRenderer.setWayPointValues(pX,pY);
+                }
 
 
             case MotionEvent.ACTION_UP:
@@ -367,7 +464,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         temp.clear();
         temp2.clear();
-        for (int i=0;i<10;i++){
+        for (int i=0;i<maxBots;i++){
             if (tList[i].getOn()==1) {
                 temp.add((double) tList[i].getX());
                 temp2.add((double) tList[i].getY());
@@ -407,7 +504,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
 
 
-    public void setFreeDrawCoordinates(float x, float y, float xp, float yp){
+    public void setFreeDrawCoordinates(float x, float y, float xp, float yp,boolean closed){
         /*xp=(width1/2-xp)/(float)(height1/1.85);
         yp=(height1/2+85-yp)/(float)(height1/1.85);*/
 
@@ -433,8 +530,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 Coords[7] = yp + (float) cy * .005f;
         freeDrawCount++;
                 if (freeDrawCount<100){
-                    mRenderer.setFreeDrawCoordinates(Coords,freeDrawCount-1,freeDrawCount);
+                    mRenderer.setFreeDrawCoordinates(Coords,freeDrawCount-1,freeDrawCount,x,y,closed);
                 }
+        pathPublisherFlag=true;
 
     }
 
@@ -442,8 +540,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
         return pX;
     }
 
+
     public float getpY(){
         return pY;
+    }
+
+
+    public dummyPoseArray passPathArray(){
+        return mRenderer.pathArray;
     }
 
     public float getScale(){
@@ -453,9 +557,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private static BigDecimal truncateDecimal(float x,int numberofDecimals)
     {
         if ( x > 0) {
-            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_FLOOR);
+            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_HALF_UP);
         } else {
-            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_CEILING);
+            return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_HALF_DOWN);
         }
     }
 
