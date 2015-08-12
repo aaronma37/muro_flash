@@ -29,7 +29,7 @@ geometry_msgs::PoseStamped goalPose;
 
 // Constants
 const double PI = 3.141592653589793238463;
-const double BOUNDARY_RADIUS = 0.01;
+const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 
 //Variables
@@ -133,6 +133,10 @@ int main(int argc, char **argv)
               {
                 ros::spinOnce();
                 loop_rate.sleep();
+                if(newPath || !ros::ok())
+                {
+                  break;
+                }
               }
             }
           }
@@ -151,11 +155,15 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[i];
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
+                while(distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
                                     pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
                 {
                     ros::spinOnce();
                     loop_rate.sleep();
+                    if(newPath || !ros::ok())
+                {
+                  break;
+                }
                 }
               }
             }
