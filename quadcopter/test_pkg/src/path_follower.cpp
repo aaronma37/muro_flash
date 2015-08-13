@@ -90,7 +90,7 @@ void closestDistance (void)
   }
 }
 
-double calculateSlope (double x2, double x1, double y2, double y1
+double calculateSlope (double x2, double x1, double y2, double y1)
 {
     double m = 0;
     m = (y2-y1)/(x2-x1);
