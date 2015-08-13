@@ -34,16 +34,19 @@
 
 using namespace std;
 double T=50;
+bool gotPose=false;
 const int maxNum=1000;
 int countD;
 float xValues[maxNum];
 float yValues[maxNum];    
 float minX = 0, maxX = 100;    
 float minY = 0, maxY = 100;
+geometry_msgs::PoseArray centroidPositions;
 
-void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
+void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
 	countD = pose->poses.size();
+	centroidPositions = *pose;
 
 	for (int i=0;i<countD;i++)
 	{
@@ -327,86 +330,82 @@ Matrix CentroidGenerator::generateCentroid(std::vector<float> allVertices, Matri
     
     return centroidMatrix;
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
 
     
     //Store the position of the sites
     int nSites = Matrix_Size(xValues);
-    count=5;
+    countD=5;
     Matrix sitesPos(nSites,2);
     for(int i=0; i<Matrix_Size(xValues);i++){
         sitesPos.setElement(i, 0, xValues[i]);      //sitePos.elements[i][0] = xValues[i];
         sitesPos.setElement(i, 1, yValues[i]);
     }
-    sitesPos.printArray("Sites");
-    
-    int iteration=1;
 
-		ros::init(argc, argv, "Centroid Generator"); 
+		ros::init(argc, argv, "Centroid_Generator"); 
 		ros::start();
 		ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
-
 		ros::NodeHandle nh_;
-
 		ros::Subscriber pos_sub_ ;
 		ros::Publisher centroid_pub_ ;
-
 
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
 		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/path", 1000,poseCallback);
-		//centroid_pub_ = nh_.advertise<geometry_msgs::PoseArray>("Centroids", 1000, true);
-	while (ros::ok()) {
+		centroid_pub_ = nh_.advertise<geometry_msgs::PoseArray>("Centroids", 1000, true);
 
+	while (ros::ok()) 
+	{
+			ros::spinOnce();
 
+			if (gotPose==true)
+			{
+				CentroidGenerator cg;
+				VoronoiDiagramGenerator vdg;
+				vdg.generateVoronoi(xValues,yValues,countD, minX,maxX,minY,maxY,3);
+			    
+				vdg.resetIterator();
+			    
+				float x1,y1,x2,y2;
+				int a=1;
+				printf("\n-------------------------------\n");
+				while(vdg.getNext(x1,y1,x2,y2))
+				{
+				    //printf("GOT Line (%.4f,%.4f)->(%.4f,%.4f)\n", x1,y1,x2,y2);
+				    printf("v%dx = [%.4f,%.4f];\n", a, x1,x2);
+				    printf("v%dy = [%.4f,%.4f];\n", a, y1,y2);
+				    a++;
+				    if (x1!=x2 || y1!=y2)  //if condition necessary due to some unknown problem (Fortune's Algorithm generating vertices that shouldn't exist)
+				    {
+					cg.posVertVector.push_back(x1); cg.posVertVector.push_back(y1);
+					cg.posVertVector.push_back(x2); cg.posVertVector.push_back(y2);
+				    }                       //even though it doesn't affect the centroids' position
+				}
+				cout << endl;
+		
+				//after store position of all vertices, store the position of the edges of the plane (rectangular plane)
+				cg.posVertVector.push_back(minX); cg.posVertVector.push_back(minY);
+				cg.posVertVector.push_back(maxX); cg.posVertVector.push_back(minY);
+				cg.posVertVector.push_back(maxX); cg.posVertVector.push_back(maxY);
+				cg.posVertVector.push_back(minX); cg.posVertVector.push_back(maxY);
+		
+		
+				//Matrix sitesPos(nSites,2);
+				sitesPos = cg.generateCentroid(cg.posVertVector, sitesPos, nSites);
+		
+				for (int i=0; i<sitesPos.rows; i++) {
+				    centroidPositions.poses[i].position.x=sitesPos.elements[i][0];
+				    centroidPositions.poses[i].position.y=sitesPos.elements[i][1];
+				}
+			    
+			    	centroid_pub_.publish(centroidPositions);
+				gotPose=false;
+			}
 
-        cout << endl << "Iteration " << iteration;
-        CentroidGenerator cg;
-        VoronoiDiagramGenerator vdg;
-        vdg.generateVoronoi(xValues,yValues,count, minX,maxX,minY,maxY,3);
-    
-        vdg.resetIterator();
-    
-        float x1,y1,x2,y2;
-        int a=1;
-        printf("\n-------------------------------\n");
-        while(vdg.getNext(x1,y1,x2,y2))
-        {
-            //printf("GOT Line (%.4f,%.4f)->(%.4f,%.4f)\n", x1,y1,x2,y2);
-            printf("v%dx = [%.4f,%.4f];\n", a, x1,x2);
-            printf("v%dy = [%.4f,%.4f];\n", a, y1,y2);
-            a++;
-            if (x1!=x2 || y1!=y2)  //if condition necessary due to some unknown problem (Fortune's Algorithm generating vertices that shouldn't exist)
-            {
-                cg.posVertVector.push_back(x1); cg.posVertVector.push_back(y1);
-                cg.posVertVector.push_back(x2); cg.posVertVector.push_back(y2);
-            }                       //even though it doesn't affect the centroids' position
-        }
-        cout << endl;
-        
-        //after store position of all vertices, store the position of the edges of the plane (rectangular plane)
-        cg.posVertVector.push_back(minX); cg.posVertVector.push_back(minY);
-        cg.posVertVector.push_back(maxX); cg.posVertVector.push_back(minY);
-        cg.posVertVector.push_back(maxX); cg.posVertVector.push_back(maxY);
-        cg.posVertVector.push_back(minX); cg.posVertVector.push_back(maxY);
-        
-        
-        //Matrix sitesPos(nSites,2);
-        sitesPos = cg.generateCentroid(cg.posVertVector, sitesPos, nSites);
-        
-        //sitesPos.printArray("new");
-        for (int i=0; i<sitesPos.rows; i++) {
-            xValues[i]=sitesPos.elements[i][0];
-            yValues[i]=sitesPos.elements[i][1];
-        }
-        iteration++;
-    
-    
-    
-    return 0;
-}
+	loop_rate.sleep();		
+	}
 
 }
 
