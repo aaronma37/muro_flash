@@ -4,6 +4,7 @@
 #include <geometry_msgs/Twist.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseArray.h>
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
@@ -33,6 +34,29 @@
 
 using namespace std;
 double T=50;
+const int maxNum=1000;
+int countD;
+float xValues[maxNum];
+float yValues[maxNum];    
+float minX = 0, maxX = 100;    
+float minY = 0, maxY = 100;
+
+void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
+{
+	countD = pose->poses.size();
+
+	for (int i=0;i<countD;i++)
+	{
+		xValues[i]=pose ->poses[i].position.x;	
+		yValues[i]=pose ->poses[i].position.y;	
+	}
+	for (int i=countD;i<maxNum;i++)
+	{
+		xValues[i]=0;	
+		yValues[i]=0;
+	}
+}
+
 
 Matrix uniqueVertices(50,2);
 
@@ -307,15 +331,10 @@ Matrix CentroidGenerator::generateCentroid(std::vector<float> allVertices, Matri
 int main(int argc, char **argv)
 {
 
-    const int count = 5;
-    float xValues[count] = {4, 5, 19, 36, 51};
-    float yValues[count] = {13, 49, 88, 76, 27};
-    
-    float minX = 0, maxX = 100;
-    float minY = 0, maxY = 100;
     
     //Store the position of the sites
     int nSites = Matrix_Size(xValues);
+    count=5;
     Matrix sitesPos(nSites,2);
     for(int i=0; i<Matrix_Size(xValues);i++){
         sitesPos.setElement(i, 0, xValues[i]);      //sitePos.elements[i][0] = xValues[i];
@@ -335,9 +354,9 @@ int main(int argc, char **argv)
 		ros::Publisher centroid_pub_ ;
 
 
-		//void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
+		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
-		//pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("toCentroidGenerator", 1000,poseCallback);
+		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/path", 1000,poseCallback);
 		//centroid_pub_ = nh_.advertise<geometry_msgs::PoseArray>("Centroids", 1000, true);
 	while (ros::ok()) {
 
