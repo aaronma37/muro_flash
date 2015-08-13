@@ -94,6 +94,14 @@ double calculateSlope (double x2, double x1, double y2, double y1
 {
     double m = 0;
     m = (y2-y1)/(x2-x1);
+    return m;
+}
+
+double usingEquationLine (double m, double currentPosition, double x1, double y1) //Calculates the y-coordinate (of its respective current position) in the equation of the line between two data points.
+{
+double yline =0;
+yline = (m *(currentPosition - x1)) + y1;
+return yline;
 }
 
 int main(int argc, char **argv)
