@@ -66,10 +66,10 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
-double distanceFormula (double x2, double x1, double y2, double y1)
+double distanceFormula (double x2, double x1, double y2, double y0)
 {
   double c = 0;
-  c = sqrt ( pow(x2 - x1, 2) + pow(y2 - y1, 2) );
+  c = sqrt ( pow(x2 - x1, 2) + pow(y2 - y0, 2) );
   return c;
 }
 
@@ -90,17 +90,17 @@ void closestDistance (void)
   }
 }
 
-double calculateSlope (double x2, double x1, double y2, double y1)
+double calculateSlope (double x2, double x1, double y2, double y0)
 {
     double m = 0;
-    m = (y2-y1)/(x2-x1);
+    m = (y2-y0)/(x2-x1);
     return m;
 }
 
-double usingEquationLine (double m, double currentPosition, double x1, double y1) //Calculates the y-coordinate (of its respective current position) in the equation of the line between two data points.
+double usingEquationLine (double m, double currentPosition, double x1, double y0) //Calculates the y-coordinate (of its respective current position) in the equation of the line between two data points.
 {
 double yline =0;
-yline = (m *(currentPosition - x1)) + y1;
+yline = (m *(currentPosition - x1)) + y0;
 return yline;
 }
 
