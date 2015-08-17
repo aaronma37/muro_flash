@@ -34,9 +34,10 @@ const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 
 //Variables
-double distanceClosest = 0;
-double closestPosition = 0; //To compare results and store the smallest distance. 
-double startingPointIndex = 0;
+double closestDistancePoint = 0; // distance from pose estimation to closest point on the path
+int closestPointIndex = 0; // index to closest point on the path
+double closestDistanceLine = 0; // distance from pose estimation to closest point on interpolation line
+geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
 
 // Flags
 bool newPath;
@@ -73,19 +74,22 @@ double distanceFormula (double x3, double x2, double y3, double y2)
   return c;
 }
 
-//This function will calculate the shortest distance between the quadcopter and the position points.
-//id shorterstDistanceCalc()
-void closestDistance (void)
+void 
+
+// This function will identify the closest point on the path to the quadcopter.
+void closestPointOnPath (void)
 {
+  double tempClosestDistance = 0;
+  
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
-    closestPosition = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
+    tempClosestDistance = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[i].position.y, poseEst.pose.position.y );
 
-    if ( (distanceClosest == 0) || (distanceClosest > closestPosition) )
+    if ( (closestDistancePoint == 0) || (closestDistancePoint > tempClosestDistance) )
       { 
-        distanceClosest = closestPosition; 
-        startingPointIndex = i;
+        closestDistancePoint = tempClosestDistance; 
+        closestPointIndex = i;
       }
   }
 }
@@ -97,11 +101,13 @@ double calculateSlope (double x3, double x2, double y3, double y2)
     return m;
 }
 
-double usingEquationLine (double m, double currentPosition, double x2, double y2) //Calculates the y-coordinate (of its respective current position) in the equation of the line between two data points.
+// Calculates the y-coordinate (of its respective current position) in the equation
+// of the line between two data points.
+double usingEquationLine (double m, double currentPosition, double x2, double y2) 
 {
-double yline =0;
-yline = (m *(currentPosition - x2)) + y2;
-return yline;
+    double yline = 0;
+    yline = ( m*(currentPosition - x2) ) + y2;
+    return yline;
 }
 
 int main(int argc, char **argv)
