@@ -174,7 +174,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         sTemp[6]=(width-100)/height;;sTemp[7]=-(height-10)/(height*2);
         sTemp[9]=(width-100)/height;sTemp[10]=(height-5)/height;
 
-        c[0]=0;c[1]=0;c[2]=0;c[3]=.2f;
+        c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
 
         mArena2  = new Square(sTemp);
 
@@ -207,6 +207,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         for (int i=0;i<100;i++) {
             fLine[i] = new Square(sTemp);
+            fLine[i].setColor(c);
         }
 
         float spriteCoords[] = {
@@ -323,6 +324,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         pathArray.pose[i].active=true;
         if (i%10==0 && i>1){
             pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
+            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
         }
         else{
             pathArray.pose[i].direction=45;
@@ -401,7 +403,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (fToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
                 fLine[i].draw(mMVPMatrix);
-                if(i%5==0){
+                if(i%1==0){
                     Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
                     Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);

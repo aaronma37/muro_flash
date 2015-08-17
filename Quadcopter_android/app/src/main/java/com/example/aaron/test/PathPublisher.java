@@ -19,9 +19,7 @@ public class PathPublisher extends AbstractNodeMain {
 
     public double x,y;
     public geometry_msgs.PoseArray pose;
-    public geometry_msgs.PoseArray pathArray;
     public geometry_msgs.Pose intPose;
-    public List<Pose> poseList;
     public dummyPoseArray dPose;
     public boolean flag= false;
 
@@ -66,10 +64,9 @@ public class PathPublisher extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
 
-                if (dPose.header.equals("OPEN")||dPose.header.equals("CLOSED")){
-                    for (int i=0;i<200;i++){
-                        if (dPose.pose[i].active==true){
-
+                if (flag==true){
+                    if (dPose.header.equals("OPEN")||dPose.header.equals("CLOSED")){
+                        for (int i=0;i<200;i++){
                             pose.getPoses().get(i).getPosition().setX(dPose.pose[i].x);
                             pose.getPoses().get(i).getPosition().setY(dPose.pose[i].y);
                             pose.getPoses().get(i).getPosition().setZ(dPose.pose[i].z);
@@ -79,17 +76,14 @@ public class PathPublisher extends AbstractNodeMain {
                             pose.getPoses().get(i).getOrientation().setZ(dPose.pose[i].az);
                             pose.getPoses().get(i).getOrientation().setW(dPose.pose[i].aw);
                         }
-                        else{
-                        }
                     }
+
+                    pose.getHeader().setFrameId(dPose.header);
+                    pose.getHeader().setSeq(0);
+                    pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
+                    publisher.publish(pose);
+                    flag=false;
                 }
-
-                pose.getHeader().setFrameId(dPose.header);
-                pose.getHeader().setSeq(0);
-                pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
-                publisher.publish(pose);
-                flag=false;
-
             }
         });
     }
