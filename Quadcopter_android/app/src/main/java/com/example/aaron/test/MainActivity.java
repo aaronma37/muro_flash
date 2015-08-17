@@ -40,6 +40,7 @@ public class MainActivity extends RosActivity {
     private poseView poseview;
     private MyGLSurfaceView mGLView;
     private PathPublisher pathPublisher;
+    private GaussPublisher gaussPublisher;
     private float width1,height1;
     final int maxBots=50;
     private int flag=0;
@@ -179,6 +180,7 @@ public class MainActivity extends RosActivity {
         talker = new Talker(num);
         dummy=new dummyMaker(num);
         pathPublisher=new PathPublisher();
+        gaussPublisher = new GaussPublisher();
         poseview = new poseView();
         vor = new Voronoi(.001);
 
@@ -210,6 +212,7 @@ public class MainActivity extends RosActivity {
         nodeMainExecutor.execute(talker, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
         exec.scheduleAtFixedRate(new Runnable() {
@@ -284,5 +287,13 @@ public class MainActivity extends RosActivity {
 
             }
         }, 0, 500000, TimeUnit.MICROSECONDS);
+/*
+        ScheduledThreadPoolExecutor exec4 = new ScheduledThreadPoolExecutor(6);
+        exec4.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+
+
+            }
+        }, 0, 50000, TimeUnit.MICROSECONDS);*/
     }
 }

@@ -78,6 +78,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public Context context;
 
     private int g = 1;
+    private boolean gaussFlag = false;
 
     private int vToggle=0;
     private int fToggle=0;
@@ -698,18 +699,36 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         scale=s;
     }
 
-    public void setGaussScale(float x) {
-        sX = x;
+    public void setGaussScale(int i, float x) {
+        gaussArrayList.scale[i] = x;
 
     }
 
     public void setgInd(int i){
         g = i;
     }
-    public void addGaussStuff(float xPos, float yPos, float scale,int gInd){
+
+    public void addGaussStuff(float xPos, float yPos, float scale, int gInd){
         gaussArrayList.locY[gInd]=yPos;
         gaussArrayList.locX[gInd]=xPos;
         gaussArrayList.scale[gInd]=scale;
+        gaussFlag = true;
+    }
+
+    public void updateGauss(float xPos, float yPos, int gInd){
+        gaussArrayList.locX[gInd]= xPos;
+        gaussArrayList.locY[gInd]= yPos;
+    }
+    public float[] getGaussX(){
+        return gaussArrayList.locY;
+    }
+
+    public float[] getGaussY(){
+        return gaussArrayList.locX;
+    }
+
+    public float[] getGaussScale(){
+        return gaussArrayList.scale;
     }
 
 

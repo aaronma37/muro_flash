@@ -47,7 +47,8 @@ public class PathPublisher extends AbstractNodeMain {
 
         final Publisher<geometry_msgs.PoseArray> publisher =
                 connectedNode.newPublisher("/path", pose._TYPE);
-        final geometry_msgs.PoseArray pose = publisher.newMessage();
+
+        pose = publisher.newMessage();
         for (int i=0;i<200;i++){
             intPose = connectedNode.getTopicMessageFactory().newFromType(geometry_msgs.Pose._TYPE);
             pose.getPoses().add(intPose);

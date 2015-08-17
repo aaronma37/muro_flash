@@ -70,6 +70,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     ArrayList<Double> temp2= new ArrayList<Double>();
 
     private int gInd = 0;
+    private float gaussScale;
 
     /*private double temp[]=new double[10];
     private double temp2[]=new double[10];*/
@@ -184,7 +185,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         mRenderer.tempFun(xGL, yGL);
 
-        switch (e.getAction()) {
+        switch (e.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 mRenderer.tToggle=1;
 
@@ -342,14 +343,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     grab=0;
                 }*/
 
-/*            case MotionEvent.ACTION_POINTER_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
                 System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
-                    System.out.println("GAUSS");
+
                     float gaussX = e.getX(1);
-                    System.out.println(gaussX);
+
                     float gaussY = e.getY(1);
-                    System.out.println(gaussY);
+
 
                     float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
                     float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
@@ -359,10 +360,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                     float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
 
-                    float gaussScale = dgauss/.2f;
-
-                    mRenderer.setGaussScale(gaussScale);
-                }*/
+                    gaussScale = dgauss/.2f;
+                    System.out.println("SCALE");
+                    //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
+                    mRenderer.setGaussScale(gInd-1, gaussScale);
+                }
 
 
             case MotionEvent.ACTION_MOVE:
@@ -432,12 +434,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     mRenderer.setpToggle2(pFlag2);
                     mRenderer.setWayPointValues(pX,pY);
                 }
+
+
+                //moving gauss
                 if (gFlag==1 && xGL>workspace  && xGL < mapLeft && yGL < mapTop && yGL > mapBottom){
                     pX=xGL;
                     pY=yGL;
                     gFlag2=1;
                     mRenderer.setpToggle2(gFlag2);
-                    mRenderer.setWayPointValues(pX,pY);
+                    mRenderer.updateGauss(xGL, yGL, gInd-1);
                 }
 
 
@@ -546,6 +551,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public float getpY(){
         return pY;
     }
+
+    public float[] getGaussX() {
+        return mRenderer.getGaussX();
+    }
+    public float[] getGaussY() {
+        return mRenderer.getGaussY();
+    }
+    public float[] getGaussScale() {
+        return mRenderer.getGaussScale();
+    }
+
 
 
     public dummyPoseArray passPathArray(){
