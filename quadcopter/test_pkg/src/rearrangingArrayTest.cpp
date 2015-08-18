@@ -12,6 +12,8 @@
 #include <std_msgs/Bool.h>
 #include <sstream>
 
+using namespace std;
+
 
 // Variables
 double originalArray[15] = {1,2,3,4,5,6,7,8,9,10,11,0,0,0,0};
@@ -23,17 +25,18 @@ int main()
     int z = 0;
     while (originalArray[chosenIndex+j] != 0 )
     {
-        originalArray[j] = origianlArray[chosenIndex+j];
+        originalArray[j] = originalArray[chosenIndex+j];
         j++;
     }
     for (z=0 ; z< chosenIndex-1; z++)
     {
-        originalArray[chosenIndex] = originalArray[z]; 
+        originalArray[j] = originalArray[z];
+        j++;
     }
     
     for (int w=0; w <15; i++)
     {
-    cout << originalArray[i] ", "; 
+    cout << originalArray[w] ", "; 
     }
     return;
     
