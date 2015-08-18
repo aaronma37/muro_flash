@@ -219,8 +219,8 @@ int main(int argc, char **argv)
                       closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                       // FIXME: publish velocity
                       goalPub.publish(closestPointOnLine);
-                      while( distanceFormula(closestPointOnLine.position.x, poseEst.pose.position.x, 
-                                      closestPointOnLine.position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+                      while( distanceFormula(closestPointOnLine.pose.position.x, poseEst.pose.position.x, 
+                                      closestPointOnLine.pose.position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
                         {
                             ros::spinOnce();
                             loop_rate.sleep();
