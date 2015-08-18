@@ -20,9 +20,20 @@ int main()
 {
     orignalArray[0] = originalArray[chosenIndex];
     int j = 1;
-    while (originalArray[chosenIndex+j != 0 ])
+    int z = 0;
+    while (originalArray[chosenIndex+j] != 0 ])
     {
-        
+        originalArray[j] = origianlArray[chosenIndex+j];
+        j++
+    }
+    for (z=0 ; z< chosenIndex-1; z++)
+    {
+        originalArray[chosenIndex] = originalArray[z]; 
+    }
+    
+    for (int w=0; w <15; i++)
+    {
+    cout << originalArray[i] ", "; 
     }
     return;
     
