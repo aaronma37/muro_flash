@@ -21,13 +21,18 @@ double placeHolder[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int chosenIndex = 5;
 int main()
 {
-    placeHolder [0] = originalArray[0];
+    for (int i=0; i<15; i++)
+    {
+        placeholder[i] = originalArray[i];
+    }
+    
+    //placeHolder [0] = originalArray[0];
     originalArray[0] = originalArray[chosenIndex];
     int j = 1;
     int z = 0;
     while (originalArray[chosenIndex+j] != 0 )
     {
-        placeHolder[j] = originalArray[j];
+        //placeHolder[j] = originalArray[j];
         originalArray[j] = originalArray[chosenIndex+j];
         j++;
     }
