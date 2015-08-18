@@ -133,7 +133,7 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
     updatedPoseGoal = true;
     poseGoal.pose = posePtr -> pose;
-    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
+    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI/4;
 }
 
 // Updates pid gain values
