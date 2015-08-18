@@ -36,9 +36,13 @@ public class MainActivity extends RosActivity {
 
     private RosTextView<std_msgs.String> rosTextView;
     private Talker talker;
+    private dummyMaker dummy;
     private poseView poseview;
     private MyGLSurfaceView mGLView;
+    private PathPublisher pathPublisher;
+    private GaussPublisher gaussPublisher;
     private float width1,height1;
+    final int maxBots=50;
     private int flag=0;
     private long time1=0;
     private long time2=0;
@@ -47,7 +51,7 @@ public class MainActivity extends RosActivity {
     public double p[];
     public float pos[]={0,0,0,0,0};
     public float poseData[]={0,0,0,0,0};
-    public turtle[] turtleList=new turtle[10];
+    public turtle[] turtleList=new turtle[maxBots];
     public View decorView;
     private int currentApiVersion;
     //public turtle turt;
@@ -148,7 +152,7 @@ public class MainActivity extends RosActivity {
 
         mGLView = new MyGLSurfaceView(this, pos,turtleList);
         setContentView(mGLView);
-        for (int i=0;i<10;i++){
+        for (int i=0;i<maxBots;i++){
             turtleList[i]=new turtle();
         }
 
@@ -174,6 +178,9 @@ public class MainActivity extends RosActivity {
     protected void init(final NodeMainExecutor nodeMainExecutor) {
         double num=1;
         talker = new Talker(num);
+        dummy=new dummyMaker(num);
+        pathPublisher=new PathPublisher();
+        gaussPublisher = new GaussPublisher();
         poseview = new poseView();
         vor = new Voronoi(.001);
 
@@ -196,22 +203,16 @@ public class MainActivity extends RosActivity {
         nodeConfiguration.setMasterUri(getMasterUri());
         width1=mGLView.getWidth1();
         height1=mGLView.getHeight1();
-        //poseimporter.setTurt(turt);
-        // The RosTextView is also a NodeMain that must be executed in order to
-        // start displaying incoming messages.
-        //nodeMainExecutor.execute(rosTextView, nodeConfiguration);
-
-        //while(num<=10000){
-
         talker=new Talker(num);
-        /*nodeMainExecutor.execute(talker, nodeConfiguration);*/
-        //nodeMainExecutor.execute(talker, nodeConfiguration);
-        //nodeMainExecutor.shutdownNodeMain(talker);
+        dummy=new dummyMaker(num);
+        pathPublisher=new PathPublisher();
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         num=poseview.getX();
         talker.setNum(num);
         nodeMainExecutor.execute(talker, nodeConfiguration);
-
+        nodeMainExecutor.execute(dummy, nodeConfiguration);
+        nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
         exec.scheduleAtFixedRate(new Runnable() {
@@ -224,17 +225,14 @@ public class MainActivity extends RosActivity {
                     time1 = System.currentTimeMillis();
                     for (int i = 0; i < turtleList.length; i++) {
                         if (turtleList[i].getOn() == 1) {
-                            turtleList[i].deltaT=(time1-time2)/1000;
+                            turtleList[i].deltaT = (time1 - time2) / 1000;
                         }
                     }
                     time2 = time1;
-                    System.out.println("time diff" + turtleList[0].deltaT);
                 } else {
                     for (int i = 0; i < turtleList.length; i++) {
                         if (turtleList[i].getOn() == 1) {
                             turtleList[i].runPredictor();
-                            System.out.println("RUNNING PREDICTOR");
-
                         }
                     }
                     mGLView.updateRen(turtleList);
@@ -261,9 +259,41 @@ public class MainActivity extends RosActivity {
                 else {
                     talker.flag=0;
                 }
+
+                if (mGLView.dummyFlag==1){
+                    dummy.flag=1;
+                    mGLView.dummyFlag=0;
+                }
+                else {
+                    dummy.flag=0;
+                    mGLView.dummyFlag=0;
+                }
+
+
+
+
             }
         }, 0, 50000, TimeUnit.MICROSECONDS);
 
+        ScheduledThreadPoolExecutor exec3 = new ScheduledThreadPoolExecutor(5);
+        exec3.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                if (mGLView.pathPublisherFlag==true){
+                    pathPublisher.flag=true;
+                    pathPublisher.setPathArray(mGLView.passPathArray());
+                    mGLView.pathPublisherFlag=false;
+                }
 
+
+            }
+        }, 0, 500000, TimeUnit.MICROSECONDS);
+/*
+        ScheduledThreadPoolExecutor exec4 = new ScheduledThreadPoolExecutor(6);
+        exec4.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+
+
+            }
+        }, 0, 50000, TimeUnit.MICROSECONDS);*/
     }
 }

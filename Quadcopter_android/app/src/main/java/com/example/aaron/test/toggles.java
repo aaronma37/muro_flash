@@ -227,6 +227,14 @@ public class toggles
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.ardroneprefoff);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.ardroneprefon);
         }
+        else if (j==6){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.ardroneadd);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.ardroneadd);
+        }
+        else if (j==7){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.tempoff);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.tempon);
+        }
 
     }
 

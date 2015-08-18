@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>test_pkg</name>
+  <name>turtlebot_deployment</name>
   <version>0.0.0</version>
-  <description>The test_pkg package</description>
+  <description>The turtlebot_deployment package</description>
 
   <maintainer email="rokusottervanger@gmail.com">Rokus Ottervanger</maintainer>
 
@@ -18,10 +18,8 @@
   <build_depend>OpenCV</build_depend>
   <build_depend>opencv2</build_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>ardrone_autonomy</build_depend>
+<build_depend>VoronoiDiagramGenerator</build_depend>
   <build_depend>message_generation</build_depend>
-
-  <run_depend>ardrone_autonomy</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>geometry_msgs</run_depend>
@@ -31,4 +29,5 @@
   <run_depend>opencv2</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>message_runtime</run_depend>
+<run_depend>VoronoiDiagramGenerator</run_depend>
 </package>

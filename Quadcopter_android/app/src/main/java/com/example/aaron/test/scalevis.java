@@ -15,7 +15,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Created by aaron on 6/16/15.
- */public class gauss
+ */public class scalevis
 {
     //Reference to Activity Context
     private final Context mActivityContext;
@@ -25,12 +25,7 @@ import javax.microedition.khronos.opengles.GL10;
     private int mTextureUniformHandle;
     private int mTextureCoordinateHandle;
     private final int mTextureCoordinateDataSize = 2;
-    private int mTextureDataHandle;
-
-    public float locX[]= new float[100];
-    public float locY[]=new float[100];
-    public float scale[]=new float[100];
-    private float[] mvpMat;
+    private int mTextureDataHandle, selectedTextureDataHandle;
 
     private final String vertexShaderCode =
 //Test
@@ -65,13 +60,14 @@ import javax.microedition.khronos.opengles.GL10;
     private int mColorHandle;
     private int mMVPMatrixHandle;
 
+
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
     static float spriteCoords[] = {
-            -0.4f,  0.4f,   // top left
-            -0.4f, -0.4f,   // bottom left
-            0.4f, -0.4f,   // bottom right
-            0.4f,  0.4f}; //top right
+            -0.1f,  0.02f,   // top left
+            -0.1f, -0.02f,   // bottom left
+            0.1f, -0.02f,   // bottom right
+            0.1f,  0.02f}; //top right
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; //Order to draw vertices
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
@@ -79,16 +75,9 @@ import javax.microedition.khronos.opengles.GL10;
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 255f, 255f, 255f, 1.0f };
 
-    public gauss(final Context activityContext )
+    public scalevis(final Context activityContext)
     {
         mActivityContext = activityContext;
-        //mvpMat = matrix;
-        for (int i=0; i<10;i++){
-            locY[i]=0;
-            locX[i]=0;
-            scale[i]=1;
-        }
-
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -116,9 +105,9 @@ import javax.microedition.khronos.opengles.GL10;
             1.0f, 1.0f,
             1.0f, 0.0f*/
 
-                        0f,  1f,
-                        1f, 1f,
                         1f, 0f,
+                        1f, 1f,
+                        0f, 1f,
                         0f, 0f
                 };
 
@@ -145,13 +134,13 @@ import javax.microedition.khronos.opengles.GL10;
         GLES20.glLinkProgram(shaderProgram);
 
         //Load the texture
-        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.gauss);
+        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.scalevis);
+        selectedTextureDataHandle = loadTexture(mActivityContext, R.drawable.scalevis);
+
     }
 
-    public void Draw(float[] mvpMatrix)
+    public void Draw(float[] mvpMatrix, int s)
     {
-
-        //Add program to OpenGL ES Environment
         GLES20.glUseProgram(shaderProgram);
 
         //Get handle to vertex shader's vPosition member
@@ -177,8 +166,15 @@ import javax.microedition.khronos.opengles.GL10;
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
         //Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
 
+        if (s==1){
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, selectedTextureDataHandle);}
+        else{
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        }
+
+
+        GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
         //Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(mTextureUniformHandle, 0);
 
@@ -202,61 +198,6 @@ import javax.microedition.khronos.opengles.GL10;
 
 
     }
-
-/*    public void Draw()
-    {
-
-        //Add program to OpenGL ES Environment
-        GLES20.glUseProgram(shaderProgram);
-
-        //Get handle to vertex shader's vPosition member
-        mPositionHandle = GLES20.glGetAttribLocation(shaderProgram, "vPosition");
-
-        //Enable a handle to the triangle vertices
-        GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-        //Prepare the triangle coordinate data
-        GLES20.glVertexAttribPointer(mPositionHandle, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
-
-        //Get Handle to Fragment Shader's vColor member
-        mColorHandle = GLES20.glGetUniformLocation(shaderProgram, "vColor");
-
-        //Set the Color for drawing the triangle
-        GLES20.glUniform4fv(mColorHandle, 1, color, 0);
-
-        //Set Texture Handles and bind Texture
-        mTextureUniformHandle = GLES20.glGetAttribLocation(shaderProgram, "u_Texture");
-        mTextureCoordinateHandle = GLES20.glGetAttribLocation(shaderProgram, "a_TexCoordinate");
-
-        //Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
-        //Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
-
-        //Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
-        GLES20.glUniform1i(mTextureUniformHandle, 0);
-
-        //Pass in the texture coordinate information
-        mCubeTextureCoordinates.position(0);
-        GLES20.glVertexAttribPointer(mTextureCoordinateHandle, mTextureCoordinateDataSize, GLES20.GL_FLOAT, false, 0, mCubeTextureCoordinates);
-        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
-
-        //Get Handle to Shape's Transformation Matrix
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(shaderProgram, "uMVPMatrix");
-
-        //Apply the projection and view transformation
-        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMat, 0);
-        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-        GLES20.glEnable(GLES20.GL_BLEND);
-        //Draw the triangle
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
-
-        //Disable Vertex Array
-        GLES20.glDisableVertexAttribArray(mPositionHandle);
-
-
-    }*/
 
     public static int loadTexture(final Context context, final int resourceId)
     {
@@ -293,6 +234,4 @@ import javax.microedition.khronos.opengles.GL10;
 
         return textureHandle[0];
     }
-
-
 }

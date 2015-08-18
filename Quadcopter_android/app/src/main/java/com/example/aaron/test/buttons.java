@@ -157,6 +157,9 @@ import std_msgs.Char;
         else if (s==1){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.minus);
         }
+        else if (s==2){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.dot);
+        }
 
     }
 
