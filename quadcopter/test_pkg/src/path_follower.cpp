@@ -32,12 +32,14 @@ geometry_msgs::PoseStamped goalPose;
 const double PI = 3.141592653589793238463;
 const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
+const int NUM_ITERATIONS = 10;
 
-//Variables
+// Variables
 double closestDistancePoint = 0; // distance from pose estimation to closest point on the path
 int closestPointIndex = 0; // index to closest point on the path
 double closestDistanceLine = 0; // distance from pose estimation to closest point on interpolation line
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
+double midpoints[2] = {0,0};
 
 // Flags
 bool newPath;
@@ -67,6 +69,41 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
+void findPointOnLine(void)
+{
+    double point1[2] = {0,0};
+    double point2[2] = {0,0};
+    closestPointOnPath();
+    // FIXME: Check to see if pose estimation between line boundary
+    // FIXME: Check to see if point returned is last point
+    point1[0] = pathPose.poses[closestPointIndex].position.x;
+    point1[1] = pathPose.poses[closestPointIndex].position.y;
+    point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
+    point2[1] = pathPose.poses[closestPointIndex + 1].position.y;
+    
+    double distance1 = 0;
+    double distance2 = 0;
+    for(int i=0; i<NUM_ITERATIONS; i++)
+    {
+        distance1 = distanceFormula(poseEst.pose.position.x, point1[0], poseEst.pose.position.y, point1[1]);
+        distance2 = distanceFormula(poseEst.pose.position.x, point2[0], poseEst.pose.position.y, point2[1]);
+        calculateMidPoints (point2[0], point1[0], point2[1], point1[1]);
+        if(distance1 < distance2)
+        {
+            point2[0] = midpoints[0];
+            point2[1] = midpoints[1];
+        }
+        else
+        {
+            point1[0] = midpoints[0];
+            point1[1] = midpoints[1];
+        }
+    }
+    
+    closestPointOnLine.pose.position.x = midpoints[0];
+    closestPointOnLine.pose.position.y = midpoints[1];
+}
+
 double distanceFormula (double x3, double x2, double y3, double y2)
 {
   double c = 0;
@@ -74,7 +111,11 @@ double distanceFormula (double x3, double x2, double y3, double y2)
   return c;
 }
 
-void 
+void calculateMidPoints(double x3, double x2, double y3, double y2)
+{
+    midpoints[0] = (x3+x2)/2
+    midpoints[1] = (y3+y2)/2
+}
 
 // This function will identify the closest point on the path to the quadcopter.
 void closestPointOnPath (void)
@@ -94,6 +135,7 @@ void closestPointOnPath (void)
   }
 }
 
+/*
 double calculateSlope (double x3, double x2, double y3, double y2)
 {
     double m = 0;
@@ -109,6 +151,7 @@ double usingEquationLine (double m, double currentPosition, double x2, double y2
     yline = ( m*(currentPosition - x2) ) + y2;
     return yline;
 }
+*/
 
 int main(int argc, char **argv)
 {
@@ -128,6 +171,8 @@ int main(int argc, char **argv)
    
     // Initialize msgs and flags
     newPath = false;
+    closestPointOnLine.pose.position.x = 0;
+    closestPointOnLine.pose.position.y = 0;
 
     while (ros::ok()) 
     {
