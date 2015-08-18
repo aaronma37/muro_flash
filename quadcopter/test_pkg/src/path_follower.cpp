@@ -19,7 +19,6 @@ goal pose in order to execute a path following algorithm.
 #include <std_msgs/Bool.h>
 #include <sstream>
 #include <tf/tf.h> 
-//
 
 // Position data
 geometry_msgs::PoseStamped poseEst; 
@@ -29,7 +28,7 @@ geometry_msgs::PoseArray pathPose;
 
 // Controller data
 geometry_msgs::PoseStamped goalPose;
-geometry_msgs::Twist velInterpolation;
+geometry_msgs::Twist constVelTerm;
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -104,9 +103,9 @@ void closestPointOnPath (void)
 }
 
 // Outputs a constant velocity term for the sliding mode controller
-void constVelTerm(void)
+void calcConstVelTerm(void)
 {
-    
+    double vector1[2] = {
 }
 
 // Interpolates to find closest point on the path using the bisection method
@@ -171,6 +170,12 @@ int main(int argc, char **argv)
     bool onPath;
     closestPointOnLine.pose.position.x = 0;
     closestPointOnLine.pose.position.y = 0;
+    constVelTerm.velocity.x = 0;
+    constVelTerm.velocity.y = 0;
+    constVelTerm.velocity.z = 0;
+    constVelTerm.angular.x = 0;
+    constVelTerm.angular.y = 0;
+    constVelTerm.angular.z = 0;
 
     while (ros::ok()) 
     {
