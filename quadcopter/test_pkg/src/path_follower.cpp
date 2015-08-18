@@ -116,8 +116,8 @@ void calcConstVelTerm(void)
                                         nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
     globalAngle = acos(dotProduct/absProduct);
     
-    constVelTerm.pose.position.x = cos(globalAngle)*PATH_VEL;
-    constVelTerm.pose.position.y = sin(globalAngle)*PATH_VEL;
+    constVelTerm.linear.x = cos(globalAngle)*PATH_VEL;
+    constVelTerm.linear.y = sin(globalAngle)*PATH_VEL;
 }
 
 // Interpolates to find closest point on the path using the bisection method
@@ -185,9 +185,9 @@ int main(int argc, char **argv)
     bool onPath;
     closestPointOnLine.pose.position.x = 0;
     closestPointOnLine.pose.position.y = 0;
-    constVelTerm.velocity.x = 0;
-    constVelTerm.velocity.y = 0;
-    constVelTerm.velocity.z = 0;
+    constVelTerm.linear.x = 0;
+    constVelTerm.linear.y = 0;
+    constVelTerm.linear.z = 0;
     constVelTerm.angular.x = 0;
     constVelTerm.angular.y = 0;
     constVelTerm.angular.z = 0;
