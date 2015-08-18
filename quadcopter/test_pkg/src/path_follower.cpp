@@ -100,23 +100,11 @@ void closestPointOnPath (void)
   }
 }
 
-/*
-double calculateSlope (double x3, double x2, double y3, double y2)
+// Outputs a constant velocity term for the sliding mode controller
+void constVelTerm(void)
 {
-    double m = 0;
-    m = (y3-y2)/(x3-x2);
-    return m;
+    
 }
-
-// Calculates the y-coordinate (of its respective current position) in the equation
-// of the line between two data points.
-double usingEquationLine (double m, double currentPosition, double x2, double y2) 
-{
-    double yline = 0;
-    yline = ( m*(currentPosition - x2) ) + y2;
-    return yline;
-}
-*/
 
 void findPointOnLine(void)
 {
@@ -176,6 +164,7 @@ int main(int argc, char **argv)
    
     // Initialize msgs and flags
     newPath = false;
+    bool onPath;
     closestPointOnLine.pose.position.x = 0;
     closestPointOnLine.pose.position.y = 0;
 
@@ -188,6 +177,7 @@ int main(int argc, char **argv)
           if(isOpenLoop) // determine path ID
           {
             newPath = false; // reset flag
+            onPath = true; // reset interpolation flag
             
             // Publish array of pose
             for(int i = 0; i < pathPose.poses.size(); i++)
@@ -200,18 +190,40 @@ int main(int argc, char **argv)
               {
                   goalPose.pose = (pathPose.poses)[i];
               }
+              else onPath = false;
               
               goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-              goalPub.publish(goalPose);
-              while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
-                                      pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+              if(i == 0 || onPath == false)
               {
-                ros::spinOnce();
-                loop_rate.sleep();
-                if(newPath || !ros::ok())
+                goalPub.publish(goalPose);
+                while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
+                                      pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
                 {
-                  break;
+                    ros::spinOnce();
+                    loop_rate.sleep();
+                    if(newPath || !ros::ok())
+                    {
+                    break;
+                    }
                 }
+              }
+              else // use interpolation
+              {
+                  if(onPath)
+                  {
+                      // FIXME: interpolation
+                      
+                      while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
+                                      pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+                        {
+                            ros::spinOnce();
+                            loop_rate.sleep();
+                            if(newPath || !ros::ok())
+                            {
+                                break;
+                            }
+                        }
+                  }
               }
             }
           }
@@ -224,6 +236,7 @@ int main(int argc, char **argv)
                 {
                     break;
                 }
+                
               // Publish array of pose
               for(int i = 0; i < pathPose.poses.size(); i++)
               {
