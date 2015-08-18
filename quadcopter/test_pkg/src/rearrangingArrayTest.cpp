@@ -15,9 +15,15 @@
 
 // Variables
 double originalArray[15] = {1,2,3,4,5,6,7,8,9,10,11,0,0,0,0};
-
+int chosenIndex = 5;
 int main()
 {
+    orignalArray[0] = originalArray[chosenIndex];
+    int j = 1;
+    while (originalArray[chosenIndex+j != 0 ])
+    {
+        
+    }
     return;
     
 }
