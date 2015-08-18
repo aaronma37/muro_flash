@@ -240,16 +240,6 @@ int main(int argc, char **argv)
                       calcConstVelTerm();
                       velPub.publish(constVelTerm);
                       goalPub.publish(closestPointOnLine);
-                      while( distanceFormula(closestPointOnLine.pose.position.x, poseEst.pose.position.x, 
-                                      closestPointOnLine.pose.position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
-                        {
-                            ros::spinOnce();
-                            loop_rate.sleep();
-                            if(newPath || !ros::ok())
-                            {
-                                break;
-                            }
-                        }
                   }
               }
             }
