@@ -17,6 +17,7 @@ using namespace std;
 
 // Variables
 double originalArray[15] = {1,2,3,4,5,6,7,8,9,10,11,0,0,0,0};
+double placeHolder[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int chosenIndex = 5;
 int main()
 {
@@ -25,18 +26,19 @@ int main()
     int z = 0;
     while (originalArray[chosenIndex+j] != 0 )
     {
+        placeHolder[j-1] = originalArray[j];
         originalArray[j] = originalArray[chosenIndex+j];
         j++;
     }
     for (z=0 ; z< chosenIndex-1; z++)
     {
-        originalArray[j] = originalArray[z];
+        originalArray[j] = placeHolder[z];
         j++;
     }
     
     for (int w=0; w <15; w++)
     {
-    cout << originalArray[w]; 
+    cout << originalArray[w] << " "; 
     }
     return 0;
     
