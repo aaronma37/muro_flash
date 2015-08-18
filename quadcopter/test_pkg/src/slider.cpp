@@ -61,6 +61,7 @@ geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
+geometry_msgs::Twist pathVel; // velocity along path
 
 
 // Keep track of Quadcopter state
@@ -160,6 +161,12 @@ void pidGainZCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
     kpZ = (double) gainPtr -> x;
     kiZ = (double) gainPtr -> y;
     kdZ = (double) gainPtr -> z;
+}
+
+// Updates pid gain values for z dimension
+void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
+{
+    pathVel = *pathVelPtr;
 }
 
 // Calculates updated error to be used by PID
@@ -297,7 +304,7 @@ void PID(void)
     
     calcMoveAvg(sX - sXprev, sY - sYprev, sZ - sZprev, poseErrYaw - poseErrYawPrev);
       
-    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0]));
+    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;
     if (velocity.linear.x > 1){
       velocity.linear.x = 1;
     }
@@ -305,7 +312,7 @@ void PID(void)
       velocity.linear.x = -1;
     }
     
-    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1]));
+    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;
     if (velocity.linear.y > 1){
       velocity.linear.y = 1;
     }
@@ -345,6 +352,7 @@ int main(int argc, char **argv)
     ros::Subscriber velEstSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
+    ros::Subscriber pathVelSub;
     ros::Publisher velPub;
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
@@ -354,6 +362,7 @@ int main(int argc, char **argv)
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
+    pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
     velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
@@ -370,6 +379,12 @@ int main(int argc, char **argv)
     pastError.pose.position.x = 0;
     pastError.pose.position.y = 0;
     pastError.pose.position.z = 0;
+    pathVel.linear.x = 0;
+    pathVel.linear.y = 0;
+    pathVel.linear.z = 0;
+    pathVel.angular.x = 0;
+    pathVel.angular.y = 0;
+    pathVel.angular.z = 0;
 
     velPoseEstX.z = 0;
 
