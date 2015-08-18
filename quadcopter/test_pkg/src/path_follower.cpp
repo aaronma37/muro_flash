@@ -29,7 +29,6 @@ geometry_msgs::PoseArray pathPose;
 
 // Controller data
 geometry_msgs::PoseStamped goalPose;
-geometry_msgs::PoseStamped goalPoseInterpolation;
 geometry_msgs::Twist velInterpolation;
 
 // Constants
@@ -111,7 +110,7 @@ void constVelTerm(void)
 }
 
 // Interpolates to find closest point on the path using the bisection method
-void findPointOnLine(void)
+void findClosestPointOnLine(void)
 {
     double point1[2] = {0,0};
     double point2[2] = {0,0};
@@ -216,10 +215,12 @@ int main(int argc, char **argv)
               {
                   if(onPath)
                   {
-                      // FIXME: interpolation
-                      
-                      while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
-                                      pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+                      findClosestPointOnLine();
+                      closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                      // FIXME: publish velocity
+                      goalPub.publish(closestPointOnLine);
+                      while( distanceFormula(closestPointOnLine.position.x, poseEst.pose.position.x, 
+                                      closestPointOnLine.position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
                         {
                             ros::spinOnce();
                             loop_rate.sleep();
@@ -235,6 +236,7 @@ int main(int argc, char **argv)
           else // path given is CLOSED
           {
             newPath = false; // reset flag and set stopping condition for while loop
+            // FIXME: rearrange path
             while(!newPath) // while no new path has been published
             {
               if(newPath || !ros::ok())
