@@ -26,13 +26,11 @@ int main()
         placeHolder[i] = originalArray[i];
     }
     
-    //placeHolder [0] = originalArray[0];
     originalArray[0] = originalArray[chosenIndex];
     int j = 1;
     int z = 0;
     while (originalArray[chosenIndex+j] != 0 )
     {
-        //placeHolder[j] = originalArray[j];
         originalArray[j] = originalArray[chosenIndex+j];
         j++;
     }
