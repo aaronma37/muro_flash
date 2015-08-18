@@ -34,10 +34,10 @@ int main()
         j++;
     }
     
-    for (int w=0; w <15; i++)
+    for (int w=0; w <15; w++)
     {
-    cout << originalArray[w] ", "; 
+    cout << originalArray[w]; 
     }
-    return;
+    return 0;
     
 }
