@@ -92,6 +92,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int gToggle=0;
     private int gToggle2=0;
     private int gpToggle=0;
+    public GaussPoint gaussPoint[]=new GaussPoint[100];
     private int pToggle=0;
     private int pToggle2=0;
     private int framecounter=0;
@@ -213,11 +214,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             fLine[i] = new Square(sTemp);
             c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
             fLine[i].setColor(c);
-            c[0]=255;c[1]=0;c[2]=255;c[3]=.2f;
+            c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
             gLine[i] = new Square(sTemp);
             gLine2[i] = new Square(sTemp);
             gLine[i].setColor(c);
             gLine2[i].setColor(c);
+            gaussPoint[i]= new GaussPoint();
         }
 
         float spriteCoords[] = {
@@ -398,28 +400,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // DRAW FREE LINES
         if (fToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
-                fLine[i].draw(mMVPMatrix);
-                gLine[i].draw(mMVPMatrix);
-                if(i%1==0){
+                fLine[i].draw(scratch);
                     Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);
+                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x*scale, pathArray.pose[i].y*scale, 0);
+                    Matrix.scaleM(scratch2, 0, .5f,.5f,.5f);
                     Matrix.rotateM(scratch2, 0, pathArray.pose[i].direction, 0, 0, 1f);
                     arrows.Draw(scratch2,0);
-                }
             }
         }
 
         if (gpToggle==1) {
-            for (int i = 0; i < fSize  ; i++) {
-                fLine[i].draw(mMVPMatrix);
-                if(i%1==0){
-                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                    Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);
-                    Matrix.rotateM(scratch2, 0, pathArray.pose[i].direction, 0, 0, 1f);
-                    arrows.Draw(scratch2,0);
-                }
+            for (int i = 0; i < gpSize  ; i++) {
+                Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                Matrix.translateM(scratch2, 0, gaussPoint[i].x * scale, gaussPoint[i].y * scale, 0);
+                Matrix.scaleM(scratch2, 0, .1f, .1f, .1f);
+                arrows.Draw(scratch2,0);
             }
         }
 
@@ -760,26 +756,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void setFreeDrawCoordinates(float s[],int i, int j, float xPos, float yPos, boolean closed){
         fLine[i].setSquareCoords(s);
         fSize = j;
 
         pathArray.header="OPEN";
-        pathArray.pose[i].x=xPos;
-        pathArray.pose[i].y=yPos;
+        pathArray.pose[i].x=xPos/scale;
+        pathArray.pose[i].y=yPos/scale;
         pathArray.pose[i].active=true;
         if (i%10==0 && i>1){
             pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
@@ -794,26 +777,77 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void setGaussDrawCoordinates(float s[], float s2[],int i, int j, float xPos, float yPos, boolean closed){
-        gLine[i].setSquareCoords(s);
-        gLine2[i].setSquareCoords(s2);
-        gpSize = j;
 
-/*        pathArray.header="OPEN";
-        pathArray.pose[i].x=xPos;
-        pathArray.pose[i].y=yPos;
-        pathArray.pose[i].active=true;
-        if (i%10==0 && i>1){
-            pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
-            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
-        }
-        else{
-            pathArray.pose[i].direction=45;
-        }
+    public void makeGaussPoints(){
+        int pastDir=1;
+        if (fSize>1) {
+            float Coords[] = {
+                    -0.5f,  0.5f, 0.0f,   // top left
+                    -0.5f, -0.5f, 0.0f,   // bottom left
+                    0.5f, -0.5f, 0.0f,   // bottom right
+                    0.5f,  0.5f, 0.0f }; // top right
 
-        if (closed==true){
-            pathArray.header="CLOSED";
-        }*/
+                Coords= fLine[0].getSquareCoords();
+
+            float angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+            double cd = Math.cos(angle);
+            double cy = Math.sin(angle);
+            if ((Coords[1] - Coords[10])<0){
+                cd=-cd;
+                cy=-cy;
+                pastDir=-1;
+            }
+            else{
+                pastDir=1;
+            }
+            gaussPoint[0].x=Coords[9]+ (float) cd * .1f;
+            gaussPoint[0].y=Coords[10]+ (float) cy * .1f;
+            gpSize=1;
+            float pastAngle = angle;
+                for (int i = 1; i < fSize-1; i++) {
+                    Coords= fLine[i].getSquareCoords();
+                    if(pastDir*(Coords[1] - Coords[10])<0){
+                        if ((Coords[0] - Coords[9])<0)
+                        {
+                            pastAngle=pastAngle-3.14f*pastDir;
+                        }
+                        else{
+                            pastAngle=pastAngle+3.14f*pastDir;
+                        }
+
+                    }
+                    angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+                    cd = Math.cos((angle + pastAngle) / 2);
+                    cy = Math.sin((angle+pastAngle)/2);
+                    if ((Coords[1] - Coords[10])<0){
+                        cd=-cd;
+                        cy=-cy;
+                        pastDir=-1;
+                    }
+                    else{
+                        pastDir=1;
+                    }
+                    gaussPoint[i].x=Coords[9]+ (float) cd * .1f;
+                    gaussPoint[i].y=Coords[10]+ (float) cy * .1f;
+                    pastAngle=angle;
+                    gpSize++;
+
+
+
+                }
+            Coords= fLine[fSize-1].getSquareCoords();
+            angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+            cd = Math.cos((angle) / 2);
+            cy = Math.sin((angle)/2);
+            if ((Coords[1] - Coords[10])<0){
+                cd=-cd;
+                cy=-cy;
+            }
+
+            gaussPoint[fSize-1].x=Coords[0]+ (float) cd * .1f;
+            gaussPoint[fSize-1].y=Coords[1]+ (float) cy * .1f;
+            gpSize++;
+        }
     }
 
 

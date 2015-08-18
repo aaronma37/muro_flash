@@ -151,6 +151,10 @@ public class Square {
         vertexBuffer.position(0);
     }
 
+    public float[] getSquareCoords(){
+        return squareCoords;
+    }
+
     public void setColor(float c[]){color=c;}
     /**
      * Encapsulates the OpenGL ES instructions for drawing this shape.
