@@ -289,6 +289,8 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
+    
+    double tempX = velocity.linear.x;
     velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
     velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
     
