@@ -23,7 +23,7 @@ int main()
 {
     for (int i=0; i<15; i++)
     {
-        placeholder[i] = originalArray[i];
+        placeHolder[i] = originalArray[i];
     }
     
     //placeHolder [0] = originalArray[0];
