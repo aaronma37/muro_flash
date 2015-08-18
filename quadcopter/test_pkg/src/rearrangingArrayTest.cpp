@@ -31,7 +31,7 @@ int main()
         originalArray[j] = originalArray[chosenIndex+j];
         j++;
     }
-    for (z=0 ; z< chosenIndex-1; z++)
+    for (z=0 ; z< chosenIndex; z++)
     {
         originalArray[j] = placeHolder[z];
         j++;
