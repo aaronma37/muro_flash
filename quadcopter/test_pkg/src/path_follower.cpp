@@ -113,8 +113,8 @@ double distanceFormula (double x3, double x2, double y3, double y2)
 
 void calculateMidPoints(double x3, double x2, double y3, double y2)
 {
-    midpoints[0] = (x3+x2)/2
-    midpoints[1] = (y3+y2)/2
+    midpoints[0] = (x3+x2)/2 ;
+    midpoints[1] = (y3+y2)/2 ;
 }
 
 // This function will identify the closest point on the path to the quadcopter.
