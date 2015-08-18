@@ -125,6 +125,11 @@ void findPointOnLine(void)
     closestPointOnPath();
     // FIXME: Check to see if pose estimation between line boundary
     // FIXME: Check to see if point returned is last point
+     if (closestPointIndex == pathPose.poses.size() - 1)
+     {
+         return;
+     }
+    
     point1[0] = pathPose.poses[closestPointIndex].position.x;
     point1[1] = pathPose.poses[closestPointIndex].position.y;
     point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
