@@ -61,11 +61,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public int fFlag=0;
     public int gFlag = 0;
     public int gFlag2 = 0;
+    public int gpFlag=0;
     public int pFlag=0;
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
     private int freeDrawCount=0;
+    private int gaussDrawCount=0;
     ArrayList<Double> temp= new ArrayList<Double>();
     ArrayList<Double> temp2= new ArrayList<Double>();
 
@@ -284,6 +286,24 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         }
                     gFlag = mRenderer.getgToggle();
 
+                    //IF GAUSSPATH TOGGLE SELECTED
+                    if (xGL<-(width1-115)/(height1*2)-.66f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.76f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                        if (mRenderer.getgpToggle() == 1) {
+                            mRenderer.setgpToggle(0);
+                            mRenderer.eraseGaussLine();
+                            gaussDrawCount=0;
+                            previousy=0;
+                            previousx=0;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.setgpToggle(1);
+
+                            firstPointFreeDraw[0]=-1000;
+                            firstPointFreeDraw[1]=-1000;
+                            v.vibrate(50);
+                        }
+                    gpFlag = mRenderer.getgpToggle();
+
 
 
 
@@ -395,6 +415,35 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                     }
 
+                    if (gpFlag==1 && Math.abs(xGL-previousx)> .01f && Math.abs(yGL -previousy)>.01f && xGL>workspace
+                            && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom) {
+                        if (previousx!=0 && previousy!=0){
+                            if (firstPointFreeDraw[0]==-1000){
+                                firstPointFreeDraw[0]=previousx;
+                                firstPointFreeDraw[1]=previousy;
+                            }
+                            else if (xGL > firstPointFreeDraw[0]+.1f || xGL < firstPointFreeDraw[0]-.1f || yGL > firstPointFreeDraw[1]+.1f || yGL < firstPointFreeDraw[1]-.1f){
+                                connectable=1;
+                            }
+                            else if (connectable==1){
+                                gpFlag=0;
+                                setFreeDrawCoordinates(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy,true);
+                                setGaussPath(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy,true);
+                                v.vibrate(50);
+                            }
+
+                            if (gpFlag == 1) {
+                                setFreeDrawCoordinates(xGL,yGL, previousx, previousy,false);
+                                setGaussPath(xGL,yGL, previousx, previousy,false);
+                            }
+
+                        }
+
+
+                        previousx=xGL;
+                        previousy=yGL;
+                    }
+
 
                     previousx=xGL;
                     previousy=yGL;
@@ -502,7 +551,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 vorCoords[3] = (float) voronoiEdges.get(i).x1 - (float) cd * .005f/mRenderer.scale;
                 vorCoords[4] = (float) voronoiEdges.get(i).y1 + (float) cy * .005f/mRenderer.scale;
 
-                vorCoords[6] = (float) voronoiEdges.get(i).x2 - (float) cd * .005f/mRenderer.scale;
+                vorCoords[6] = (float) voronoiEdges.get(i).x2 - (float) cd * .005f / mRenderer.scale;
                 vorCoords[7] = (float) voronoiEdges.get(i).y2 + (float) cy * .005f/mRenderer.scale;
 
                 mRenderer.setVoronoiCoordinates(vorCoords, i, voronoiEdges.size());
@@ -541,6 +590,54 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }
         pathPublisherFlag=true;
 
+    }
+
+    public void setGaussPath(float x, float y, float xp, float yp,boolean closed){
+        /*xp=(width1/2-xp)/(float)(height1/1.85);
+        yp=(height1/2+85-yp)/(float)(height1/1.85);*/
+
+        float Coords[] = {
+                -0.5f,  0.5f, 0.0f,   // top left
+                -0.5f, -0.5f, 0.0f,   // bottom left
+                0.5f, -0.5f, 0.0f,   // bottom right
+                0.5f,  0.5f, 0.0f }; // top right
+
+        double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
+        double cy = Math.sin(Math.atan((x - xp) / (y - yp)));
+
+        Coords[0] = x + (float) cd * .105f;
+        Coords[1] = y + (float) cy * .095f;
+
+        Coords[9] = xp + (float) cd * .105f;
+        Coords[10] =  yp + (float) cy * .095f;
+
+        Coords[3] = x + (float) cd * .005f;
+        Coords[4] = y + (float) cy * .105f;
+
+        Coords[6] = xp + (float) cd * .095f;
+        Coords[7] = yp + (float) cy * .105f;
+
+        float Coords2[] = {
+                -0.5f,  0.5f, 0.0f,   // top left
+                -0.5f, -0.5f, 0.0f,   // bottom left
+                0.5f, -0.5f, 0.0f,   // bottom right
+                0.5f,  0.5f, 0.0f }; // top right
+
+        Coords2[0] = x - (float) cd * .105f;
+        Coords2[1] = y - (float) cy * .095f;
+
+        Coords2[9] = xp - (float) cd * .105f;
+        Coords2[10] =  yp - (float) cy * .095f;
+
+        Coords2[3] = x - (float) cd * .005f;
+        Coords2[4] = y - (float) cy * .105f;
+
+        Coords2[6] = xp - (float) cd * .095f;
+        Coords2[7] = yp - (float) cy * .105f;
+        gaussDrawCount++;
+        if (gaussDrawCount<100){
+            mRenderer.setGaussDrawCoordinates(Coords,Coords2,gaussDrawCount-1,gaussDrawCount,x,y,closed);
+        }
     }
 
     public float getpX(){

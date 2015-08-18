@@ -56,6 +56,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private interfaceImage interfacePull;
     private Square vLine[] = new Square[25];
     private Square fLine[] = new Square[100];
+    private Square gLine[] = new Square[100];
+    private Square gLine2[] = new Square[100];
     public  dummyPoseArray pathArray = new dummyPoseArray();
     public NodeFactory nodeFactory;
     public geometry_msgs.Pose tempPose;
@@ -71,7 +73,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    private toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle;
+    private toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
     private FloatBuffer textureBuffer;
@@ -89,6 +91,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float sZ = 1f;
     private int gToggle=0;
     private int gToggle2=0;
+    private int gpToggle=0;
     private int pToggle=0;
     private int pToggle2=0;
     private int framecounter=0;
@@ -97,6 +100,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float pX=0;
     private float pY=0;
     private int vSize=0;
+    private int gpSize=0;
     public int ardroneTextBegin=0;
     private int ardroneTextEnd=0;
     private int fSize=0;
@@ -207,7 +211,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         for (int i=0;i<100;i++) {
             fLine[i] = new Square(sTemp);
+            c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
             fLine[i].setColor(c);
+            c[0]=255;c[1]=0;c[2]=255;c[3]=.2f;
+            gLine[i] = new Square(sTemp);
+            gLine2[i] = new Square(sTemp);
+            gLine[i].setColor(c);
+            gLine2[i].setColor(c);
         }
 
         float spriteCoords[] = {
@@ -263,6 +273,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.56f;spriteCoords[7]=(height)/(height)-.1f;
         gaussToggle = new toggles(context, spriteCoords, 3);
 
+        spriteCoords[0]=-(width-115)/(height*2)-.77f;spriteCoords[1]=(height)/(height)-.1f;
+        spriteCoords[2]=-(width-115)/(height*2)-.77f;spriteCoords[3]=(height)/(height)-.2f;
+        spriteCoords[4]=-(width-115)/(height*2)-.67f;spriteCoords[5]=(height)/(height)-.2f;
+        spriteCoords[6]=-(width-115)/(height*2)-.67f;spriteCoords[7]=(height)/(height)-.1f;
+        temptoggle = new toggles(context, spriteCoords, 7);
+
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
         spriteCoords[4]=-(width-115)/(height*2)+.05f;spriteCoords[5]=-(height)/(height);
@@ -314,26 +330,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         vSize=j;
     }
 
-    public void setFreeDrawCoordinates(float s[],int i, int j, float xPos, float yPos, boolean closed){
-        fLine[i].setSquareCoords(s);
-        fSize = j;
-
-        pathArray.header="OPEN";
-        pathArray.pose[i].x=xPos;
-        pathArray.pose[i].y=yPos;
-        pathArray.pose[i].active=true;
-        if (i%10==0 && i>1){
-            pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
-            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
-        }
-        else{
-            pathArray.pose[i].direction=45;
-       }
-
-        if (closed==true){
-            pathArray.header="CLOSED";
-        }
-    }
 
 
     public void setPosition(float f[]) {
@@ -401,6 +397,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // DRAW FREE LINES
         if (fToggle==1) {
+            for (int i = 0; i < fSize  ; i++) {
+                fLine[i].draw(mMVPMatrix);
+                gLine[i].draw(mMVPMatrix);
+                if(i%1==0){
+                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+                    Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);
+                    Matrix.rotateM(scratch2, 0, pathArray.pose[i].direction, 0, 0, 1f);
+                    arrows.Draw(scratch2,0);
+                }
+            }
+        }
+
+        if (gpToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
                 fLine[i].draw(mMVPMatrix);
                 if(i%1==0){
@@ -487,7 +497,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ardronePrefToggle.Draw(scratch, APToggle);
         ardroneAddToggle.Draw(scratch, 0);
         gaussToggle.Draw(scratch,gToggle);
-        //exit.Draw(scratch,1);
+        temptoggle.Draw(scratch,gpToggle);        //exit.Draw(scratch,1);
         Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .75f, -.85f, 0);
@@ -663,9 +673,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public int getAPToggle(){
         return APToggle;
     }
+
+    public int getgpToggle(){
+        return gpToggle;
+    }
+
+    public void setgpToggle(int gptoggle){
+        gpToggle=gptoggle;
+    }
+
     public void eraseFreeLine(){
         fSize=0;
         pathArray.Clear();
+    }
+
+
+    public void eraseGaussLine(){
+        gpSize=0;
     }
 
     public void setAllToggles(int i){
@@ -732,6 +756,70 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float[] getGaussScale(){
         return gaussArrayList.scale;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void setFreeDrawCoordinates(float s[],int i, int j, float xPos, float yPos, boolean closed){
+        fLine[i].setSquareCoords(s);
+        fSize = j;
+
+        pathArray.header="OPEN";
+        pathArray.pose[i].x=xPos;
+        pathArray.pose[i].y=yPos;
+        pathArray.pose[i].active=true;
+        if (i%10==0 && i>1){
+            pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
+            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
+        }
+        else{
+            pathArray.pose[i].direction=45;
+        }
+
+        if (closed==true){
+            pathArray.header="CLOSED";
+        }
+    }
+
+    public void setGaussDrawCoordinates(float s[], float s2[],int i, int j, float xPos, float yPos, boolean closed){
+        gLine[i].setSquareCoords(s);
+        gLine2[i].setSquareCoords(s2);
+        gpSize = j;
+
+/*        pathArray.header="OPEN";
+        pathArray.pose[i].x=xPos;
+        pathArray.pose[i].y=yPos;
+        pathArray.pose[i].active=true;
+        if (i%10==0 && i>1){
+            pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
+            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
+        }
+        else{
+            pathArray.pose[i].direction=45;
+        }
+
+        if (closed==true){
+            pathArray.header="CLOSED";
+        }*/
+    }
+
+
+
+
+
 
 
 }
