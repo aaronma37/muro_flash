@@ -291,8 +291,8 @@ void PID(void)
     
     
     double tempX = velocity.linear.x;
-    velocity.linear.x =  velocity.linear.x*cos(poseEstYaw+PI) + velocity.linear.y*sin(poseEstYaw+PI);
-    velocity.linear.y = (tempX*sin(poseEstYaw+PI)) +  velocity.linear.y*cos(poseEstYaw+PI);
+    velocity.linear.x =  velocity.linear.x*cos(poseEstYaw+PI) - velocity.linear.y*sin(poseEstYaw+PI);
+    velocity.linear.y = (tempX*sin(poseEstYaw+PI)) -  velocity.linear.y*cos(poseEstYaw+PI);
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
