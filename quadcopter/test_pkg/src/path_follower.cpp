@@ -21,12 +21,16 @@ goal pose in order to execute a path following algorithm.
 #include <tf/tf.h> 
 //
 
-// Quadcopter state data
+// Position data
 geometry_msgs::PoseStamped poseEst; 
 
 // Path data
 geometry_msgs::PoseArray pathPose;
+
+// Controller data
 geometry_msgs::PoseStamped goalPose;
+geometry_msgs::PoseStamped goalPoseInterpolation;
+geometry_msgs::Twist velInterpolation;
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -82,7 +86,7 @@ void calculateMidPoints(double x3, double x2, double y3, double y2)
     midpoints[1] = (y3+y2)/2 ;
 }
 
-// This function will identify the closest point on the path to the quadcopter.
+// This function will identify the closest point on the path to the quadcopter
 void closestPointOnPath (void)
 {
   double tempClosestDistance = 0;
@@ -106,12 +110,13 @@ void constVelTerm(void)
     
 }
 
+// Interpolates to find closest point on the path using the bisection method
 void findPointOnLine(void)
 {
     double point1[2] = {0,0};
     double point2[2] = {0,0};
     closestPointOnPath();
-    // FIXME: Check to see if pose estimation between line boundary
+    // FIXME: Check to see if pose estimation is between line boundary
     // FIXME: Check to see if point returned is last point
      if (closestPointIndex == pathPose.poses.size() - 1)
      {
@@ -174,7 +179,7 @@ int main(int argc, char **argv)
         
         if(newPath) // check if a new path has been set
         {
-          if(isOpenLoop) // determine path ID
+          if(isOpenLoop) // path given is OPEN
           {
             newPath = false; // reset flag
             onPath = true; // reset interpolation flag
@@ -227,7 +232,7 @@ int main(int argc, char **argv)
               }
             }
           }
-          else
+          else // path given is CLOSED
           {
             newPath = false; // reset flag and set stopping condition for while loop
             while(!newPath) // while no new path has been published
