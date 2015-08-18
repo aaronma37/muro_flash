@@ -35,12 +35,14 @@ const double PI = 3.141592653589793238463;
 const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
+const double PATH_VEL = 1;
 
-// Variables
+// Interpolation data
 double closestDistancePoint = 0; // distance from pose estimation to closest point on the path
 int closestPointIndex = 0; // index to closest point on the path
 double closestDistanceLine = 0; // distance from pose estimation to closest point on interpolation line
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
+geometry_msgs::PoseStamped nextPointClosest; // pose of next point in path
 double midpoints[2] = {0,0};
 
 // Flags
@@ -105,7 +107,17 @@ void closestPointOnPath (void)
 // Outputs a constant velocity term for the sliding mode controller
 void calcConstVelTerm(void)
 {
-    double vector1[2] = {
+    double globalAngle = 0;
+    double vector1[2] = {1, 0};
+    double vector2[2] = {nextPointClosest.pose.position.x - closestPointOnLine.pose.position.x, 
+                        nextPointClosest.pose.position.y - closestPointOnLine.pose.position.y};
+    double dotProduct = (vector1[0]*vector2[0]) + (vector1[1]*vector2[1]);
+    double absProduct = distanceFormula(nextPointClosest.pose.position.x, closestPointOnLine.pose.position.x,
+                                        nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
+    globalAngle = acos(dotProduct/absProduct);
+    
+    constVelTerm.pose.position.x = cos(globalAngle)*PATH_VEL;
+    constVelTerm.pose.position.y = sin(globalAngle)*PATH_VEL;
 }
 
 // Interpolates to find closest point on the path using the bisection method
@@ -125,6 +137,8 @@ void findClosestPointOnLine(void)
     point1[1] = pathPose.poses[closestPointIndex].position.y;
     point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
     point2[1] = pathPose.poses[closestPointIndex + 1].position.y;
+    nextPointClosest.pose.position.x = point2[0];
+    nextPointClosest.pose.position.y = point2[1];
     
     double distance1 = 0;
     double distance2 = 0;
@@ -159,11 +173,12 @@ int main(int argc, char **argv)
     ros::Subscriber pathSub;
     ros::Subscriber poseEstSub;
     ros::Publisher goalPub;
+    ros::Publisher velPub;
 
     pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
     goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
-
+    velPub = n.advertise<geometry_msgs::Twist>("/path_vel", 1000, true);
    
     // Initialize msgs and flags
     newPath = false;
@@ -222,7 +237,8 @@ int main(int argc, char **argv)
                   {
                       findClosestPointOnLine();
                       closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-                      // FIXME: publish velocity
+                      calcConstVelTerm();
+                      velPub.publish(constVelTerm);
                       goalPub.publish(closestPointOnLine);
                       while( distanceFormula(closestPointOnLine.pose.position.x, poseEst.pose.position.x, 
                                       closestPointOnLine.pose.position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
