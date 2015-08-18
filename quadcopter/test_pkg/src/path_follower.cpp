@@ -69,41 +69,6 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
   }
 }
 
-void findPointOnLine(void)
-{
-    double point1[2] = {0,0};
-    double point2[2] = {0,0};
-    closestPointOnPath();
-    // FIXME: Check to see if pose estimation between line boundary
-    // FIXME: Check to see if point returned is last point
-    point1[0] = pathPose.poses[closestPointIndex].position.x;
-    point1[1] = pathPose.poses[closestPointIndex].position.y;
-    point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
-    point2[1] = pathPose.poses[closestPointIndex + 1].position.y;
-    
-    double distance1 = 0;
-    double distance2 = 0;
-    for(int i=0; i<NUM_ITERATIONS; i++)
-    {
-        distance1 = distanceFormula(poseEst.pose.position.x, point1[0], poseEst.pose.position.y, point1[1]);
-        distance2 = distanceFormula(poseEst.pose.position.x, point2[0], poseEst.pose.position.y, point2[1]);
-        calculateMidPoints (point2[0], point1[0], point2[1], point1[1]);
-        if(distance1 < distance2)
-        {
-            point2[0] = midpoints[0];
-            point2[1] = midpoints[1];
-        }
-        else
-        {
-            point1[0] = midpoints[0];
-            point1[1] = midpoints[1];
-        }
-    }
-    
-    closestPointOnLine.pose.position.x = midpoints[0];
-    closestPointOnLine.pose.position.y = midpoints[1];
-}
-
 double distanceFormula (double x3, double x2, double y3, double y2)
 {
   double c = 0;
@@ -152,6 +117,41 @@ double usingEquationLine (double m, double currentPosition, double x2, double y2
     return yline;
 }
 */
+
+void findPointOnLine(void)
+{
+    double point1[2] = {0,0};
+    double point2[2] = {0,0};
+    closestPointOnPath();
+    // FIXME: Check to see if pose estimation between line boundary
+    // FIXME: Check to see if point returned is last point
+    point1[0] = pathPose.poses[closestPointIndex].position.x;
+    point1[1] = pathPose.poses[closestPointIndex].position.y;
+    point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
+    point2[1] = pathPose.poses[closestPointIndex + 1].position.y;
+    
+    double distance1 = 0;
+    double distance2 = 0;
+    for(int i=0; i<NUM_ITERATIONS; i++)
+    {
+        distance1 = distanceFormula(poseEst.pose.position.x, point1[0], poseEst.pose.position.y, point1[1]);
+        distance2 = distanceFormula(poseEst.pose.position.x, point2[0], poseEst.pose.position.y, point2[1]);
+        calculateMidPoints (point2[0], point1[0], point2[1], point1[1]);
+        if(distance1 < distance2)
+        {
+            point2[0] = midpoints[0];
+            point2[1] = midpoints[1];
+        }
+        else
+        {
+            point1[0] = midpoints[0];
+            point1[1] = midpoints[1];
+        }
+    }
+    
+    closestPointOnLine.pose.position.x = midpoints[0];
+    closestPointOnLine.pose.position.y = midpoints[1];
+}
 
 int main(int argc, char **argv)
 {
