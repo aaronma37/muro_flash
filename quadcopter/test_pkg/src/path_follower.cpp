@@ -261,8 +261,8 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[0]; // publish first point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
-                                        pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
+                while( distanceFormula(pathPose.poses[0].position.x, poseEst.pose.position.x, 
+                                        pathPose.poses[0].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
                     {
                         ros::spinOnce();
                         loop_rate.sleep();
