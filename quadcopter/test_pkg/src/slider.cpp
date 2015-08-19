@@ -138,6 +138,9 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.z = poseEstimation.pose.position.z;
     poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI+counterTemp;
     counterTemp=counterTemp+.01;
+    if (counterTemp>6){
+      counterTemp=0;
+    }
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
