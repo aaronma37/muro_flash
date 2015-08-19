@@ -112,6 +112,7 @@ float maArrayZ [numSamples] = {0};
 float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
 int maIndex = 1;
+bool gotPose=false;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
@@ -121,6 +122,7 @@ geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the dervi
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
+    gotPose=true;
     updatedPoseEst = true;
     poseEstimation.pose = posePtr -> pose;
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
@@ -385,14 +387,16 @@ int main(int argc, char **argv)
         
         
         ros::spinOnce();
-        
-        calculateError();
+        if (gotPose==true){
+          calculateError();
         
         PID();
 
         velPub.publish(velocity);
         poseSysIdPub.publish(poseSysId);
         velPoseEstXPub.publish(velPoseEstX);
+        }
+        
 
         
         std::cout<<"--------------------------------------------------------------------";
