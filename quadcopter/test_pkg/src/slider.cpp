@@ -118,6 +118,7 @@ float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
 float activeAngle=0;
 int maIndex = 1;
+double counterTemp=0;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
@@ -135,7 +136,8 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
     poseSysId.z = poseEstimation.pose.position.z;
-    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI/3;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI+counterTemp;
+    counterTemp=counterTemp+.01;
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
