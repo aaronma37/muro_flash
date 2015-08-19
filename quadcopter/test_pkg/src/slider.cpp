@@ -52,7 +52,7 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-
+ srand (time(NULL));
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation;
