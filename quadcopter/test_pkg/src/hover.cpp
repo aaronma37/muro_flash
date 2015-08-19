@@ -291,7 +291,9 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw;
-    
+    std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
+    std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
+    std::cout<<"Active Angle: \n"<<(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
     double tempX = velocity.linear.x;
     velocity.linear.x =  velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
     velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
@@ -392,7 +394,7 @@ int main(int argc, char **argv)
         poseSysIdPub.publish(poseSysId);
         velPoseEstXPub.publish(velPoseEstX);
 
-        std::cout<<"Active Angle: \n"<<activeAngle<<"\n\n";
+        
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
