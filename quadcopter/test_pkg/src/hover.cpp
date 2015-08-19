@@ -396,6 +396,7 @@ int main(int argc, char **argv)
         poseSysIdPub.publish(poseSysId);
         velPoseEstXPub.publish(velPoseEstX);
         }
+        gotPose=false;
         
 
         
