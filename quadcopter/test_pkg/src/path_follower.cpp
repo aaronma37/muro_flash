@@ -275,9 +275,12 @@ int main(int argc, char **argv)
               {
                   if(onPath)
                   {
+                      ROS_INFO("on interpolation loop OPEN\n");
                       findClosestPointOnLine();
                       closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                       calcConstVelTerm();
+                      std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                      std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                       velPub.publish(constVelTerm);
                       goalPub.publish(closestPointOnLine);
                   }
@@ -323,9 +326,12 @@ int main(int argc, char **argv)
                 }
                 else // use interpolation
                 {
+                    ROS_INFO("on interpolation loop CLOSED");
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
+                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
                 }
