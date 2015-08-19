@@ -74,6 +74,7 @@ std_msgs::Bool goFlight;
 // Keep track of Quadcopter state
 bool updatedPoseEst, updatedPoseGoal;
 double T = 50; // ROS loop rate
+float activeAngle=0;
 
 // Constants
 const double PI = 3.141592653589793238463;
@@ -239,6 +240,7 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
 void PID(void)
 {
     // FIXME: Tune PID constants
+
     double kpYaw = .5;
     double kiYaw = 0;
     double kdYaw = 0;
@@ -288,11 +290,11 @@ void PID(void)
     velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + ( kdZ*T*(maResults[2]) );
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
-    
+    activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw;
     
     double tempX = velocity.linear.x;
-    velocity.linear.x =  velocity.linear.x*cos(poseEstYaw+PI) - velocity.linear.y*sin(poseEstYaw+PI);
-    velocity.linear.y = (-tempX*sin(poseEstYaw+PI)) -  velocity.linear.y*cos(poseEstYaw+PI);
+    velocity.linear.x =  velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
+    velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
