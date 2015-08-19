@@ -111,7 +111,7 @@ float maArrayY [numSamples] = {0};
 float maArrayZ [numSamples] = {0};
 float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
-int maIndex = 1;
+int maIndex = 2;
 bool gotPose=false;
 
 // PID controller terms
