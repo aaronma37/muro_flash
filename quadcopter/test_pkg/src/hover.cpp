@@ -98,7 +98,7 @@ double kdZ = DEFAULT_KDZ;
 double windupCap;
 
 // Kepp track of yaw to determine angular component of velocity 
-double poseEstYaw; // twist or oscillation about a vertical axis
+double poseEstYaw = PI; // twist or oscillation about a vertical axis
 double poseGoalYaw = PI;
 double poseErrYaw = 0;
 double poseErrYawPrev; // for PID derivative term
