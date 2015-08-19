@@ -39,7 +39,6 @@ const double PATH_VEL = 0.1;
 
 // Interpolation data
 double closestDistancePoint = 0; // distance from pose estimation to closest point on the path
-int closestPointIndex = 0; // index to closest point on the path
 double closestDistanceLine = 0; // distance from pose estimation to closest point on interpolation line
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
 geometry_msgs::PoseStamped nextPointClosest; // pose of next point in path
@@ -87,9 +86,10 @@ void calculateMidPoints(double x3, double x2, double y3, double y2)
 }
 
 // This function will identify the closest point on the path to the quadcopter
-void closestPointOnPath (void)
+int closestPointOnPath (void)
 {
   double tempClosestDistance = 0;
+  int closestPointIndex = 0;
   
   for(int i = 0; i < pathPose.poses.size(); i++)
   {
@@ -102,6 +102,7 @@ void closestPointOnPath (void)
         closestPointIndex = i;
       }
   }
+  return closestPointIndex;
 }
 
 // Outputs a constant velocity term for the sliding mode controller
@@ -125,17 +126,17 @@ void findClosestPointOnLine(void)
 {
     double point1[2] = {0,0};
     double point2[2] = {0,0};
-    closestPointOnPath();
+    int newIndex = closestPointOnPath();
     // FIXME: Check to see if point returned is last point
-     if (closestPointIndex == pathPose.poses.size() - 1 && isOpenLoop)
+     if (newIndex == pathPose.poses.size() - 1 && isOpenLoop)
      {
          return;
      }
     
-    point1[0] = pathPose.poses[closestPointIndex].position.x;
-    point1[1] = pathPose.poses[closestPointIndex].position.y;
-    point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
-    point2[1] = pathPose.poses[closestPointIndex + 1].position.y;
+    point1[0] = pathPose.poses[newIndex].position.x;
+    point1[1] = pathPose.poses[newIndex].position.y;
+    point2[0] = pathPose.poses[newIndex + 1].position.x;
+    point2[1] = pathPose.poses[newIndex + 1].position.y;
     nextPointClosest.pose.position.x = point2[0];
     nextPointClosest.pose.position.y = point2[1];
     
@@ -177,23 +178,24 @@ void sortPathArray(void)
       (placeHolder.poses[i]).position.y = 0;
     }
     
+    int newIndex = closestPointOnPath();
     for (int i=0; i<pathPose.poses.size(); i++)
     {
         placeHolder.poses[i].position.x = pathPose.poses[i].position.x;
         placeHolder.poses[i].position.y = pathPose.poses[i].position.y;
     }
     
-    pathPose.poses[0].position.x = pathPose.poses[closestPointIndex].position.x;
-    pathPose.poses[0].position.y = pathPose.poses[closestPointIndex].position.y;
+    pathPose.poses[0].position.x = pathPose.poses[newIndex].position.x;
+    pathPose.poses[0].position.y = pathPose.poses[newIndex].position.y;
     int j = 1;
     int z = 0;
-    while (pathPose.poses[closestPointIndex+j].position.x != 0 && pathPose.poses[closestPointIndex+j].position.y != 0)
+    while (pathPose.poses[newIndex+j].position.x != 0 && pathPose.poses[newIndex+j].position.y != 0)
     {
-        pathPose.poses[j].position.x = pathPose.poses[closestPointIndex+j].position.x;
-        pathPose.poses[j].position.y = pathPose.poses[closestPointIndex+j].position.y;
+        pathPose.poses[j].position.x = pathPose.poses[newIndex+j].position.x;
+        pathPose.poses[j].position.y = pathPose.poses[newIndex+j].position.y;
         j++;
     }
-    for (z=0 ; z< closestPointIndex; z++)
+    for (z=0 ; z< newIndex; z++)
     {
         pathPose.poses[j].position.x = placeHolder.poses[z].position.x;
         pathPose.poses[j].position.y = placeHolder.poses[z].position.y;
