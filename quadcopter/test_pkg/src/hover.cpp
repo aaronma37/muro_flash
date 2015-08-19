@@ -98,7 +98,7 @@ double kdZ = DEFAULT_KDZ;
 double windupCap;
 
 // Kepp track of yaw to determine angular component of velocity 
-double poseEstYaw = PI; // twist or oscillation about a vertical axis
+double poseEstYaw = 0; // twist or oscillation about a vertical axis
 double poseGoalYaw = PI;
 double poseErrYaw = 0;
 double poseErrYawPrev; // for PID derivative term
@@ -136,7 +136,7 @@ void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
     updatedPoseGoal = true;
     poseGoal.pose = posePtr -> pose;
-    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI/4;
+    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI/2;
 }
 
 // Updates pid gain values
