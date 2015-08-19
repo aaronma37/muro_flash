@@ -336,21 +336,29 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
-   /* 
-    if (velocity.linear.x!=0 && velocity.linear.y!=0){
-    activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)));
-     if (velocity.linear.y<0){
-       activeAngle=2*PI+activeAngle;
-    }
-    
-    activeAngle=activeAngle-poseEstYaw-PI;
+      if (velocity.linear.x!=0 && velocity.linear.y!=0){
+    double dummyA=1;
+    double dummyO=tan(poseEstYaw+PI);
+    double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
+
+/*    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
+    double norm2=sqrt(1+dummyO*dummyO);
+          activeAngle=acos(dot/(norm1*norm2));*/
+    double dot = dummyA*velocity.linear.x + dummyO*velocity.linear.y;   
+    double det = dummyA*velocity.linear.y - dummyO*velocity.linear.x;   
+    double activeAngle = atan2(det, dot);
+      
+
+/*      
+      if (velocity.linear.y<0){
+       activeAngle=2*PI-activeAngle;
+    }*/
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
-    std::cout<<"Active Angle: \n"<<(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
-    double tempX = velocity.linear.x;
-    velocity.linear.x =  -velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
-    velocity.linear.y = (-tempX*sin(activeAngle)) -  velocity.linear.y*cos(activeAngle);
-    }*/
+    std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
+    velocity.linear.x =  norm1*cos(activeAngle);
+    velocity.linear.y =  norm1*sin(activeAngle);
+    }
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
