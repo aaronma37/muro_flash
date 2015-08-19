@@ -293,8 +293,8 @@ void PID(void)
     activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw;
     
     double tempX = velocity.linear.x;
-    velocity.linear.x =  velocity.linear.x*cos(activeAngle) - velocity.linear.y*sin(activeAngle);
-    velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
+    velocity.linear.x =  velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
+    velocity.linear.y = (tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
