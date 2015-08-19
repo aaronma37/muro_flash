@@ -93,11 +93,7 @@ target_link_libraries(quadcopter_ekf_multiple
 ${catkin_LIBRARIES}
 )
 
-add_executable(slider_multiple src/slider_multiple.cpp)
-add_dependencies(slider_multiple ${catkin_EXPORTED_TARGETS})
-target_link_libraries(slider_multiple
-${catkin_LIBRARIES}
-)
+
 
 add_executable(path_follower src/path_follower.cpp)
 add_dependencies(path_follower ${catkin_EXPORTED_TARGETS})

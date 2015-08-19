@@ -52,15 +52,15 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-
+const int num=1000;
 // Position and movement messages
-geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
+geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation;
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
-geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
-geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
+geometry_msgs::PoseStamped poseError[num]; // Difference between desired pose and current pose
+geometry_msgs::Twist velocity[num]; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
-geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
+geometry_msgs::Vector3 poseSysId[num]; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 geometry_msgs::Twist pathVel; // velocity along path
 
@@ -69,7 +69,7 @@ geometry_msgs::Twist pathVel; // velocity along path
 double T = 50; // ROS loop rate
 
 // Constants
-const int num=1000;
+
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.5;
 const double DEFAULT_KI = 0.01;

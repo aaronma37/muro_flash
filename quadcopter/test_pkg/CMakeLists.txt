@@ -107,6 +107,12 @@ target_link_libraries(pf_test
 ${catkin_LIBRARIES}
 )
 
+add_executable(slider_multiple src/slider_multiple.cpp)
+add_dependencies(slider_multiple ${catkin_EXPORTED_TARGETS})
+target_link_libraries(slider_multiple
+${catkin_LIBRARIES}
+)
+
 add_executable(centroidGeneratorRos src/centroidGeneratorRos.cpp src/VoronoiDiagramGenerator.cpp)
 add_dependencies(centroidGeneratorRos ${catkin_EXPORTED_TARGETS})
 target_link_libraries(centroidGeneratorRos
