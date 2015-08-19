@@ -126,9 +126,8 @@ void findClosestPointOnLine(void)
     double point1[2] = {0,0};
     double point2[2] = {0,0};
     closestPointOnPath();
-    // FIXME: Check to see if pose estimation is between line boundary
     // FIXME: Check to see if point returned is last point
-     if (closestPointIndex == pathPose.poses.size() - 1)
+     if (closestPointIndex == pathPose.poses.size() - 1 && isOpenLoop)
      {
          return;
      }
@@ -161,6 +160,34 @@ void findClosestPointOnLine(void)
     
     closestPointOnLine.pose.position.x = midpoints[0];
     closestPointOnLine.pose.position.y = midpoints[1];
+}
+
+void sortPathArray(void)
+{
+    geometry_msgs::PoseArray placeHolder[pathPose.poses.size()];
+    
+    for (int i=0; i<pathPose.poses.size(); i++)
+    {
+        placeHolder.poses[i].position.x = pathPose.poses[i].position.x;
+        placeHolder.poses[i].position.y = pathPose.poses[i].position.y;
+    }
+    
+    pathPose.poses[0].position.x = pathPose.poses[closestPointIndex].position.x;
+    pathPose.poses[0].position.y = pathPose.poses[closestPointIndex].position.y;
+    int j = 1;
+    int z = 0;
+    while (pathPose.poses[closestPointIndex+j].position.x != 0 && pathPose.poses[closestPointIndex+j].position.y != 0)
+    {
+        pathPose.poses[j].position.x = pathPose.poses[closestPointIndex+j].position.x;
+        pathPose.poses[j].position.y = pathPose.poses[closestPointIndex+j].position.y;
+        j++;
+    }
+    for (z=0 ; z< closestPointIndex; z++)
+    {
+        pathPose.poses[j].position.x = placeHolder.poses[z].position.x;
+        pathPose.poses[j].position.y = placeHolder.poses[z].position.y;
+        j++;
+    }
 }
 
 int main(int argc, char **argv)
@@ -247,7 +274,7 @@ int main(int argc, char **argv)
           else // path given is CLOSED
           {
             newPath = false; // reset flag and set stopping condition for while loop
-            // FIXME: rearrange path
+            sortPathArray();
             while(!newPath) // while no new path has been published
             {
               if(newPath || !ros::ok())
@@ -267,16 +294,27 @@ int main(int argc, char **argv)
                 }
                 goalPose.pose = (pathPose.poses)[i];
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-                goalPub.publish(goalPose);
-                while(distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x,
-                                    pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS )
+                if(i == 0)
                 {
-                    ros::spinOnce();
-                    loop_rate.sleep();
-                    if(newPath || !ros::ok())
+                    goalPub.publish(goalPose);
+                    while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
+                                          pathPose.poses[i].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
                     {
-                        break;
+                        ros::spinOnce();
+                        loop_rate.sleep();
+                        if(newPath || !ros::ok())
+                        {
+                            break;
+                        }
                     }
+                }
+                else // use interpolation
+                {
+                    findClosestPointOnLine();
+                    closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                    calcConstVelTerm();
+                    velPub.publish(constVelTerm);
+                    goalPub.publish(closestPointOnLine);
                 }
               }
             }
