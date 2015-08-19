@@ -303,7 +303,7 @@ void PID(void)
     double norm2=sqrt(1+dummyO*dummyO);
           activeAngle=acos(dot/(norm1*norm2));*/
     double dot = dummyA*velocity.linear.x + dummyO*velocity.linear.y;   
-    double det = dummyA*velocity.linear.x - dummyO*velocity.linear.y;   
+    double det = dummyA*velocity.linear.y - dummyO*velocity.linear.x;   
     double activeAngle = atan2(det, dot);
     
 
