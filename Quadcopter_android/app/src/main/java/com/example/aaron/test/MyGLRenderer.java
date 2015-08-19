@@ -723,7 +723,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setGaussScale(int i, float x) {
         gaussArrayList.scale[i] = x;
-
     }
 
     public void setgInd(int i){

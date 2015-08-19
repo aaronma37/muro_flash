@@ -363,23 +363,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
 
-                    float gaussX = e.getX(1);
 
-                    float gaussY = e.getY(1);
+                    if(gFlag==1){
+                        float gaussX = e.getX(1);
+
+                        float gaussY = e.getY(1);
 
 
-                    float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
-                    float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
+                        float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
+                        float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
 
-                    float gauss_dx = gauss_xGL - xGL;
-                    float gauss_dy = gauss_yGL - yGL;
+                        float gauss_dx = gauss_xGL - xGL;
+                        float gauss_dy = gauss_yGL - yGL;
 
-                    float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
+                        float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
 
-                    gaussScale = dgauss/.2f;
-                    System.out.println("SCALE");
-                    //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
-                    mRenderer.setGaussScale(gInd-1, gaussScale);
+                        gaussScale = dgauss/.2f;
+                        System.out.println("SCALE");
+                        //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
+                        mRenderer.setGaussScale(gInd-1, gaussScale);
+                    }
                 }
 
 
