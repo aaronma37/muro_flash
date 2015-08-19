@@ -302,6 +302,10 @@ void PID(void)
     double norm2=sqrt(1+dummyO*dummyO);
     
       activeAngle=acos(dot/(norm1*norm2));
+      
+      if (velocity.linear.y<0){
+       activeAngle=2*PI-activeAngle;
+    }
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
     std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
