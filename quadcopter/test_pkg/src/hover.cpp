@@ -296,7 +296,7 @@ void PID(void)
       activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw;
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
-    std::cout<<"Active Angle: \n"<<(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
+    std::cout<<"Active Angle: \n"<<57*(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
     double tempX = velocity.linear.x;
     velocity.linear.x =  velocity.linear.x*cos(activeAngle) - velocity.linear.y*sin(activeAngle);
     velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
