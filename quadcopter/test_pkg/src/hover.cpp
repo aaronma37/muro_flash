@@ -314,8 +314,7 @@ void PID(void)
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
     std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
-    double tempX = velocity.linear.x;
-    velocity.linear.x =  -norm1*cos(activeAngle);
+    velocity.linear.x =  norm1*cos(activeAngle);
     velocity.linear.y =  norm1*sin(activeAngle);
     }
     
