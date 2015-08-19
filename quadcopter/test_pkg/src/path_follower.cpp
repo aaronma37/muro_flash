@@ -210,7 +210,8 @@ void sortPathArray(void)
 
 void findIndexOfLastPointOnPath(void)
 {
-    for(int i = 0; i < pathPose.poses.size(); i++)
+    int i;
+    for(i = 0; i < pathPose.poses.size(); i++)
     {
         if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
         {
