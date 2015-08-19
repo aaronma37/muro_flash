@@ -294,7 +294,7 @@ void PID(void)
     
     double tempX = velocity.linear.x;
     velocity.linear.x =  velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
-    velocity.linear.y = (tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
+    velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
@@ -392,7 +392,7 @@ int main(int argc, char **argv)
         poseSysIdPub.publish(poseSysId);
         velPoseEstXPub.publish(velPoseEstX);
 
-        std::cout<<"Twist: \n"<<velocity<<"\n\n";
+        std::cout<<"Active Angle: \n"<<activeAngle<<"\n\n";
         std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
