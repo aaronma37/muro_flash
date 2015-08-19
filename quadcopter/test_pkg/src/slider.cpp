@@ -336,7 +336,7 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
-    
+   /* 
     if (velocity.linear.x!=0 && velocity.linear.y!=0){
     activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)));
      if (velocity.linear.y<0){
@@ -350,7 +350,7 @@ void PID(void)
     double tempX = velocity.linear.x;
     velocity.linear.x =  -velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
     velocity.linear.y = (-tempX*sin(activeAngle)) -  velocity.linear.y*cos(activeAngle);
-    }
+    }*/
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
