@@ -297,8 +297,9 @@ void PID(void)
     if (velocity.linear.x!=0 && velocity.linear.y!=0){
     double dummyA=1;
     double dummyO=tan(poseEstYaw+PI);
-/*    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
     double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
+
+/*    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
     double norm2=sqrt(1+dummyO*dummyO);
           activeAngle=acos(dot/(norm1*norm2));*/
     double dot = dummyA*velocity.linear.x + dummyO*velocity.linear.y;   
@@ -306,10 +307,10 @@ void PID(void)
     double activeAngle = atan2(det, dot);
     
 
-      
+/*      
       if (velocity.linear.y<0){
        activeAngle=2*PI-activeAngle;
-    }
+    }*/
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
     std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
