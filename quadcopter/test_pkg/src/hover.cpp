@@ -292,11 +292,19 @@ void PID(void)
     velocity.linear.z = (kpZ*poseError.pose.position.z) + (kiZ*pastError.pose.position.z) + ( kdZ*T*(maResults[2]) );
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
+    
+    
     if (velocity.linear.x!=0 && velocity.linear.y!=0){
-      activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw-PI/2;
+    double dummyA=1;
+    double dummyO=tan(poseEstYaw);
+    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
+    double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
+    double norm2=sqrt(1+tan(poseEstYaw)*tan(poseEstYaw));
+    
+      activeAngle=(acos(dot/(norm1*norm2));
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
-    std::cout<<"Active Angle: \n"<<57*(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
+    std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
     double tempX = velocity.linear.x;
     velocity.linear.x =  velocity.linear.x*cos(activeAngle) - velocity.linear.y*sin(activeAngle);
     velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
