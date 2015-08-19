@@ -233,8 +233,8 @@ int main(int argc, char **argv)
         Matrix4f temp;
             
         //Stage 1
-        ux=twist.linear.x*cos(yaw)+twist.linear.y*sin(yaw);
-        uy=+twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
+        ux=twist.linear.x*cos(yaw)-twist.linear.y*sin(yaw);
+        uy=-twist.linear.y*cos(yaw)+twist.linear.x*sin(yaw);
         uz=twist.linear.z;
         
         Vmatrix(4,0)=Vmatrix(3,0);
