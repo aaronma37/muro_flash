@@ -255,7 +255,7 @@ int main(int argc, char **argv)
               else onPath = false;
               
               goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-              if(i == 0 || onPath == false)
+              if(/*i == 0 || onPath == false*/true)
               {
                 goalPub.publish(goalPose);
                 while( distanceFormula(pathPose.poses[i].position.x, poseEst.pose.position.x, 
@@ -265,7 +265,7 @@ int main(int argc, char **argv)
                     loop_rate.sleep();
                     if(newPath || !ros::ok())
                     {
-                    break;
+                        break;
                     }
                 }
               }
