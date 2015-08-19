@@ -52,7 +52,7 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
- srand (time(NULL));
+
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation;
@@ -371,7 +371,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "Quadcopter Hover: version 1, EKF pose estimations only"); //Ros Initialize
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
-
+    srand (time(NULL));
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Subscriber poseGoalSub;
