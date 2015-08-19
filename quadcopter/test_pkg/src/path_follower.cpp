@@ -164,7 +164,18 @@ void findClosestPointOnLine(void)
 
 void sortPathArray(void)
 {
-    geometry_msgs::PoseArray placeHolder[pathPose.poses.size()];
+    // Initialize placeHolder
+    geometry_msgs::PoseArray placeHolder;
+    geometry_msgs::Pose tempArray[pathPose.poses.size()];
+    for(int i = 0; i < 10; i++)
+    {
+        placeHolder.poses.push_back(tempArray[i]);
+    }
+    for(int i = 0; i < 10; i++)
+    {
+      (placeHolder.poses[i]).position.x = 0;
+      (placeHolder.poses[i]).position.y = 0;
+    }
     
     for (int i=0; i<pathPose.poses.size(); i++)
     {
