@@ -86,9 +86,9 @@ double kd = DEFAULT_KD; // Differential gain
 double kpZ = DEFAULT_KPZ;
 double kiZ = DEFAULT_KIZ;
 double kdZ = DEFAULT_KDZ;
-double sX[num] = 0;
-double sY[num]  = 0;
-double sZ[num]  = 0;
+double sX[num];
+double sY[num];
+double sZ[num];
 double sXprev = 0;
 double sYprev = 0;
 double sZprev = 0;
@@ -362,13 +362,9 @@ int main(int argc, char **argv)
     poseGoal.pose.position.x = 0;
     poseGoal.pose.position.y = 0;
     poseGoal.pose.position.z = 0;
-    poseError.pose.position.x = 0;
-    poseError.pose.position.y = 0;
-    poseError.pose.position.z = 0;
+    
 
-    pastError.pose.position.x = 0;
-    pastError.pose.position.y = 0;
-    pastError.pose.position.z = 0;
+    
     pathVel.linear.x = 0;
     pathVel.linear.y = 0;
     pathVel.linear.z = 0;
@@ -380,6 +376,13 @@ int main(int argc, char **argv)
 
 for (int i=0;i<num;i++){
 
+    poseError[i].pose.position.x = 0;
+    poseError[i].pose.position.y = 0;
+    poseError[i].pose.position.z = 0;
+
+    pastError[i].pose.position.x = 0;
+    pastError[i].pose.position.y = 0;
+    pastError[i].pose.position.z = 0;
     velocity[i].angular.x = 1;
     velocity[i].angular.y = 0;
     }
