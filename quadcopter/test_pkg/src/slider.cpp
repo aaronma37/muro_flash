@@ -76,7 +76,7 @@ const double DEFAULT_KD = 0.1;
 const double DEFAULT_KPZ = 4;
 const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = .1;
-const double WINDUP_BOUND = 1.0;
+const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
 double kp = DEFAULT_KP; // Proportional gain
@@ -135,7 +135,7 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
     poseSysId.z = poseEstimation.pose.position.z;
-    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI + rand() % 6.28;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI + rand() % 6;
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
