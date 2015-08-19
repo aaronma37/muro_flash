@@ -42,6 +42,7 @@ rostopic echo -p /topic_name > data.txt
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
+#include <time.h> 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
@@ -134,7 +135,7 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
     poseSysId.z = poseEstimation.pose.position.z;
-    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI/3;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI + rand() % 6.28;
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
