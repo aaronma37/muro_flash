@@ -301,7 +301,7 @@ void PID(void)
     double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
     double norm2=sqrt(1+tan(poseEstYaw)*tan(poseEstYaw));
     
-      activeAngle=(acos(dot/(norm1*norm2));
+      activeAngle=acos(dot/(norm1*norm2));
     std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
     std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
     std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
