@@ -76,7 +76,7 @@ const double DEFAULT_KD = 0.1;
 const double DEFAULT_KPZ = 4;
 const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = .1;
-const double WINDUP_BOUND = 1.0;
+const double WINDUP_BOUND = 1.0;
 
 // Initialize pid gains
 double kp = DEFAULT_KP; // Proportional gain
