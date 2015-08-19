@@ -133,7 +133,7 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
     poseSysId.z = poseEstimation.pose.position.z;
-    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI/3;
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
@@ -334,7 +334,13 @@ void PID(void)
     //velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
-    
+    activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))-poseEstYaw;
+    std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
+    std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
+    std::cout<<"Active Angle: \n"<<(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)))<<"\n\n";
+    double tempX = velocity.linear.x;
+    velocity.linear.x =  velocity.linear.x*cos(activeAngle) + velocity.linear.y*sin(activeAngle);
+    velocity.linear.y = (-tempX*sin(activeAngle)) +  velocity.linear.y*cos(activeAngle);
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
     velPoseEstX.y = velocity.linear.x;
