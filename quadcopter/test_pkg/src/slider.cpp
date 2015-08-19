@@ -339,7 +339,7 @@ void PID(void)
     
     if (velocity.linear.x!=0 && velocity.linear.y!=0){
     activeAngle=(acos(velocity.linear.x/sqrt(velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y)));
-    if (velocity.linear.y>0){
+    if (velocity.linear.y<0){
       activeAngle=2*PI-activeAngle;
     }
     
