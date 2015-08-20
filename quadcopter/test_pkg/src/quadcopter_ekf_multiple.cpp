@@ -50,7 +50,7 @@ geometry_msgs::PoseStamped measurementPose[num];
 geometry_msgs::Twist twist[num];
 geometry_msgs::Twist measurementTwist[num];
 geometry_msgs::PoseStamped poseEstimation[num];
-geometry_msgs::Twist twistEstimation[num];
+geometry_msgs::TwistStamped twistEstimation[num];
 // Keep track of Quadcopter state
 bool got_pose_[num], stationary, got_vel_[num];
 double theta,x,y;
@@ -89,6 +89,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
         s+=ss.str();
         k=100+dummyNumber;
         poseEstimation[k].header.frame_id=s;
+	twistEstimation[k].header.frame_id=s;
     }
     else{
         return;
@@ -208,6 +209,8 @@ int main(int argc, char **argv)
     
     poseEstimation[0].header.frame_id="Gypsy Danger";
     poseEstimation[1].header.frame_id="Typhoon";
+    twistEstimation[0].header.frame_id="Gypsy Danger";
+    twistEstimation[1].header.frame_id="Typhoon";
     
     for (int i=0;i<num;i++){
             poseEstimation[i].pose.position.x=0;
@@ -227,7 +230,7 @@ int main(int argc, char **argv)
     imu_sub_= nh_.subscribe<ardrone_autonomy::Navdata>("/ardrone/navdata", 1,imuCallback);
     ipt_sub_=nh_.subscribe<geometry_msgs::TwistStamped>("/cmd_vel",1,iptCallback);
     gl_pub_ = gnh_.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
-    vel_pub_ = gnh_.advertise<geometry_msgs::Twist>("/velocityEstimation", 1000, true);
+    vel_pub_ = gnh_.advertise<geometry_msgs::TwistStamped>("/velocityEstimation", 1000, true);
     while (ros::ok()) 
     {
         for (int i=0;i<num;i++){
@@ -307,7 +310,7 @@ int main(int argc, char **argv)
 			vXTot=(b(2,0)+b(1,0)+b(0,0))/3;
 			vYTot=(b(2,1)+b(1,1)+b(0,1))/3;
 			vZTot=(b(2,2)+b(1,2)+b(0,2))/3;
-			 std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
+			//std::cout<<"\n Measured Velocity: \n"<<vXTot<<"\n";
 			// if (ux>1){
 			//     ux=1;
 			// }
@@ -360,26 +363,23 @@ int main(int argc, char **argv)
 			    V(2)=vZTot;
 			}
 
-			    twistEstimation[i].linear.x=V(0);
-			    twistEstimation[i].linear.y=V(1);
-			    twistEstimation[i].linear.z=V(2);
+			    twistEstimation[i].twist.linear.x=V(0);
+			    twistEstimation[i].twist.linear.y=V(1);
+			    twistEstimation[i].twist.linear.z=V(2);
 
 			poseEstimation[i].pose.position.x = Xx(0);
 			poseEstimation[i].pose.position.y = Xx(1);
 			poseEstimation[i].pose.position.z = Xx(2);
 			poseEstimation[i].pose.orientation = tf::createQuaternionMsgFromYaw(Xx(3));
-		  
-		
-		      
-		
+
 			gl_pub_.publish(poseEstimation[i]);
 			vel_pub_.publish(twistEstimation[i]);
 
-			std::cout<<"\n Measured: \n"<<measurementPose[i]<<"\n";
+			//std::cout<<"\n Measured: \n"<<measurementPose[i]<<"\n";
 			//std::cout<<"Twist: \n"<<twist<<"\n";
-			std::cout<<"Best Estimation\n"<<poseEstimation[i]<<"\n---------\n\n";
-			std::cout<<"Yaw: "<<yaw[i]<<"\n---------\n\n";
-			std::cout<<"--------------------------------------------------------------------";
+			//std::cout<<"Best Estimation\n"<<poseEstimation[i]<<"\n---------\n\n";
+			//std::cout<<"Yaw: "<<yaw[i]<<"\n---------\n\n";
+			//std::cout<<"--------------------------------------------------------------------";
 		       
 			    }
 			    

@@ -4,7 +4,4 @@
 <node pkg="test_pkg" type="quadcopter_ekf_multiple" name="quadcopter_ekf" output="screen">
 </node>
 
-<node pkg="test_pkg" type="slider_multiple" name="slider_multiple" output="screen">
-</node>
-
 </launch>
