@@ -97,7 +97,7 @@ bool calcClosestPointOnPath (void)
   {
     if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
         {
-            break;
+            continue;
         }
     tempClosestDistance = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[i].position.y, poseEst.pose.position.y );
@@ -121,7 +121,11 @@ void calcConstVelTerm(void)
     double dotProduct = (vector1[0]*vector2[0]) + (vector1[1]*vector2[1]);
     double absProduct = distanceFormula(nextPointClosest.pose.position.x, closestPointOnLine.pose.position.x,
                                         nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
-    globalAngle = acos(dotProduct/absProduct);
+    if(absProduct != 0)
+    {
+    	globalAngle = acos(dotProduct/absProduct);
+    } 
+    else globalAngle = 0; // FIXME: check output
     
     if(nextPointClosest.pose.position.y - closestPointOnLine.pose.position.y >= 0) // Check if angle is over 180 degrees
     {
@@ -165,10 +169,10 @@ void findClosestPointOnLine(void)
     	checkDistanceTraveled(); 
     }
     
-    if(prevClosestPointIndex > closestPointIndex)
+    /*if(prevClosestPointIndex > closestPointIndex)
     {
     	closestPointIndex = prevClosestPointIndex + 1;
-    }
+    }*/
     
     point1[0] = pathPose.poses[closestPointIndex].position.x;
     point1[1] = pathPose.poses[closestPointIndex].position.y;
@@ -319,6 +323,8 @@ int main(int argc, char **argv)
                     std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
+                    pathPose.poses[closestPointIndex].position.x = 0;
+                    pathPose.poses[closestPointIndex].position.y = 0;
                     calcClosestPointOnPath();
                     ros::spinOnce();
                     loop_rate.sleep();
@@ -326,9 +332,13 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-		constVelTerm.linear.x=0;
-		constVelTerm.linear.y=0;
+                pathPose.poses[closestPointIndex].position.x = 0;
+                pathPose.poses[closestPointIndex].position.y = 0;
+		constVelTerm.linear.x = 0;
+		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
+		// FIXME: reset path variables
+		prevClosestPointIndex = 0;
             }
             else // path given is CLOSED
             {
