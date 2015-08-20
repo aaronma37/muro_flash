@@ -240,7 +240,7 @@ public class MainActivity extends RosActivity {
 
 
             }
-        }, 0, 10000, TimeUnit.MICROSECONDS);
+        }, 0, 50000, TimeUnit.MICROSECONDS);
 
 
         ScheduledThreadPoolExecutor exec2 = new ScheduledThreadPoolExecutor(5);

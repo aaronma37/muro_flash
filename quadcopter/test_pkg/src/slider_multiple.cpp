@@ -52,7 +52,7 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-const int num=1000;
+const int num=15;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation[num];
@@ -130,7 +130,7 @@ geometry_msgs::PoseStamped poseErrorPrev[num] ; // This is used to determine the
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
-	for (int i =0;i<1000;i++){
+	for (int i =0;i<num;i++){
 		poseEstimation[i].pose.position.x = posePtr -> transforms[i].transform.translation.x;
 		poseEstimation[i].pose.position.y = posePtr -> transforms[i].transform.translation.y;
 		poseEstimation[i].pose.position.z = posePtr -> transforms[i].transform.translation.z;
@@ -146,14 +146,13 @@ void poseEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     		poseEstYaw[i] = tf::getYaw(poseEstimation[i].pose.orientation) + PI;
     		if (poseEstimation[i].pose.position.y!=0 || poseEstimation[i].pose.position.x!=0){
 			active[i]=true;
-			std::cout<<"\n Measured: \n"<<poseEstimation[i]<<"\n";
 		}
 	}    
 }
 
 void velocityEstCallback(const tf2_msgs::TFMessage::ConstPtr& twistPtr)
 {
-	for (int i=0;i<1000;i++){
+	for (int i=0;i<num;i++){
 		velEstimation[i].linear.x = twistPtr->transforms[i].transform.translation.x;
 		velEstimation[i].linear.y = twistPtr->transforms[i].transform.translation.y;
 		velEstimation[i].linear.z = twistPtr->transforms[i].transform.translation.z;
@@ -389,7 +388,7 @@ int main(int argc, char **argv)
     pathVel.angular.z = 0;
 
     velPoseEstX.z = 0;
-velocity.transforms.resize(1000);
+velocity.transforms.resize(num);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
 cout<<"CHECK \n";
@@ -398,7 +397,7 @@ std::ostringstream ss;
 ss << i;
 string s = "dummy ";
 s+=ss.str();
-velocity.transforms[i+100].header.frame_id=s;
+velocity.transforms[i+9].header.frame_id=s;
 }
 for (int i=0;i<num;i++){
 

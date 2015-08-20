@@ -30,7 +30,7 @@ using Eigen::MatrixXd;
 
 // Declare matrixes used in the Kalman Filter
 int k=0;
-const int num=1000;
+const int num=15;
 Matrix4f Q= Matrix4f::Zero();
 Matrix4f R= Matrix4f::Zero();
 Matrix4f W= Matrix4f::Identity();
@@ -72,6 +72,7 @@ double yaw[num]; // FIXME: What is this for?
 // Updates position coordinates
 void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
+
     const tf2_msgs::TFMessage& msg=*posePtr;
     if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
     
@@ -88,7 +89,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
         ss << dummyNumber;
         string s = "dummy ";
         s+=ss.str();
-        k=100+dummyNumber;
+        k=10+dummyNumber;
         poseEstimation[k].header.frame_id=s;
     }
     else{
@@ -126,7 +127,7 @@ std::cout<<imuPtr;
 
 void iptCallback(const tf2_msgs::TFMessage::ConstPtr& ipt)
 {
-	for (int i =0;i<1000;i++){
+	for (int i =0;i<num;i++){
 		    	twist[i].linear.x=ipt->transforms[i].transform.translation.x;
 			twist[i].linear.y=ipt->transforms[i].transform.translation.y;
 			twist[i].linear.z=ipt->transforms[i].transform.translation.z;
@@ -190,8 +191,8 @@ int main(int argc, char **argv)
     poseEstimation[0].header.frame_id="Gypsy Danger";
     poseEstimation[1].header.frame_id="Typhoon";
    
-    poseEstimationTF.transforms.resize(1000);
-    twistEstimation.transforms.resize(1000);
+    poseEstimationTF.transforms.resize(num);
+    twistEstimation.transforms.resize(num);
     for (int i=0;i<num;i++){
             poseEstimation[i].pose.position.x=0;
             poseEstimation[i].pose.position.y=0;
@@ -205,6 +206,7 @@ int main(int argc, char **argv)
             active[i]=false;
 	    poseEstimationTF.transforms[i].transform.rotation.w=1;
             twistEstimation.transforms[i].transform.rotation.w=1;
+	    poseEstimationTF.transforms[i].header.frame_id="null";
     }
     
 
@@ -345,6 +347,9 @@ int main(int argc, char **argv)
 			    V(2)=vZTot;
 			}
 
+			V(0)=ux;
+			V(1)=uy;
+
 
 			    twistEstimation.transforms[i].transform.translation.x=V(0);
 			    twistEstimation.transforms[i].transform.translation.y=V(1);
@@ -366,7 +371,9 @@ int main(int argc, char **argv)
 			poseEstimationTF.transforms[i].transform.rotation.z=poseEstimation[i].pose.orientation.z;
 			poseEstimationTF.transforms[i].transform.rotation.w=poseEstimation[i].pose.orientation.w;
 
-			
+			poseEstimationTF.transforms[i].header.frame_id=poseEstimation[i].header.frame_id;
+
+			gl2_pub_.publish(poseEstimationTF);
 
 			//std::cout<<"\n Measured: \n"<<measurementPose[i]<<"\n";
 			//std::cout<<"Twist: \n"<<twist<<"\n";
