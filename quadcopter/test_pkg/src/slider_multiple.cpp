@@ -398,10 +398,10 @@ int main(int argc, char **argv)
     pathVel.angular.z = 0;
 
     velPoseEstX.z = 0;
-
+velocity.transforms.resize(1000);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
-
+cout<<"CHECK \n";
 for (int i=1;i<5;i++){
 std::ostringstream ss;
 ss << i;
