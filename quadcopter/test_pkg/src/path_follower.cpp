@@ -37,11 +37,13 @@ const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
+const double LINE_DIST_RANGE = .9;
 
 // Interpolation data
 int closestPointIndex = 0;
+int prevClosestPointIndex = 0;
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
-geometry_msgs::PoseStamped nextPointClosest; // pose of next point in path
+geometry_msgs::PoseStamped nextPointClosest; // pose of next point on path
 double midpoints[2] = {0,0};
 
 // Flags
@@ -102,7 +104,8 @@ bool calcClosestPointOnPath (void)
 
     if ( (closestDistance == 0) || (closestDistance > tempClosestDistance) )
       { 
-        closestDistance = tempClosestDistance; 
+        closestDistance = tempClosestDistance;
+        prevClosestPointIndex = closestPointIndex;
         closestPointIndex = i;
       }
   }
@@ -137,6 +140,11 @@ void findClosestPointOnLine(void)
 {
     double point1[2] = {0,0};
     double point2[2] = {0,0};
+    
+    if(closestPointOnLine.pose.position.x != 0 && closestPointOnLine.pose.position.y != 0) // skip first iteration
+    {
+    	checkDistanceTraveled(); 
+    }
     
     point1[0] = pathPose.poses[closestPointIndex].position.x;
     point1[1] = pathPose.poses[closestPointIndex].position.y;
@@ -219,6 +227,25 @@ void findIndexOfLastPointOnPath(void)
         }    
     }
     lastPointOnPathIndex = i - 1;
+}
+
+// determines whether the next interpolated line segment along the path should be used
+// by checking the distance the quadcopter has traveled along the line
+void checkDistanceTraveled(void)
+{
+   double line_dist = 0;
+   double line_dist_trav = 0;
+   if(closestPointIndex != prevClosestPointIndex)
+    {
+    	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[prevClosestPointIndex].position.x, 
+                                        pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex].position.y );
+        line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[prevClosestPointIndex].position.x, 
+                                        closestPointOnLine.pose.position.y, pathPose.poses[prevClosestPointIndex].position.y );
+        if( (line_dist_trav/line_dist) < LINE_DIST_RANGE )
+        {
+        	closestPointIndex = prevClosestPointIndex;
+        }
+    }
 }
 
 int main(int argc, char **argv)
