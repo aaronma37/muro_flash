@@ -165,6 +165,11 @@ void findClosestPointOnLine(void)
     	checkDistanceTraveled(); 
     }
     
+    if(prevClosestPointIndex > closestPointIndex)
+    {
+    	closestPointIndex = prevClosestPointIndex + 1;
+    }
+    
     point1[0] = pathPose.poses[closestPointIndex].position.x;
     point1[1] = pathPose.poses[closestPointIndex].position.y;
     point2[0] = pathPose.poses[closestPointIndex + 1].position.x;
