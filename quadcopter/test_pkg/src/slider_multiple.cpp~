@@ -66,14 +66,14 @@ geometry_msgs::Twist pathVel; // velocity along path
 
 
 // Keep track of Quadcopter state
-double T = 5; // ROS loop rate
+double T = 50; // ROS loop rate
 
 // Constants
 
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.5;
 const double DEFAULT_KI = 0.01;
-const double DEFAULT_KD = 0.1;
+const double DEFAULT_KD = 0;
 const double DEFAULT_KPZ = 4;
 const double DEFAULT_KIZ = 0;
 const double DEFAULT_KDZ = .1;
@@ -128,28 +128,27 @@ geometry_msgs::PoseStamped poseErrorPrev[num] ; // This is used to determine the
                                           // It stores the previous poseError
 
 // Updates current position estimate sent by the ekf
-void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
+void poseEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
-    if (posePtr -> header.frame_id.compare("Gypsy Danger")==0){
-	k=0;
-	}
-else if (posePtr -> header.frame_id.compare("Typhoon")==0){
-	k=1;
-	}
-else if (posePtr -> header.frame_id.compare("dummy 1")==0){
-	k=101;
-	}
-else if (posePtr -> header.frame_id.compare("dummy 2")==0){
-	k=102;
-	}
-	
+	for (int i =0;i<1000;i++){
+		poseEstimation[i].pose.position.x = posePtr -> transforms[i].transform.translation.x;
+		poseEstimation[i].pose.position.y = posePtr -> transforms[i].transform.translation.y;
+		poseEstimation[i].pose.position.z = posePtr -> transforms[i].transform.translation.z;
 
-    poseEstimation[k].pose = posePtr -> pose;
-    poseSysId[k].x = poseEstimation[k].pose.position.x; // Update current pose estimation data
-    poseSysId[k].y = poseEstimation[k].pose.position.y;
-    poseSysId[k].z = poseEstimation[k].pose.position.z;
-    poseEstYaw[k] = tf::getYaw(poseEstimation[k].pose.orientation) + PI;
-    active[k]=true;
+		poseEstimation[i].pose.orientation.x = posePtr -> transforms[i].transform.rotation.x;
+		poseEstimation[i].pose.orientation.y = posePtr -> transforms[i].transform.rotation.y;
+		poseEstimation[i].pose.orientation.z = posePtr -> transforms[i].transform.rotation.z;
+		poseEstimation[i].pose.orientation.w = posePtr -> transforms[i].transform.rotation.w;
+
+    		poseSysId[i].x = poseEstimation[i].pose.position.x; 
+    		poseSysId[i].y = poseEstimation[i].pose.position.y;
+    		poseSysId[i].z = poseEstimation[i].pose.position.z;
+    		poseEstYaw[i] = tf::getYaw(poseEstimation[i].pose.orientation) + PI;
+    		if (poseEstimation[i].pose.position.y!=0 || poseEstimation[i].pose.position.x!=0){
+			active[i]=true;
+			std::cout<<"\n Measured: \n"<<poseEstimation[i]<<"\n";
+		}
+	}    
 }
 
 void velocityEstCallback(const geometry_msgs::TwistStamped::ConstPtr& twistPtr)
@@ -165,6 +164,9 @@ else if (twistPtr -> header.frame_id.compare("dummy 1")==0){
 	}
 else if (twistPtr -> header.frame_id.compare("dummy 2")==0){
 	k=102;
+	}
+else if (twistPtr -> header.frame_id.compare("dummy 2")==0){
+	k=103;
 	}
     velEstimation[k].linear = twistPtr->twist.linear;
 }
@@ -207,7 +209,6 @@ void calculateError(int i)
     poseError[i].pose.position.z = poseGoal.pose.position.z - poseEstimation[i].pose.position.z;
     poseErrYaw[i] = poseGoalYaw - poseEstYaw[i];
     poseError[i].pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw[i]); 
-    
 }
 
 void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float newSampleYaw)
@@ -288,7 +289,6 @@ void PID(int i)
     {
       pastError[i].pose.position.x = -windupCap;
     }
-    
     if(pastError[i].pose.position.y > windupCap)
     {
       pastError[i].pose.position.y = windupCap;
@@ -350,10 +350,6 @@ void PID(int i)
 		    velocity.transforms[i].transform.translation.x =  norm1*cos(activeAngle);
 		    velocity.transforms[i].transform.translation.y =  norm1*sin(activeAngle);
    	 }
-    
-    // For modeling purposes
-    velPoseEstX.x = poseEstimation[i].pose.position.x;
-    velPoseEstX.y = velocity.transforms[i].transform.translation.x;
 }
 
 int main(int argc, char **argv)
@@ -373,8 +369,8 @@ int main(int argc, char **argv)
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
 
-    poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
-    velEstSub = n.subscribe<geometry_msgs::TwistStamped>("/velocityEstimation", 1, velocityEstCallback);
+    poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
+    velEstSub = n.subscribe<tf2_msgs::TFMessage>("/velocityEstimation", 1, velocityEstCallback);
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
@@ -398,7 +394,7 @@ int main(int argc, char **argv)
     pathVel.angular.z = 0;
 
     velPoseEstX.z = 0;
-
+velocity.transforms.resize(1000);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
 cout<<"CHECK \n";
@@ -432,7 +428,6 @@ for (int i=0;i<num;i++){
 		calculateError(i);        
 		PID(i);
 		poseSysIdPub.publish(poseSysId[i]);
-		velPoseEstXPub.publish(velPoseEstX);
 		}
 	}
 	velPub.publish(velocity);
