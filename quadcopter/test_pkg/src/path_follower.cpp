@@ -135,6 +135,25 @@ void calcConstVelTerm(void)
     }
 }
 
+// determines whether the next interpolated line segment along the path should be used
+// by checking the distance the quadcopter has traveled along the line
+void checkDistanceTraveled(void)
+{
+   double line_dist = 0;
+   double line_dist_trav = 0;
+   if(closestPointIndex != prevClosestPointIndex)
+    {
+    	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[prevClosestPointIndex].position.x, 
+                                        pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex].position.y );
+        line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[prevClosestPointIndex].position.x, 
+                                        closestPointOnLine.pose.position.y, pathPose.poses[prevClosestPointIndex].position.y );
+        if( (line_dist_trav/line_dist) < LINE_DIST_RANGE )
+        {
+        	closestPointIndex = prevClosestPointIndex;
+        }
+    }
+}
+
 // Interpolates to find closest point on the path using the bisection method
 void findClosestPointOnLine(void)
 {
@@ -227,25 +246,6 @@ void findIndexOfLastPointOnPath(void)
         }    
     }
     lastPointOnPathIndex = i - 1;
-}
-
-// determines whether the next interpolated line segment along the path should be used
-// by checking the distance the quadcopter has traveled along the line
-void checkDistanceTraveled(void)
-{
-   double line_dist = 0;
-   double line_dist_trav = 0;
-   if(closestPointIndex != prevClosestPointIndex)
-    {
-    	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[prevClosestPointIndex].position.x, 
-                                        pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex].position.y );
-        line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[prevClosestPointIndex].position.x, 
-                                        closestPointOnLine.pose.position.y, pathPose.poses[prevClosestPointIndex].position.y );
-        if( (line_dist_trav/line_dist) < LINE_DIST_RANGE )
-        {
-        	closestPointIndex = prevClosestPointIndex;
-        }
-    }
 }
 
 int main(int argc, char **argv)
