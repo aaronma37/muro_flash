@@ -52,15 +52,15 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-const int num=1000;
+
 // Position and movement messages
-geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
+geometry_msgs::PoseStamped poseEstimation; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation;
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
-geometry_msgs::PoseStamped poseError[num]; // Difference between desired pose and current pose
-geometry_msgs::Twist velocity[num]; // Velocity command needed to rectify the error
+geometry_msgs::PoseStamped poseError; // Difference between desired pose and current pose
+geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
-geometry_msgs::Vector3 poseSysId[num]; // Store best pose estimations to use for the system id
+geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 geometry_msgs::Twist pathVel; // velocity along path
 
@@ -69,7 +69,6 @@ geometry_msgs::Twist pathVel; // velocity along path
 double T = 50; // ROS loop rate
 
 // Constants
-
 const double PI = 3.141592653589793238463;
 const double DEFAULT_KP = 0.5;
 const double DEFAULT_KI = 0.01;
@@ -86,15 +85,15 @@ double kd = DEFAULT_KD; // Differential gain
 double kpZ = DEFAULT_KPZ;
 double kiZ = DEFAULT_KIZ;
 double kdZ = DEFAULT_KDZ;
-double sX[num];
-double sY[num];
-double sZ[num];
+double sX = 0;
+double sY = 0;
+double sZ = 0;
 double sXprev = 0;
 double sYprev = 0;
 double sZprev = 0;
-//double pastX = 0;
-//double pastY = 0;
-//double pastZ = 0;
+double pastX = 0;
+double pastY = 0;
+double pastZ = 0;
 double sliderSlope = 0.8;
 double sliderGain = 0.8;
 double sliderRange = 0.25;
@@ -104,11 +103,11 @@ double sliderAmp = 0.35;
 double windupCap;
 
 // Kepp track of yaw to determine angular component of velocity 
-double poseEstYaw[num] ; // twist or oscillation about a vertical axis
+double poseEstYaw; // twist or oscillation about a vertical axis
 double poseGoalYaw = PI;
-double poseErrYaw[num];
-double poseErrYawPrev[num]; // for PID derivative term
-double pastYawErr[num];
+double poseErrYaw = 0;
+double poseErrYawPrev; // for PID derivative term
+double pastYawErr = 0;
 
 // Moving Average terms
 const int numSamples = 10;
@@ -119,24 +118,29 @@ float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
 float activeAngle=0;
 int maIndex = 1;
+double counterTemp=0;
 
 // PID controller terms
-geometry_msgs::PoseStamped pastError[num] ; // This is the integral term
-geometry_msgs::PoseStamped poseErrorPrev[num] ; // This is used to determine the derviative term
+geometry_msgs::PoseStamped pastError; // This is the integral term
+geometry_msgs::PoseStamped poseErrorPrev; // This is used to determine the derviative term
                                           // It stores the previous poseError
 
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-//    pastX = poseSysId[i].x;
-//    pastY = poseSysId[i].y;
-//    pastZ = poseSysId[i].z;
-    int i=0;
-    poseEstimation[i].pose = posePtr -> pose;
-    poseSysId[i].x = poseEstimation[i].pose.position.x; // Update current pose estimation data
-    poseSysId[i].y = poseEstimation[i].pose.position.y;
-    poseSysId[i].z = poseEstimation[i].pose.position.z;
-    poseEstYaw[i] = tf::getYaw(poseEstimation[i].pose.orientation) + PI;
+    pastX = poseSysId.x;
+    pastY = poseSysId.y;
+    pastZ = poseSysId.z;
+    
+    poseEstimation.pose = posePtr -> pose;
+    poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
+    poseSysId.y = poseEstimation.pose.position.y;
+    poseSysId.z = poseEstimation.pose.position.z;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI+counterTemp;
+    counterTemp=counterTemp+.001;
+	if (counterTemp>6){
+		counterTemp=0;
+	}
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
@@ -173,15 +177,15 @@ void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
 }
 
 // Calculates updated error to be used by PID
-void calculateError(int i)
+void calculateError(void)
 {
-    poseErrorPrev[i].pose = poseError[i].pose; // Store old pose error for PID equation
-    poseErrYawPrev[i] = poseErrYaw[i]; // Store old pose yaw for PID equation
-    poseError[i].pose.position.x = poseGoal.pose.position.x - poseEstimation[i].pose.position.x;
-    poseError[i].pose.position.y = poseGoal.pose.position.y - poseEstimation[i].pose.position.y;
-    poseError[i].pose.position.z = poseGoal.pose.position.z - poseEstimation[i].pose.position.z;
-    poseErrYaw[i] = poseGoalYaw - poseEstYaw[i];
-    poseError[i].pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw[i]); 
+    poseErrorPrev.pose = poseError.pose; // Store old pose error for PID equation
+    poseErrYawPrev = poseErrYaw; // Store old pose yaw for PID equation
+    poseError.pose.position.x = poseGoal.pose.position.x - poseEstimation.pose.position.x;
+    poseError.pose.position.y = poseGoal.pose.position.y - poseEstimation.pose.position.y;
+    poseError.pose.position.z = poseGoal.pose.position.z - poseEstimation.pose.position.z;
+    poseErrYaw = poseGoalYaw - poseEstYaw;
+    poseError.pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw); 
     
 }
 
@@ -232,19 +236,19 @@ void calcMoveAvg(float newSampleX, float newSampleY, float newSampleZ, float new
 }
 
 // This is the PID method
-void PID(int i)
+void PID(void)
 {
     double kpYaw = .5;
     double kiYaw = 0;
     double kdYaw = 0;
     
-    pastError[i].pose.position.x += (1/T)*poseError[i].pose.position.x;
-    pastError[i].pose.position.y += (1/T)*poseError[i].pose.position.y;
-    pastError[i].pose.position.z += (1/T)*poseError[i].pose.position.z;
-    pastYawErr[i] += (1/T)*poseErrYaw[i];
+    pastError.pose.position.x += (1/T)*poseError.pose.position.x;
+    pastError.pose.position.y += (1/T)*poseError.pose.position.y;
+    pastError.pose.position.z += (1/T)*poseError.pose.position.z;
+    pastYawErr += (1/T)*poseErrYaw;
     
     // Check for integral windup
-    if( sqrt( pow(poseError[i].pose.position.x, 2) + pow(poseError[i].pose.position.y, 2) ) > WINDUP_BOUND )
+    if( sqrt( pow(poseError.pose.position.x, 2) + pow(poseError.pose.position.y, 2) ) > WINDUP_BOUND )
     {
       ki = 0;
     }
@@ -255,80 +259,116 @@ void PID(int i)
     }
     else windupCap = 0.05/ki;
     
-    if(pastError[i].pose.position.x > windupCap)
+    if(pastError.pose.position.x > windupCap)
     {
-      pastError[i].pose.position.x = windupCap;
+      pastError.pose.position.x = windupCap;
     }
-    else if(pastError[i].pose.position.x < -windupCap)
+    else if(pastError.pose.position.x < -windupCap)
     {
-      pastError[i].pose.position.x = -windupCap;
+      pastError.pose.position.x = -windupCap;
     }
     
-    if(pastError[i].pose.position.y > windupCap)
+    if(pastError.pose.position.y > windupCap)
     {
-      pastError[i].pose.position.y = windupCap;
+      pastError.pose.position.y = windupCap;
     }
-    else if(pastError[i].pose.position.y < -windupCap)
+    else if(pastError.pose.position.y < -windupCap)
     {
-      pastError[i].pose.position.y = -windupCap;
+      pastError.pose.position.y = -windupCap;
     }
     
     // Store previous s value to determine derivative term
-    sXprev = sX[i];
-    sYprev = sY[i];
-    sZprev = sZ[i];
+    sXprev = sX;
+    sYprev = sY;
+    sZprev = sZ;
     
     // Linear Sliding Mode
-    sX[i] = -sliderSlope*poseError[i].pose.position.x + velEstimation[i].linear.x;
-    sY[i] = -sliderSlope*poseError[i].pose.position.y + velEstimation[i].linear.y;
-    sZ[i] = -sliderSlope*poseError[i].pose.position.z + velEstimation[i].linear.z;
+    sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
+    sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
+    sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
     
+    /*
+    // Piecewise Sliding Mode
     
-    calcMoveAvg(sX[i] - sXprev, sY[i] - sYprev, sZ[i] - sZprev, poseErrYaw[i] - poseErrYawPrev[i]);
+    if(poseError.pose.position.x < sliderRange && poseError.pose.position.x > -sliderRange)
+    {
+      sX = -sliderSlope*poseError.pose.position.x + velEstimation.linear.x;
+    }
+    else sX = -sliderAmp*( ( poseError.pose.position.x/( sqrt(abs(poseError.pose.position.x)) ) ) + velEstimation.linear.x );
+    
+    if(poseError.pose.position.y < sliderRange && poseError.pose.position.y > -sliderRange)
+    {
+      sY = -sliderSlope*poseError.pose.position.y + velEstimation.linear.y;
+    }
+    else sY = -sliderAmp*( ( poseError.pose.position.y/( sqrt(abs(poseError.pose.position.y)) ) ) + velEstimation.linear.y );
+    
+    if(poseError.pose.position.z < sliderRange && poseError.pose.position.z > -sliderRange)
+    {
+      sZ = -sliderSlope*poseError.pose.position.z + velEstimation.linear.z;
+    }
+    else sZ = -sliderAmp*( ( poseError.pose.position.z/( sqrt(abs(poseError.pose.position.z)) ) ) + velEstimation.linear.z );
+    //*/
+    
+    calcMoveAvg(sX - sXprev, sY - sYprev, sZ - sZprev, poseErrYaw - poseErrYawPrev);
       
-    velocity[i].linear.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;
-    if (velocity[i].linear.x > 1){
-      velocity[i].linear.x = 1;
+    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;
+    if (velocity.linear.x > 1){
+      velocity.linear.x = 1;
     }
-    else if (velocity[i].linear.x < -1){
-      velocity[i].linear.x = -1;
-    }
-    
-    velocity[i].linear.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;
-    if (velocity[i].linear.y > 1){
-      velocity[i].linear.y = 1;
-    }
-    else if (velocity[i].linear.y < -1){
-      velocity[i].linear.y = -1;
+    else if (velocity.linear.x < -1){
+      velocity.linear.x = -1;
     }
     
-    velocity[i].linear.z = sZ[i]*-(sliderGain);
-    if (velocity[i].linear.z > 1){
-      velocity[i].linear.z = 1;
+    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;
+    if (velocity.linear.y > 1){
+      velocity.linear.y = 1;
     }
-    else if (velocity[i].linear.z < -1){
-      velocity[i].linear.z = -1;
+    else if (velocity.linear.y < -1){
+      velocity.linear.y = -1;
     }
     
-    velocity[i].angular.z = (kpYaw*poseErrYaw[i]) + (kiYaw*pastYawErr[i]) + (kdYaw*T*(maResults[3]));
+    velocity.linear.z = sZ*-(sliderGain);
+    if (velocity.linear.z > 1){
+      velocity.linear.z = 1;
+    }
+    else if (velocity.linear.z < -1){
+      velocity.linear.z = -1;
+    }
     
-      if (velocity[i].linear.x!=0 && velocity[i].linear.y!=0){
-		    double dummyA=1;
-		    double dummyO=tan(poseEstYaw[i]+PI);
-		    double norm1=sqrt((velocity[i].linear.x*velocity[i].linear.x+velocity[i].linear.y*velocity[i].linear.y));
+    // Coordinate transformation from global to local coordinates
+    //double tempX = velocity.linear.x;
+    //velocity.linear.x = velocity.linear.x*cos(poseEstYaw) + velocity.linear.y*sin(poseEstYaw);
+    //velocity.linear.y = (-tempX*sin(poseEstYaw)) + velocity.linear.y*cos(poseEstYaw);
+    
+    velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
+    
+      if (velocity.linear.x!=0 && velocity.linear.y!=0){
+    double dummyA=1;
+    double dummyO=tan(poseEstYaw+PI);
+    double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
 
+/*    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
+    double norm2=sqrt(1+dummyO*dummyO);
+          activeAngle=acos(dot/(norm1*norm2));*/
+    double dot = dummyA*velocity.linear.x + dummyO*velocity.linear.y;   
+    double det = dummyA*velocity.linear.y - dummyO*velocity.linear.x;   
+    double activeAngle = atan2(det, dot);
+      
 
-		    double dot = dummyA*velocity[i].linear.x + dummyO*velocity[i].linear.y;   
-		    double det = dummyA*velocity[i].linear.y - dummyO*velocity[i].linear.x;   
-		    double activeAngle = atan2(det, dot);
-
-		    velocity[i].linear.x =  norm1*cos(activeAngle);
-		    velocity[i].linear.y =  norm1*sin(activeAngle);
-   	 }
+/*      
+      if (velocity.linear.y<0){
+       activeAngle=2*PI-activeAngle;
+    }*/
+    std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
+    std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
+    std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
+    velocity.linear.x =  norm1*cos(activeAngle);
+    velocity.linear.y =  norm1*sin(activeAngle);
+    }
     
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
-    velPoseEstX.y = velocity[i].linear.x;
+    velPoseEstX.y = velocity.linear.x;
 }
 
 int main(int argc, char **argv)
@@ -362,9 +402,14 @@ int main(int argc, char **argv)
     poseGoal.pose.position.x = 0;
     poseGoal.pose.position.y = 0;
     poseGoal.pose.position.z = 0;
-    
-
-    
+    poseError.pose.position.x = 0;
+    poseError.pose.position.y = 0;
+    poseError.pose.position.z = 0;
+    velocity.angular.x = 1;
+    velocity.angular.y = 0;
+    pastError.pose.position.x = 0;
+    pastError.pose.position.y = 0;
+    pastError.pose.position.z = 0;
     pathVel.linear.x = 0;
     pathVel.linear.y = 0;
     pathVel.linear.z = 0;
@@ -374,39 +419,21 @@ int main(int argc, char **argv)
 
     velPoseEstX.z = 0;
 
-for (int i=0;i<num;i++){
-
-    poseError[i].pose.position.x = 0;
-    poseError[i].pose.position.y = 0;
-    poseError[i].pose.position.z = 0;
-
-    pastError[i].pose.position.x = 0;
-    pastError[i].pose.position.y = 0;
-    pastError[i].pose.position.z = 0;
-    velocity[i].angular.x = 1;
-    velocity[i].angular.y = 0;
-    }
-
     while (ros::ok()) 
     {
         
         ros::spinOnce();
-       
+        
+        calculateError();
+        
+        PID();
 
-	for (int i=0;i<num;i++){
-		calculateError(i);        
-		PID(i);
-		velPub.publish(velocity[i]);
-		poseSysIdPub.publish(poseSysId);
-		velPoseEstXPub.publish(velPoseEstX);
-	}
+        velPub.publish(velocity);
+        poseSysIdPub.publish(poseSysId);
+        velPoseEstXPub.publish(velPoseEstX);
 
-
-
-
-
-
-
+        std::cout<<"Twist: \n"<<velEstimation.linear<<"\n\n";
+        std::cout<<"--------------------------------------------------------------------";
         loop_rate.sleep();
     }
 }
