@@ -97,7 +97,8 @@ bool calcClosestPointOnPath (void)
   {
     if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
         {
-            continue;
+            //continue;
+            break;
         }
     tempClosestDistance = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[i].position.y, poseEst.pose.position.y );
@@ -323,8 +324,8 @@ int main(int argc, char **argv)
                     std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
-                    pathPose.poses[closestPointIndex].position.x = 0;
-                    pathPose.poses[closestPointIndex].position.y = 0;
+                    //pathPose.poses[closestPointIndex].position.x = 0;
+                    //pathPose.poses[closestPointIndex].position.y = 0;
                     calcClosestPointOnPath();
                     ros::spinOnce();
                     loop_rate.sleep();
@@ -338,7 +339,7 @@ int main(int argc, char **argv)
 		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
 		// FIXME: reset path variables
-		prevClosestPointIndex = 0;
+		//prevClosestPointIndex = 0;
             }
             else // path given is CLOSED
             {
