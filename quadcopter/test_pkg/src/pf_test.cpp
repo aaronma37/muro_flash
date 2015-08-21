@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     poseEstPub = n.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
 
     // Initialize test msg
-    testPose.header.frame_id = "CLOSED";
+    testPose.header.frame_id = "OPEN";
     for(int i = 0; i < 5; i++)
     {
         testPose.poses.push_back(poseArray[i]);
