@@ -373,7 +373,6 @@ int main(int argc, char **argv)
 
 			poseEstimationTF.transforms[i].header.frame_id=poseEstimation[i].header.frame_id;
 
-			gl2_pub_.publish(poseEstimationTF);
 
 			//std::cout<<"\n Measured: \n"<<measurementPose[i]<<"\n";
 			//std::cout<<"Twist: \n"<<twist<<"\n";

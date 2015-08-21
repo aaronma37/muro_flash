@@ -89,7 +89,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
         ss << dummyNumber;
         string s = "dummy ";
         s+=ss.str();
-        k=7+dummyNumber;
+        k=10+dummyNumber;
         poseEstimation[k].header.frame_id=s;
     }
     else{

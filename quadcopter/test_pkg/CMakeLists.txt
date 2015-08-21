@@ -113,6 +113,12 @@ target_link_libraries(slider_multiple
 ${catkin_LIBRARIES}
 )
 
+add_executable(deserializeForAndroid src/deserializeForAndroid.cpp)
+add_dependencies(deserializeForAndroid ${catkin_EXPORTED_TARGETS})
+target_link_libraries(deserializeForAndroid
+${catkin_LIBRARIES}
+)
+
 add_executable(centroidGeneratorRos src/centroidGeneratorRos.cpp src/VoronoiDiagramGenerator.cpp)
 add_dependencies(centroidGeneratorRos ${catkin_EXPORTED_TARGETS})
 target_link_libraries(centroidGeneratorRos

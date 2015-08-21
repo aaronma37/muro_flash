@@ -1,24 +1,43 @@
 package com.example.aaron.test;
 
+/*
+ * Copyright (C) 2011 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 
-        import android.content.Context;
-        import android.util.AttributeSet;
-        import android.widget.TextView;
-        import org.ros.android.MessageCallable;
-        import org.ros.message.MessageListener;
-        import org.ros.namespace.GraphName;
-        import org.ros.node.ConnectedNode;
-        import org.ros.node.Node;
-        import org.ros.node.NodeMain;
-        import org.ros.node.topic.Subscriber;
-        import geometry_msgs.Pose;
-        import geometry_msgs.PoseStamped;
-        import geometry_msgs.Point;
-        import tf2_msgs.TFMessage;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.TextView;
+import org.ros.android.MessageCallable;
+import org.ros.message.MessageListener;
+import org.ros.namespace.GraphName;
+import org.ros.node.ConnectedNode;
+import org.ros.node.Node;
+import org.ros.node.NodeMain;
+import org.ros.node.topic.Subscriber;
+import geometry_msgs.Pose;
+import geometry_msgs.PoseStamped;
+import geometry_msgs.Point;
 
 
-        import org.apache.commons.logging.Log;
 
+import org.apache.commons.logging.Log;
+
+
+/**
+ * @author damonkohler@google.com (Damon Kohler)
+ */
 public class poseView<T> implements NodeMain {
 
     public String topicName;
@@ -29,10 +48,10 @@ public class poseView<T> implements NodeMain {
     public PoseStamped pose;
     public float poseData[]={0,0,0,0,0,0,0,0,0};
     public Point p;
-    private int maxSize=15;
     public int num=0;
     public boolean newRobot=false;
     public turtle turtleList[]=new turtle[maxBots];
+    //private MessageCallable<String, T> callable;
 
     public poseView() {
         this.y=1;
@@ -42,16 +61,15 @@ public class poseView<T> implements NodeMain {
         this.w=1;
         this.i=0;
         this.j=0;
-//        messageType= geometry_msgs.PoseStamped._TYPE;
-        messageType= tf2_msgs.TFMessage._TYPE;
+        messageType= geometry_msgs.PoseStamped._TYPE;
         for (int i=0;i<maxBots;i++){
             turtleList[i]=new turtle();
         }
     }
 
-   public turtle[] getTurtles(){
-       return turtleList;
-   }
+    public turtle[] getTurtles(){
+        return turtleList;
+    }
 
     public void setMessageType(String messageType) {
         this.messageType = messageType;
@@ -71,7 +89,7 @@ public class poseView<T> implements NodeMain {
     public double getYaw(){return Math.atan2(2*(w*k),(w*w-k*k))*57.2957795;}
     public Point getP(){return p;}
     public void setX(double xx) {
-    x=xx;
+        x=xx;
     }
     public void setY(double xx) {
         x=xx;
@@ -87,36 +105,26 @@ public class poseView<T> implements NodeMain {
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-//        Subscriber<geometry_msgs.PoseStamped> subscriber = connectedNode.newSubscriber("poseEstimation", messageType);
-        Subscriber<tf2_msgs.TFMessage> subscriber = connectedNode.newSubscriber("poseEstimationC", messageType);
-        subscriber.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
-
+        x=-3;
+        Subscriber<geometry_msgs.PoseStamped> subscriber = connectedNode.newSubscriber("poseEstimation", messageType);
+        subscriber.addMessageListener(new MessageListener<PoseStamped>() {
             @Override
-            public void onNewMessage(tf2_msgs.TFMessage pose) {
-                newMeasurementFlag=1;
-                for (int ii=0;ii<maxSize;ii++){
-                    frame_id=pose.getTransforms().get(ii).getHeader().getFrameId();
-                    if (!frame_id.equals("null")){
-                    y=pose.getTransforms().get(ii).getTransform().getTranslation().getY();
-                    x=pose.getTransforms().get(ii).getTransform().getTranslation().getX();
-                    z=pose.getTransforms().get(ii).getTransform().getTranslation().getZ();
+            public void onNewMessage(geometry_msgs.PoseStamped pose) {
 
-                    w=pose.getTransforms().get(ii).getTransform().getRotation().getW();
-                    i=pose.getTransforms().get(ii).getTransform().getRotation().getX();
-                    j=pose.getTransforms().get(ii).getTransform().getRotation().getY();
-                    k=pose.getTransforms().get(ii).getTransform().getRotation().getZ();
-
-//                    y=pose.getPose().getPosition().getY();
-//                    z=pose.getPose().getPosition().getZ();
-//                    p=pose.getPose().getPosition();
-//                    x=(pose.getPose().getPosition().getX());
-//                    w=pose.getPose().getOrientation().getW();
-//                    i=pose.getPose().getOrientation().getX();
-//                    j=pose.getPose().getOrientation().getY();
-//                    k=pose.getPose().getOrientation().getZ();
-
-
-                    //id=(double)pose.getHeader().getSeq();
+                //System.out.println("found"+pose.getPosition().getX());
+                //x=pose.getPosition().getX();
+                frame_id=pose.getHeader().getFrameId();
+                if(!frame_id.equals("null")){
+                    newMeasurementFlag=1;
+                    y=pose.getPose().getPosition().getY();
+                    z=pose.getPose().getPosition().getZ();
+                    p=pose.getPose().getPosition();
+                    x=(pose.getPose().getPosition().getX());
+                    w=pose.getPose().getOrientation().getW();
+                    i=pose.getPose().getOrientation().getX();
+                    j=pose.getPose().getOrientation().getY();
+                    k=pose.getPose().getOrientation().getZ();
+                    id=(double)pose.getHeader().getSeq();
 
                     poseData[0]=(float)x;
                     poseData[1]=(float)y;
@@ -127,6 +135,8 @@ public class poseView<T> implements NodeMain {
                     poseData[7]=(float)((Math.atan2(-2*(j*k-w*i), w*w-i*i-j*j+k*k))*57.2957795);
                     poseData[8]=(float)((Math.asin(2 * (i * k + w * j)))*57.2957795);
 
+
+                    System.out.println(frame_id);
                     newRobot=true;
                     if (num==0){
                         num++;
@@ -154,9 +164,13 @@ public class poseView<T> implements NodeMain {
                 else{poseData[4]=0;}*/
 
 
+
+
                     turtleList[(int)poseData[4]].setData(poseData,frame_id,0);
-                    }
                 }
+
+
+
             }
         });
     }
