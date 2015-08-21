@@ -333,8 +333,8 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                pathPose.poses[closestPointIndex].position.x = 0;
-                pathPose.poses[closestPointIndex].position.y = 0;
+                //pathPose.poses[closestPointIndex].position.x = 0;
+                //pathPose.poses[closestPointIndex].position.y = 0;
 		constVelTerm.linear.x = 0;
 		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
