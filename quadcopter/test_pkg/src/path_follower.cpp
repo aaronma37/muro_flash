@@ -121,11 +121,11 @@ void calcConstVelTerm(void)
     double dotProduct = (vector1[0]*vector2[0]) + (vector1[1]*vector2[1]);
     double absProduct = distanceFormula(nextPointClosest.pose.position.x, closestPointOnLine.pose.position.x,
                                         nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
-    if(absProduct != 0)
-    {
+    //if(absProduct != 0)
+    //{
     	globalAngle = acos(dotProduct/absProduct);
-    } 
-    else globalAngle = 0; // FIXME: check output
+    //} 
+    //else globalAngle = 0; // FIXME: check output
     
     if(nextPointClosest.pose.position.y - closestPointOnLine.pose.position.y >= 0) // Check if angle is over 180 degrees
     {
