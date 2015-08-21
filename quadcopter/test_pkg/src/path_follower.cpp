@@ -122,6 +122,15 @@ void calcConstVelTerm(void)
     double dotProduct = (vector1[0]*vector2[0]) + (vector1[1]*vector2[1]);
     double absProduct = distanceFormula(nextPointClosest.pose.position.x, closestPointOnLine.pose.position.x,
                                         nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
+    
+    if(absProduct == 0)
+    {
+    	std::cout << "---------------------------------------------------------------------\n";
+    	std::cout << "Closest Point(reference):\nIndex: "<< closestPointIndex << "\n" << closestPointOnLine << "\n\n";
+        std::cout << "Next Point:\n" << nextPointClosest << "\n";
+        std::cout << "---------------------------------------------------------------------\n\n";
+    }
+    
     //if(absProduct != 0)
     //{
     	globalAngle = acos(dotProduct/absProduct);
