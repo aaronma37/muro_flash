@@ -220,17 +220,17 @@ void sortPathArray(void)
     // Initialize placeHolder
     geometry_msgs::PoseArray placeHolder;
     geometry_msgs::Pose tempArray[pathPose.poses.size()];
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < pathPose.poses.size(); i++)
     {
         placeHolder.poses.push_back(tempArray[i]);
     }
-    for(int i = 0; i < 10; i++)
+    for(int i = 0; i < pathPose.poses.size(); i++)
     {
       (placeHolder.poses[i]).position.x = 0;
       (placeHolder.poses[i]).position.y = 0;
     }
     
-    for (int i=0; i<pathPose.poses.size(); i++)
+    for (int i = 0; i < pathPose.poses.size(); i++)
     {
         placeHolder.poses[i].position.x = pathPose.poses[i].position.x;
         placeHolder.poses[i].position.y = pathPose.poses[i].position.y;
