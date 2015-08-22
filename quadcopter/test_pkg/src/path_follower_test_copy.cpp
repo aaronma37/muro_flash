@@ -294,18 +294,98 @@ int main(int argc, char **argv)
     constVelTerm.angular.x = 0;
     constVelTerm.angular.y = 0;
     constVelTerm.angular.z = 0;
-
-    calcClosestPointOnPath();
-    std::cout << "---------------------------------------------------------------------\n";
-    std::cout << "Pose Est:\n" << poseEst << "\n\n";
-    std::cout << "Closest Point Index: " << closestPointIndex << "\n\n";
-    std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n\n";
-    std::cout << "Path Array:\n" << pathPose << "\n\n";
-    sortPathArray(); // array now starts at the closest point index
-    std::cout << "Sorted Path Array:\n" << pathPose << "\n\n";
-    std::cout << "---------------------------------------------------------------------\n";
     
-    ros::shutdown();
+    while (ros::ok()) 
+    {
+        ros::spinOnce();
+        
+        if(newPath) // check if a new path has been set
+        {
+            findIndexOfLastPointOnPath();
+            /*if(isOpenLoop) // path given is OPEN
+            {
+                newPath = false; // reset flag
+                goalPose.pose = (pathPose.poses)[0]; // publish first point on path
+                goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                goalPub.publish(goalPose);
+                while( distanceFormula(pathPose.poses[0].position.x, poseEst.pose.position.x, 
+                                        pathPose.poses[0].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
+                    {
+                        ros::spinOnce();
+                        loop_rate.sleep();
+                        if(newPath || !ros::ok())
+                        {
+                            break;
+                        }
+                    }
+                closestPointIndex = 0; // initialize to first point in path 
+                while(closestPointIndex != lastPointOnPathIndex) // use interpolation
+                {
+                    if(newPath || !ros::ok()) // FIXME: break out if a different pose is published
+                    {
+                        break;
+                    }
+                    ROS_INFO("on interpolation loop OPEN\n");
+                    findClosestPointOnLine();
+                    closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                    calcConstVelTerm();
+                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                    velPub.publish(constVelTerm);
+                    goalPub.publish(closestPointOnLine);
+                    //pathPose.poses[closestPointIndex].position.x = 0;
+                    //pathPose.poses[closestPointIndex].position.y = 0;
+                    calcClosestPointOnPath();
+                    ros::spinOnce();
+                    loop_rate.sleep();
+                }
+                goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
+                goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                goalPub.publish(goalPose);
+                //pathPose.poses[closestPointIndex].position.x = 0;
+                //pathPose.poses[closestPointIndex].position.y = 0;
+		constVelTerm.linear.x = 0;
+		constVelTerm.linear.y = 0;
+		velPub.publish(constVelTerm);
+		// FIXME: reset path variables
+		//prevClosestPointIndex = 0;
+            }
+            else // path given is CLOSED
+            {*/
+                newPath = false; // reset flag and set stopping condition for while loop
+                calcClosestPointOnPath();
+                std::cout << "---------------------------------------------------------------------\n";
+                std::cout << "Pose Est:\n" << poseEst << "\n\n";
+                std::cout << "Closest Point Index: " << closestPointIndex << "\n\n";
+                std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n\n";
+                std::cout << "Path Array:\n" << pathPose << "\n\n";
+                sortPathArray(); // array now starts at the closest point index
+                std::cout << "Sorted Path Array:\n" << pathPose << "\n\n";
+                std::cout << "---------------------------------------------------------------------\n";
+                /*closestPointIndex = 0;
+                while( !newPath || ros::ok() ) // while no new path has been published
+                {
+                    ROS_INFO("on interpolation loop CLOSED");
+                    findClosestPointOnLine();
+                    closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
+                    calcConstVelTerm();
+                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                    velPub.publish(constVelTerm);
+                    goalPub.publish(closestPointOnLine);
+                    calcClosestPointOnPath();
+                    if (closestPointIndex == lastPointOnPathIndex)
+                    {
+                        closestPointIndex = 0;
+                    }
+                    ros::spinOnce();
+                    loop_rate.sleep();
+                }*/
+            //}
+        }
+        
+        loop_rate.sleep();
+    }
 
     /*while (ros::ok()) 
     {
