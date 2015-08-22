@@ -269,7 +269,7 @@ void findIndexOfLastPointOnPath(void)
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "path_follower"); //Ros Initialize
+    ros::init(argc, argv, "path_follower_test_copy"); //Ros Initialize
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
@@ -295,7 +295,19 @@ int main(int argc, char **argv)
     constVelTerm.angular.y = 0;
     constVelTerm.angular.z = 0;
 
-    while (ros::ok()) 
+    calcClosestPointOnPath();
+    std::cout << "---------------------------------------------------------------------\n";
+    std::cout << "Pose Est:\n" << poseEst << "\n\n";
+    std::cout << "Closest Point Index: " << closestPointIndex << "\n\n";
+    std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n\n";
+    std::cout << "Path Array:\n" << pathPose << "\n\n";
+    sortPathArray(); // array now starts at the closest point index
+    std::cout << "Sorted Path Array:\n" << pathPose << "\n\n";
+    std::cout << "---------------------------------------------------------------------\n";
+    
+    ros::shutdown();
+
+    /*while (ros::ok()) 
     {
         ros::spinOnce();
         
@@ -362,7 +374,7 @@ int main(int argc, char **argv)
                 sortPathArray(); // array now starts at the closest point index
                 std::cout << "Sorted Path Array:\n" << pathPose << "\n\n";
                 std::cout << "---------------------------------------------------------------------\n";
-                /*closestPointIndex = 0;
+                closestPointIndex = 0;
                 while( !newPath || ros::ok() ) // while no new path has been published
                 {
                     ROS_INFO("on interpolation loop CLOSED");
@@ -380,11 +392,11 @@ int main(int argc, char **argv)
                     }
                     ros::spinOnce();
                     loop_rate.sleep();
-                }*/
+                }
             }
         }
         
         loop_rate.sleep();
-    }
+    }*/
 }
 //END
