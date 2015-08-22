@@ -101,9 +101,15 @@ target_link_libraries(path_follower
 ${catkin_LIBRARIES}
 )
 
-add_executable(pf_test src/pf_test.cpp)
-add_dependencies(pf_test ${catkin_EXPORTED_TARGETS})
-target_link_libraries(pf_test
+add_executable(path_follower_test_copy src/path_follower_test_copy.cpp)
+add_dependencies(path_follower_test_copy ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower_test_copy
+${catkin_LIBRARIES}
+)
+
+add_executable(path_follower_test_sample_input src/path_follower_test_sample_input.cpp)
+add_dependencies(path_follower_test_sample_input ${catkin_EXPORTED_TARGETS})
+target_link_libraries(path_follower_test_sample_input
 ${catkin_LIBRARIES}
 )
 
