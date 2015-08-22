@@ -240,13 +240,13 @@ void sortPathArray(void)
     pathPose.poses[0].position.y = pathPose.poses[closestPointIndex].position.y;
     int j = 1;
     int z = 0;
-    while (pathPose.poses[closestPointIndex+j].position.x != 0 && pathPose.poses[closestPointIndex+j].position.y != 0)
+    while ( !(pathPose.poses[closestPointIndex + j].position.x == 0 && pathPose.poses[closestPointIndex + j].position.y == 0) )
     {
         pathPose.poses[j].position.x = pathPose.poses[closestPointIndex+j].position.x;
         pathPose.poses[j].position.y = pathPose.poses[closestPointIndex+j].position.y;
         j++;
     }
-    for (z=0 ; z< closestPointIndex; z++)
+    for (z = 0 ; z < closestPointIndex; z++)
     {
         pathPose.poses[j].position.x = placeHolder.poses[z].position.x;
         pathPose.poses[j].position.y = placeHolder.poses[z].position.y;
