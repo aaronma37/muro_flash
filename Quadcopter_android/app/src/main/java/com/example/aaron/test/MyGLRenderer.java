@@ -393,7 +393,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // DRAW VORONOI LINES
         if (vToggle==1) {
             for (int i = 0; i < vSize; i++) {
-                vLine[i].draw(scratch);
+                if (i<vLine.length){
+                    vLine[i].draw(scratch);
+                }
             }
         }
 

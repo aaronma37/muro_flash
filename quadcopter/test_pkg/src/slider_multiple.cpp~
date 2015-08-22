@@ -397,7 +397,7 @@ std::ostringstream ss;
 ss << i;
 string s = "dummy ";
 s+=ss.str();
-velocity.transforms[i+2].header.frame_id=s;
+velocity.transforms[i+9].header.frame_id=s;
 }
 for (int i=0;i<num;i++){
 

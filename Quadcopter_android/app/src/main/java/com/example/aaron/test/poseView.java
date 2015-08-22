@@ -172,7 +172,7 @@ public class poseView<T> implements NodeMain {
 
 
             }
-        });
+        }, 100);
     }
 
     @Override

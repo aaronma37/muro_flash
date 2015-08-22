@@ -52,7 +52,7 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-const int num=15;
+const int num=50;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation[num];
@@ -392,12 +392,12 @@ velocity.transforms.resize(num);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
 cout<<"CHECK \n";
-for (int i=1;i<5;i++){
+for (int i=1;i<40;i++){
 std::ostringstream ss;
 ss << i;
 string s = "dummy ";
 s+=ss.str();
-velocity.transforms[i+9].header.frame_id=s;
+velocity.transforms[i+10].header.frame_id=s;
 }
 for (int i=0;i<num;i++){
 
