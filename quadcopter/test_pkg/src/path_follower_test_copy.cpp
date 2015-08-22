@@ -298,10 +298,13 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         ros::spinOnce();
+        ROS_INFO("spinned\n\n");
         
         if(newPath) // check if a new path has been set
         {
+            ROS_INFO("in new path\n\n");
             findIndexOfLastPointOnPath();
+            ROS_INFO("found last index\n\n");
             /*if(isOpenLoop) // path given is OPEN
             {
                 newPath = false; // reset flag
@@ -354,6 +357,7 @@ int main(int argc, char **argv)
             {*/
                 newPath = false; // reset flag and set stopping condition for while loop
                 calcClosestPointOnPath();
+                ROS_INFO("closest point calculated\n\n");
                 std::cout << "---------------------------------------------------------------------\n";
                 std::cout << "Pose Est:\n" << poseEst << "\n\n";
                 std::cout << "Closest Point Index: " << closestPointIndex << "\n\n";
@@ -384,6 +388,7 @@ int main(int argc, char **argv)
             //}
         }
         
+        ROS_INFO("END\n---------------------------------------------\n\n");
         loop_rate.sleep();
     }
 
