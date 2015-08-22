@@ -23,7 +23,7 @@ const double T = 1;
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "path_follower_test"); //Ros Initialize
+    ros::init(argc, argv, "path_follower_test_sample_input"); //Ros Initialize
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
