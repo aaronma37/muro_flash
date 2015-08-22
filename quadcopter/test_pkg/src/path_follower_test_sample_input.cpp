@@ -76,14 +76,14 @@ int main(int argc, char **argv)
     poseEst.pose.position.z = 0.0;
     poseEst.pose.orientation = tf::createQuaternionMsgFromYaw(0);
     
-    for(int i = 0; i < 100; i++)
-    {
+    ros::Duration d = ros::Duration(5, 0);
+    d.sleep();
+    
+    //for(int i = 0; i < 100; i++)
+    //{
         poseEstPub.publish(poseEst);
         testPub.publish(testPose);
-    }
-   
-    //ros::Duration d = ros::Duration(10, 0);
-    //d.sleep();
+    //}
     
     ros::shutdown();
     return 0;
