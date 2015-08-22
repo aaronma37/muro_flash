@@ -354,15 +354,8 @@ int main(int argc, char **argv)
             {
                 newPath = false; // reset flag and set stopping condition for while loop
                 calcClosestPointOnPath();
-                std::cout << "---------------------------------------------------------------------\n";
-                std::cout << "Pose Est:\n" << poseEst << "\n\n";
-                std::cout << "Closest Point Index: " << closestPointIndex << "\n\n";
-                std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n\n";
-                std::cout << "Path Array:\n" << pathPose << "\n\n";
                 sortPathArray(); // array now starts at the closest point index
-                std::cout << "Sorted Path Array:\n" << pathPose << "\n\n";
-                std::cout << "---------------------------------------------------------------------\n";
-                /*closestPointIndex = 0;
+                closestPointIndex = 0;
                 while( !newPath || ros::ok() ) // while no new path has been published
                 {
                     ROS_INFO("on interpolation loop CLOSED");
@@ -380,7 +373,7 @@ int main(int argc, char **argv)
                     }
                     ros::spinOnce();
                     loop_rate.sleep();
-                }*/
+                }
             }
         }
         
