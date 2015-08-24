@@ -330,6 +330,11 @@ Matrix CentroidGenerator::generateCentroid(std::vector<float> allVertices, Matri
     
     return centroidMatrix;
 }
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
@@ -353,7 +358,7 @@ int main(int argc, char **argv)
 
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
-		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/path", 1000,poseCallback);
+		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
 		centroid_pub_ = nh_.advertise<geometry_msgs::PoseArray>("Centroids", 1000, true);
 
 	while (ros::ok()) 

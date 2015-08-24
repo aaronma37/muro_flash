@@ -15,7 +15,7 @@ import java.util.List;
 import geometry_msgs.Pose;
 import geometry_msgs.PoseArray;
 
-public class PathPublisher extends AbstractNodeMain {
+public class allPositionsPublisher extends AbstractNodeMain {
 
     public double x,y;
     public geometry_msgs.PoseArray pose;
@@ -27,24 +27,27 @@ public class PathPublisher extends AbstractNodeMain {
 
     Node node;
 
-    public PathPublisher()  {
+    public allPositionsPublisher(){
         dPose=new dummyPoseArray();
     }
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("pathPublisher");
+        return GraphName.of("allPositionsPublisherNode");
     }
 
-    public void setPathArray(dummyPoseArray p){
-        dPose=p;
+    public void setPositions(turtle[] turtleList){
+        for (int i = 0; i <turtleList.length;i++){
+            dPose.pose[i].x=turtleList[i].getX();
+            dPose.pose[i].y=turtleList[i].getY();
+        }
     }
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
 
         final Publisher<geometry_msgs.PoseArray> publisher =
-                connectedNode.newPublisher("/path", pose._TYPE);
+                connectedNode.newPublisher("/toVoronoiDeployment", pose._TYPE);
 
         pose = publisher.newMessage();
         for (int i=0;i<200;i++){
@@ -52,8 +55,6 @@ public class PathPublisher extends AbstractNodeMain {
             pose.getPoses().add(intPose);
         }
 
-        // This CancellableLoop will be canceled automatically when the node shuts
-        // down.
         connectedNode.executeCancellableLoop(new CancellableLoop() {
 
 
@@ -65,7 +66,6 @@ public class PathPublisher extends AbstractNodeMain {
             protected void loop() throws InterruptedException {
 
                 if (flag==true){
-                    if (dPose.header.equals("OPEN")||dPose.header.equals("CLOSED")){
                         for (int i=0;i<200;i++){
                             pose.getPoses().get(i).getPosition().setX(dPose.pose[i].x);
                             pose.getPoses().get(i).getPosition().setY(dPose.pose[i].y);
@@ -75,7 +75,6 @@ public class PathPublisher extends AbstractNodeMain {
                             pose.getPoses().get(i).getOrientation().setY(dPose.pose[i].ay);
                             pose.getPoses().get(i).getOrientation().setZ(dPose.pose[i].az);
                             pose.getPoses().get(i).getOrientation().setW(dPose.pose[i].aw);
-                        }
                     }
 
                     pose.getHeader().setFrameId(dPose.header);

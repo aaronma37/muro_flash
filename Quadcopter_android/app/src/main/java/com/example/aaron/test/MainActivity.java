@@ -41,6 +41,9 @@ public class MainActivity extends RosActivity {
     private MyGLSurfaceView mGLView;
     private PathPublisher pathPublisher;
     private GaussPublisher gaussPublisher;
+    private multipleGoalListener MultipleGoalListener;
+    private allPositionsPublisher SelectedPositionsPublisher;
+
     private float width1,height1;
     final int maxBots=50;
     private int flag=0;
@@ -64,8 +67,6 @@ public class MainActivity extends RosActivity {
 
 
     public MainActivity() {
-        // The RosActivity constructor configures the notification title and ticker
-        // messages.
         super("Pubsub Tutorial", "Pubsub Tutorial");
     }
 
@@ -81,19 +82,10 @@ public class MainActivity extends RosActivity {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LOW_PROFILE;
-                //| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         currentApiVersion = android.os.Build.VERSION.SDK_INT;
-        // This work only for android 4.4+
-
-
         if(currentApiVersion >= Build.VERSION_CODES.KITKAT)
         {
-
             getWindow().getDecorView().setSystemUiVisibility(flags);
-
-            // Code below is to handle presses of Volume up or Volume down.
-            // Without this, after pressing volume buttons, the navigation bar will
-            // show up and won't hide
             final View decorView = getWindow().getDecorView();
             decorView
                     .setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()
@@ -115,9 +107,6 @@ public class MainActivity extends RosActivity {
         setContentView(R.layout.activity_main);
         View decorView = getWindow().getDecorView();
 
-
-
-       // poseview.setTopicName("all_positions");
         rosTextView = (RosTextView<std_msgs.String>) findViewById(R.id.text);
         rosTextView.setTopicName("chatter");
         rosTextView.setMessageType(std_msgs.String._TYPE);
@@ -128,27 +117,6 @@ public class MainActivity extends RosActivity {
                 return message.getData();
             }
         });
-        /*final ConnectedNode connectedNode;
-        final Publisher<std_msgs.String> publisher =
-                connectedNode.newPublisher("Aaron", std_msgs.String._TYPE);
-        std_msgs.String str = publisher.newMessage();
-        str.setData("AaronMa");
-        publisher.publish(str);*/
-
-
-
-
-
-
-            /*Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                String value = extras.getString("new_variable_name");
-            }
-            float pos[]= extras.getFloatArray("position");*/
-
-
-            // Create a GLSurfaceView instance and set it
-            // as the ContentView for this Activity.
 
         mGLView = new MyGLSurfaceView(this, pos,turtleList);
         setContentView(mGLView);
@@ -184,22 +152,8 @@ public class MainActivity extends RosActivity {
         poseview = new poseView();
         vor = new Voronoi(.001);
 
-
-
-        //poseview.setMessageType(std_msgs.String._TYPE);
-        /*Pose x= poseimporter.turt.getPose();
-        String xString = String.valueOf(x.getPosition().getX());
-*/
-
-
-
-
-
-
         //NodeConfiguration nodeConfiguration = NodeConfiguration.newPrivate();
         NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress().toString(), getMasterUri());
-        // At this point, the user has already been prompted to either enter the URI
-        // of a master to use or to start a master locally.
         nodeConfiguration.setMasterUri(getMasterUri());
         width1=mGLView.getWidth1();
         height1=mGLView.getHeight1();
@@ -212,6 +166,8 @@ public class MainActivity extends RosActivity {
         nodeMainExecutor.execute(talker, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
+        nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
         //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
@@ -279,21 +235,19 @@ public class MainActivity extends RosActivity {
         exec3.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 if (mGLView.pathPublisherFlag==true){
-                    pathPublisher.flag=true;
                     pathPublisher.setPathArray(mGLView.passPathArray());
+                    pathPublisher.flag=true;
                     mGLView.pathPublisherFlag=false;
+                }
+                if (mGLView.getActive()==true){
+                    SelectedPositionsPublisher.setPositions(turtleList);
+                    SelectedPositionsPublisher.flag=true;
+                    MultipleGoalListener.flag =true;
                 }
 
 
             }
         }, 0, 500000, TimeUnit.MICROSECONDS);
-/*
-        ScheduledThreadPoolExecutor exec4 = new ScheduledThreadPoolExecutor(6);
-        exec4.scheduleAtFixedRate(new Runnable() {
-            public void run() {
 
-
-            }
-        }, 0, 50000, TimeUnit.MICROSECONDS);*/
     }
 }

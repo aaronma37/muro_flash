@@ -300,7 +300,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         }
                     gpFlag = mRenderer.getgpToggle();
 
-
+                    //Toggle for voronoi deployment
+                    if (xGL<mRenderer.voronoiDeploymentToggle.getLeft()-mRenderer.slider && xGL>mRenderer.voronoiDeploymentToggle.getRight()-mRenderer.slider && yGL > mRenderer.voronoiDeploymentToggle.getDown() && yGL < mRenderer.voronoiDeploymentToggle.getUp())
+                        if (mRenderer.voronoiDeploymentToggle.active == true) {
+                            mRenderer.voronoiDeploymentToggle.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.voronoiDeploymentToggle.active = true;
+                            v.vibrate(50);
+                        }
 
 
 /*                    if (xGL<-(width1-90)/height1+.05f && xGL>-(width1-90)/height1 && yGL >-(height1-10)/(height1)-mRenderer.slider  && yGL < -(height1-10)/(height1)+05f-mRenderer.slider ){
@@ -603,6 +611,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public float getScale(){
         return mRenderer.scale;
+    }
+
+    public boolean getActive(){
+        return mRenderer.voronoiDeploymentToggle.active;
     }
 
     private static BigDecimal truncateDecimal(float x,int numberofDecimals)

@@ -73,7 +73,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    private toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle;
+    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
     private FloatBuffer textureBuffer;
@@ -280,6 +280,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[4]=-(width-115)/(height*2)-.67f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.67f;spriteCoords[7]=(height)/(height)-.1f;
         temptoggle = new toggles(context, spriteCoords, 7);
+
+        spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height)-.21f;
+        spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.31f;
+        spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.31f;
+        spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.21f;
+        voronoiDeploymentToggle = new toggles(context, spriteCoords, 7);
 
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
@@ -496,6 +502,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ardroneAddToggle.Draw(scratch, 0);
         gaussToggle.Draw(scratch,gToggle);
         temptoggle.Draw(scratch,gpToggle);        //exit.Draw(scratch,1);
+
         Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .75f, -.85f, 0);
