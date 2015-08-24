@@ -155,18 +155,19 @@ void checkDistanceTraveled(void)
 {
    double line_dist = 0;
    double line_dist_trav = 0;
-   if(closestPointIndex != prevClosestPointIndex)
-    {
-    	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[prevClosestPointIndex].position.x, 
-                                        pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex].position.y );
-        line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[prevClosestPointIndex].position.x, 
-                                        closestPointOnLine.pose.position.y, pathPose.poses[prevClosestPointIndex].position.y );
+   //if(closestPointIndex != prevClosestPointIndex)
+    //{
+    	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[closestPointIndex + 1].position.x, 
+                                        pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex + 1].position.y );
+        line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[closestPointIndex].position.x, 
+                                        closestPointOnLine.pose.position.y, pathPose.poses[closestPointIndex].position.y );
         if( (line_dist_trav/line_dist) < LINE_DIST_RANGE )
         {
-        	closestPointIndex = prevClosestPointIndex;
+        	//closestPointIndex = prevClosestPointIndex;
+        	return;
         }
         else closestPointIndex++;
-    }
+    //}
 }
 
 // Interpolates to find closest point on the path using the bisection method
