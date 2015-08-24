@@ -37,7 +37,7 @@ const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
-const double LINE_DIST_RANGE = .8;
+const double LINE_DIST_RANGE = .9;
 
 // Interpolation data
 int closestPointIndex = 0;
@@ -90,27 +90,34 @@ void calculateMidPoints(double x3, double x2, double y3, double y2)
 }
 
 // This function will identify the closest point on the path to the quadcopter
-bool calcClosestPointOnPath (void)
+void calcClosestPointOnPath (void)
 {
   double closestDistance = 0; // distance from pose estimation to closest point on the path
   double tempClosestDistance = 0;
   
-  for(int i = 0; i < pathPose.poses.size(); i++)
+  prevClosestPointIndex = closestPointIndex;
+  for(int i = 0; i <= lastPointOnPathIndex; i++)
   {
-    if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
+    /*if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
         {
-            //continue;
-            break;
-        }
+            continue;
+        }*/
     tempClosestDistance = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[i].position.y, poseEst.pose.position.y );
 
     if ( (closestDistance == 0) || (closestDistance > tempClosestDistance) )
       { 
         closestDistance = tempClosestDistance;
-        prevClosestPointIndex = closestPointIndex;
         closestPointIndex = i;
       }
+  }
+  
+  if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
+  {
+  	if(closestPointIndex != prevClosestPointIndex + 1)
+  	{
+  		closestPointIndex = prevClosestPointIndex + 1;
+  	}
   }
 }
 
@@ -125,13 +132,13 @@ void calcConstVelTerm(void)
     double absProduct = distanceFormula(nextPointClosest.pose.position.x, closestPointOnLine.pose.position.x,
                                         nextPointClosest.pose.position.y, closestPointOnLine.pose.position.y);
     
-    if(absProduct == 0)
+    /*if(absProduct == 0)
     {
     	std::cout << "---------------------------------------------------------------------\n";
     	std::cout << "Closest Point(reference):\nIndex: "<< closestPointIndex << "\n" << closestPointOnLine << "\n\n";
         std::cout << "Next Point:\n" << nextPointClosest << "\n";
         std::cout << "---------------------------------------------------------------------\n\n";
-    }
+    }*/
     
     //if(absProduct != 0)
     //{
@@ -155,19 +162,19 @@ void calcConstVelTerm(void)
 // by checking the distance the quadcopter has traveled along the line
 void checkDistanceTraveled(void)
 {
-   //if(closestPointIndex != prevClosestPointIndex)
-    //{
+   if(closestPointIndex != prevClosestPointIndex)
+    {
     	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[closestPointIndex + 1].position.x, 
                                         pathPose.poses[closestPointIndex].position.y, pathPose.poses[prevClosestPointIndex + 1].position.y );
         line_dist_trav =  distanceFormula ( closestPointOnLine.pose.position.x, pathPose.poses[closestPointIndex].position.x, 
                                         closestPointOnLine.pose.position.y, pathPose.poses[closestPointIndex].position.y );
         if( (line_dist_trav/line_dist) < LINE_DIST_RANGE )
         {
-        	//closestPointIndex = prevClosestPointIndex;
+        	closestPointIndex = prevClosestPointIndex;
         	return;
         }
-        else closestPointIndex++;
-    //}
+        //else closestPointIndex++;
+    }
 }
 
 // Interpolates to find closest point on the path using the bisection method
@@ -195,7 +202,7 @@ void findClosestPointOnLine(void)
     
     double distance1 = 0;
     double distance2 = 0;
-    for(int i=0; i<NUM_ITERATIONS; i++)
+    for(int i = 0; i<NUM_ITERATIONS; i++)
     {
         distance1 = distanceFormula(poseEst.pose.position.x, point1[0], poseEst.pose.position.y, point1[1]);
         distance2 = distanceFormula(poseEst.pose.position.x, point2[0], poseEst.pose.position.y, point2[1]);
@@ -353,7 +360,7 @@ int main(int argc, char **argv)
                     goalPub.publish(closestPointOnLine);
                     //pathPose.poses[closestPointIndex].position.x = 0;
                     //pathPose.poses[closestPointIndex].position.y = 0;
-                    //calcClosestPointOnPath();
+                    calcClosestPointOnPath();
                     checkDistanceTraveled();
                     ros::spinOnce();
                     loop_rate.sleep();
