@@ -47,6 +47,7 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
 	countD = pose->poses.size();
 	centroidPositions = *pose;
+	gotPose=true;
 
 	for (int i=0;i<countD;i++)
 	{
@@ -364,7 +365,7 @@ int main(int argc, char **argv)
 	while (ros::ok()) 
 	{
 			ros::spinOnce();
-
+			
 			if (gotPose==true)
 			{
 				CentroidGenerator cg;

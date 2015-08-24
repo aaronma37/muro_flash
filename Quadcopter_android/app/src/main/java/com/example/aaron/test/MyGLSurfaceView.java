@@ -626,5 +626,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
         }
     }
 
+    public void setCentroids(dummyPoseArray tempArray){
+        mRenderer.centroids=tempArray;
+    }
+
 }
 

@@ -59,6 +59,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Square gLine[] = new Square[100];
     private Square gLine2[] = new Square[100];
     public  dummyPoseArray pathArray = new dummyPoseArray();
+    public  dummyPoseArray centroids = new dummyPoseArray();
     public NodeFactory nodeFactory;
     public geometry_msgs.Pose tempPose;
     private waypoint wp;
@@ -285,7 +286,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.31f;
         spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.31f;
         spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.21f;
-        voronoiDeploymentToggle = new toggles(context, spriteCoords, 7);
+        voronoiDeploymentToggle = new toggles(context, spriteCoords, 8);
 
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
@@ -348,18 +349,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 unused) {
         float[] scratch = new float[16];
         float[] scratch2 = new float[16];
-        // Draw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        // DRAW OUTLINE
-        //mArena.draw(mMVPMatrix);
-        //mArena2.draw(mMVPMatrix);
         Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-        //Matrix.scaleM(scratch,0,scale,scale,scale);
         Matrix.translateM(scratch, 0, 0, 0, 0);
         myGrid.Draw(scratch);
         Matrix.translateM(scratch, 0, 2f, 0, 0);
@@ -435,6 +429,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             wp.Draw(scratch);
         }
 
+
+        // DRAW CENTROIDS
+        if (voronoiDeploymentToggle.active==true){
+            for (int i=0; i< centroids.pose.length;i++){
+                if(centroids.pose[i].active==true){
+                    Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    Matrix.translateM(scratch, 0, centroids.pose[i].x, centroids.pose[i].y, 0);
+                    wp.Draw(scratch);
+                }
+            }
+        }
+
         /*scratch = new float[16];
         Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
@@ -502,6 +508,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ardroneAddToggle.Draw(scratch, 0);
         gaussToggle.Draw(scratch,gToggle);
         temptoggle.Draw(scratch,gpToggle);        //exit.Draw(scratch,1);
+        if (voronoiDeploymentToggle.active==true){
+            voronoiDeploymentToggle.Draw(scratch,1);
+        }
+        else {
+            voronoiDeploymentToggle.Draw(scratch,0);
+        }
+
 
         Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);

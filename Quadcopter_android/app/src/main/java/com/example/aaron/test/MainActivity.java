@@ -150,6 +150,8 @@ public class MainActivity extends RosActivity {
         pathPublisher=new PathPublisher();
         gaussPublisher = new GaussPublisher();
         poseview = new poseView();
+        MultipleGoalListener = new multipleGoalListener();
+        SelectedPositionsPublisher= new allPositionsPublisher();
         vor = new Voronoi(.001);
 
         //NodeConfiguration nodeConfiguration = NodeConfiguration.newPrivate();
@@ -243,11 +245,20 @@ public class MainActivity extends RosActivity {
                     SelectedPositionsPublisher.setPositions(turtleList);
                     SelectedPositionsPublisher.flag=true;
                     MultipleGoalListener.flag =true;
+                    mGLView.setCentroids(MultipleGoalListener.dummyArray);
                 }
+            }
+        }, 0, 500000, TimeUnit.MICROSECONDS);
+
+
+        /*
+        ScheduledThreadPoolExecutor exec4 = new ScheduledThreadPoolExecutor(6);
+        exec4.scheduleAtFixedRate(new Runnable() {
+            public void run() {
 
 
             }
-        }, 0, 500000, TimeUnit.MICROSECONDS);
+        }, 0, 50000, TimeUnit.MICROSECONDS);*/
 
     }
 }

@@ -16,7 +16,7 @@ public class multipleGoalListener<T> implements NodeMain {
     public boolean flag=false;
 
     public multipleGoalListener() {
-        messageType= geometry_msgs.PoseStamped._TYPE;
+        messageType= geometry_msgs.PoseArray._TYPE;
         dummyArray= new dummyPoseArray();
     }
 
@@ -36,6 +36,9 @@ public class multipleGoalListener<T> implements NodeMain {
                     for (int i =0;i<poseArray.getPoses().size();i++){
                         dummyArray.pose[i].x=(float)poseArray.getPoses().get(i).getPosition().getX();
                         dummyArray.pose[i].y=(float)poseArray.getPoses().get(i).getPosition().getY();
+                        if (dummyArray.pose[i].y!=0 && dummyArray.pose[i].x!=0){
+                            dummyArray.pose[i].active=true;
+                        }
                     }
                 }
 
