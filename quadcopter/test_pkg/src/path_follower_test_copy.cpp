@@ -37,7 +37,7 @@ const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
-const double LINE_DIST_RANGE = .95;
+const double LINE_DIST_RANGE = .8;
 
 // Interpolation data
 int closestPointIndex = 0;
