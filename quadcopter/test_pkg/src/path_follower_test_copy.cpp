@@ -45,6 +45,8 @@ int prevClosestPointIndex = 0;
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
 geometry_msgs::PoseStamped nextPointClosest; // pose of next point on path
 double midpoints[2] = {0,0};
+double line_dist = 0;
+double line_dist_trav = 0;
 
 // Flags
 bool newPath;
@@ -153,8 +155,6 @@ void calcConstVelTerm(void)
 // by checking the distance the quadcopter has traveled along the line
 void checkDistanceTraveled(void)
 {
-   double line_dist = 0;
-   double line_dist_trav = 0;
    //if(closestPointIndex != prevClosestPointIndex)
     //{
     	line_dist =  distanceFormula ( pathPose.poses[closestPointIndex].position.x, pathPose.poses[closestPointIndex + 1].position.x, 
@@ -299,6 +299,7 @@ int main(int argc, char **argv)
     
     // count variables
     int open_path_count = 0;
+    int count = 0;
     
     while (ros::ok()) 
     {
@@ -328,7 +329,7 @@ int main(int argc, char **argv)
                         }
                     }
                 closestPointIndex = 0; // initialize to first point in path 
-                int count = 0;
+                count = 0;
                 while(closestPointIndex != lastPointOnPathIndex) // use interpolation
                 {
                     if(newPath || !ros::ok()) // FIXME: break out if a different pose is published
@@ -340,10 +341,13 @@ int main(int argc, char **argv)
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
                     std::cout << "---------------------------------------------------------------------\n";
-                    std::cout << "Count: " << count++ << "\n";
+                    std::cout << "Loop Count: " << count++ << "\n";
                     std::cout << "Closest Point Index: " << closestPointIndex << "\n";
-                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
-                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                    std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n";
+                    std::cout << "Line Distance: " << line_dist << "\n";
+                    std::cout << "Line Distance Traveled: " << line_dist_trav << "\n\n";
+                    std::cout << "Goal Pose:\n" << closestPointOnLine << "\n\n";
+                    std::cout << "Constant Vel:\n" << constVelTerm << "\n\n";
                     std::cout << "---------------------------------------------------------------------\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
