@@ -322,6 +322,7 @@ int main(int argc, char **argv)
                         }
                     }
                 closestPointIndex = 0; // initialize to first point in path 
+                int count = 0;
                 while(closestPointIndex != lastPointOnPathIndex) // use interpolation
                 {
                     if(newPath || !ros::ok()) // FIXME: break out if a different pose is published
@@ -332,12 +333,16 @@ int main(int argc, char **argv)
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
+                    std::cout << "---------------------------------------------------------------------\n";
+                    std::cout << "Count: " << count++ << "\n";
+                    std::cout << "Closest Point Index: " << closestPointIndex << "\n";
                     std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
                     std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                    std::cout << "---------------------------------------------------------------------\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
-                    pathPose.poses[closestPointIndex].position.x = 0;
-                    pathPose.poses[closestPointIndex].position.y = 0;
+                    //pathPose.poses[closestPointIndex].position.x = 0;
+                    //pathPose.poses[closestPointIndex].position.y = 0;
                     calcClosestPointOnPath();
                     ros::spinOnce();
                     loop_rate.sleep();
@@ -345,8 +350,8 @@ int main(int argc, char **argv)
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                pathPose.poses[closestPointIndex].position.x = 0;
-                pathPose.poses[closestPointIndex].position.y = 0;
+                //pathPose.poses[closestPointIndex].position.x = 0;
+                //pathPose.poses[closestPointIndex].position.y = 0;
 		constVelTerm.linear.x = 0;
 		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
