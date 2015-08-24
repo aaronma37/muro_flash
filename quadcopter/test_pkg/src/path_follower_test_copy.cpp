@@ -37,7 +37,7 @@ const double BOUNDARY_RADIUS = 0.1;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
-const double LINE_DIST_RANGE = .9;
+const double LINE_DIST_RANGE = .95;
 
 // Interpolation data
 int closestPointIndex = 0;
@@ -165,6 +165,7 @@ void checkDistanceTraveled(void)
         {
         	closestPointIndex = prevClosestPointIndex;
         }
+        else closestPointIndex++;
     }
 }
 
@@ -174,10 +175,10 @@ void findClosestPointOnLine(void)
     double point1[2] = {0,0};
     double point2[2] = {0,0};
     
-    if(closestPointOnLine.pose.position.x != 0 && closestPointOnLine.pose.position.y != 0) // skip first iteration
-    {
-    	checkDistanceTraveled(); 
-    }
+    //if(closestPointOnLine.pose.position.x != 0 && closestPointOnLine.pose.position.y != 0) // skip first iteration
+    //{
+    	//checkDistanceTraveled(); 
+    //}
     
     /*if(prevClosestPointIndex > closestPointIndex)
     {
@@ -295,6 +296,9 @@ int main(int argc, char **argv)
     constVelTerm.angular.y = 0;
     constVelTerm.angular.z = 0;
     
+    // count variables
+    int open_path_count = 0;
+    
     while (ros::ok()) 
     {
         ros::spinOnce();
@@ -307,6 +311,7 @@ int main(int argc, char **argv)
             //ROS_INFO("found last index\n\n");
             if(isOpenLoop) // path given is OPEN
             {
+            	std::cout << "\n\n" << "Path count: " << open_path_count++ << "\n\n";
                 newPath = false; // reset flag
                 goalPose.pose = (pathPose.poses)[0]; // publish first point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
@@ -343,7 +348,8 @@ int main(int argc, char **argv)
                     goalPub.publish(closestPointOnLine);
                     //pathPose.poses[closestPointIndex].position.x = 0;
                     //pathPose.poses[closestPointIndex].position.y = 0;
-                    calcClosestPointOnPath();
+                    //calcClosestPointOnPath();
+                    checkDistanceTraveled();
                     ros::spinOnce();
                     loop_rate.sleep();
                 }
