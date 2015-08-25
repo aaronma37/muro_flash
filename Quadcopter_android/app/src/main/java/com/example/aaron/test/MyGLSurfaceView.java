@@ -117,13 +117,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void updateRen(turtle[] t){
         for (int i=0;i<maxBots;i++) {
-            if (t[i] != null) {
+            System.out.println("turtle #"+i);
+            System.out.println("active: "+t[i].getData()[6]);
                 float temp[]=t[i].getData();
                 temp[5]=state[i];
                 tList[i].setData(temp, t[i].getIdentification(), t[i].getType());
-            }
         }
-
         mRenderer.updateRen(tList);
     }
 
@@ -192,7 +191,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
             case MotionEvent.ACTION_DOWN:
                 mRenderer.tToggle=1;
 
-                for (int i=0;i<10;i++){
+                for (int i=0;i<maxBots;i++){
                     if(tList[i].getOn()==1) {
                         cc=cc+1;
                         if (Math.abs(tList[i].getX()*getScale() - xGL) < .1f && Math.abs(tList[i].getY()*getScale() - yGL) < .1f) {

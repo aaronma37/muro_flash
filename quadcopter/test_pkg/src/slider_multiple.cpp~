@@ -52,18 +52,18 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-const int num=15;
+const int num=50;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation[num];
-geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
+geometry_msgs::PoseStamped poseGoal[num]; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError[num]; // Difference between desired pose and current pose
 tf2_msgs::TFMessage velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId[num]; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 geometry_msgs::Twist pathVel; // velocity along path
-
+geometry_msgs::Quaternion tempOrientation;
 
 // Keep track of Quadcopter state
 double T = 50; // ROS loop rate
@@ -106,7 +106,7 @@ double windupCap;
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw[num] ; // twist or oscillation about a vertical axis
 bool active[num];
-double poseGoalYaw = PI;
+double poseGoalYaw[num];
 double poseErrYaw[num];
 double poseErrYawPrev[num]; // for PID derivative term
 double pastYawErr[num];
@@ -163,10 +163,21 @@ void velocityEstCallback(const tf2_msgs::TFMessage::ConstPtr& twistPtr)
 
 
 // Updates goal position sent by android
-void poseGoalCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
+void poseGoalCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
-    poseGoal.pose = posePtr -> pose;
-    poseGoalYaw = tf::getYaw(poseGoal.pose.orientation) + PI;
+	for (int i =0;i<num;i++){
+		if (posePtr->transforms[i].child_frame_id.compare("ON")==0){
+			poseGoal[i].pose.position.x = posePtr -> transforms[i].transform.translation.x;
+			poseGoal[i].pose.position.y = posePtr -> transforms[i].transform.translation.y;
+			poseGoal[i].pose.position.z = posePtr -> transforms[i].transform.translation.z;
+			tempOrientation.x=posePtr->transforms[i].transform.rotation.x;
+			tempOrientation.y=posePtr->transforms[i].transform.rotation.y;
+			tempOrientation.z=posePtr->transforms[i].transform.rotation.z;
+			tempOrientation.w=posePtr->transforms[i].transform.rotation.w;
+
+    			poseGoalYaw[i] = tf::getYaw(tempOrientation) + PI;
+		}
+	}
 }
 
 
@@ -198,10 +209,10 @@ void calculateError(int i)
 {
     poseErrorPrev[i].pose = poseError[i].pose; // Store old pose error for PID equation
     poseErrYawPrev[i] = poseErrYaw[i]; // Store old pose yaw for PID equation
-    poseError[i].pose.position.x = poseGoal.pose.position.x - poseEstimation[i].pose.position.x;
-    poseError[i].pose.position.y = poseGoal.pose.position.y - poseEstimation[i].pose.position.y;
-    poseError[i].pose.position.z = poseGoal.pose.position.z - poseEstimation[i].pose.position.z;
-    poseErrYaw[i] = poseGoalYaw - poseEstYaw[i];
+    poseError[i].pose.position.x = poseGoal[i].pose.position.x - poseEstimation[i].pose.position.x;
+    poseError[i].pose.position.y = poseGoal[i].pose.position.y - poseEstimation[i].pose.position.y;
+    poseError[i].pose.position.z = poseGoal[i].pose.position.z - poseEstimation[i].pose.position.z;
+    poseErrYaw[i] = poseGoalYaw[i] - poseEstYaw[i];
     poseError[i].pose.orientation = tf::createQuaternionMsgFromYaw(poseErrYaw[i]); 
 }
 
@@ -365,7 +376,7 @@ int main(int argc, char **argv)
 
     poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
     velEstSub = n.subscribe<tf2_msgs::TFMessage>("/velocityEstimation", 1, velocityEstCallback);
-    poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
+    poseGoalSub = n.subscribe<tf2_msgs::TFMessage>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
@@ -374,9 +385,7 @@ int main(int argc, char **argv)
     velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
 
     // Initialize msgs
-    poseGoal.pose.position.x = 0;
-    poseGoal.pose.position.y = 0;
-    poseGoal.pose.position.z = 0;
+
     
 
     
@@ -392,24 +401,29 @@ velocity.transforms.resize(num);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
 cout<<"CHECK \n";
-for (int i=1;i<5;i++){
+for (int i=1;i<40;i++){
 std::ostringstream ss;
 ss << i;
 string s = "dummy ";
 s+=ss.str();
-velocity.transforms[i+9].header.frame_id=s;
+velocity.transforms[i+10].header.frame_id=s;
 }
 for (int i=0;i<num;i++){
 
     poseError[i].pose.position.x = 0;
     poseError[i].pose.position.y = 0;
     poseError[i].pose.position.z = 0;
+    poseGoalYaw[i]=PI;
 
     pastError[i].pose.position.x = 0;
     pastError[i].pose.position.y = 0;
     pastError[i].pose.position.z = 0;
     velocity.transforms[i].transform.rotation.x = 1;
     velocity.transforms[i].transform.rotation.y = 0;
+
+    poseGoal[i].pose.position.x = 0;
+    poseGoal[i].pose.position.y = 0;
+    poseGoal[i].pose.position.z = 0;
 	
     active[i]=false;
     }

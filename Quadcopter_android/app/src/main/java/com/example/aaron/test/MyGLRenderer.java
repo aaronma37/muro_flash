@@ -48,8 +48,7 @@ package com.example.aaron.test;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = "MyGLRenderer";
-    private Triangle mTriangle, robot;
-    private Square   mSquare, mArena, mArena2;
+    private Square mArena2;
     final int maxBots=50;
     private selection selected;
     private scalevis scaleVis;
@@ -60,8 +59,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Square gLine2[] = new Square[100];
     public  dummyPoseArray pathArray = new dummyPoseArray();
     public  dummyPoseArray centroids = new dummyPoseArray();
-    public NodeFactory nodeFactory;
-    public geometry_msgs.Pose tempPose;
     private waypoint wp;
     private gauss gg;
     private grid myGrid;
@@ -121,9 +118,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
+    private final float[] stockMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private final float[] mRotationMatrix = new float[16];
+    private final float[] zeroRotationMatrix = new float[16];
     float poseData[]={0,0,0,0,0};
     public turtle turtleList[]= new turtle[maxBots];
     private float tempX;
@@ -137,6 +136,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         height=h;
         poseData=f;context=context1;
 
+        //SET STATIC MATRICES
+
+
+
 
     for (int i=0;i<maxBots;i++){
         turtleList[i]=new turtle();
@@ -148,10 +151,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void updateRen(turtle t[]){
-        for (int i=0;i<15;i++){
-            if (t[i]!=null){
+        for (int i=0;i<maxBots;i++){
                 turtleList[i].setData(t[i].getData(), t[i].getIdentification(), t[i].getType());}
-        }
     }
 
     @Override
@@ -160,7 +161,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mTriangle = new Triangle();
 
         float sTemp[] = {
                 -0.5f,  0.5f, 0.0f,   // top left
@@ -168,13 +168,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 0.5f, -0.5f, 0.0f,   // bottom right
                 0.5f,  0.5f, 0.0f };
         float c[] = { 0f,255f,255f, 1.0f };
-        mSquare   = new Square();
         Origin    = new origin(context);
         sTemp[0]=-width/height;sTemp[1]=height/height;
         sTemp[3]=-width/height;;sTemp[4]=-height/(height*2);
         sTemp[6]=width/height;;sTemp[7]=-height/(height*2);
         sTemp[9]=width/height;sTemp[10]=height/height;
-        mArena  = new Square(sTemp);
+
         sTemp[0]=-(width-100)/height;sTemp[1]=(height-5)/height;
         sTemp[3]=-(width-100)/height;sTemp[4]=-(height-10)/(height*2);
         sTemp[6]=(width-100)/height;;sTemp[7]=-(height-10)/(height*2);
@@ -192,7 +191,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         scaleVis=new scalevis(context);
         selected=new selection(context);
         mArena2.setColor(c);
-        robot = new Triangle();
+
         plus= new buttons(context,0);
         minus= new buttons(context,1);
         arrows= new buttons(context,2);
@@ -228,11 +227,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 -0.05f, -0.05f,   // bottom left
                 0.05f, -0.05f,   // bottom right
                 0.05f,  0.05f}; //top right
-
-        /*spriteCoords[0]=-(width-115)/(height);spriteCoords[1]=-(height-10)/(height*2);
-        spriteCoords[2]=-(width-115)/(height);spriteCoords[3]=-(height-10)/(height*2)-.1f;
-        spriteCoords[4]=-(width-115)/(height)+.1f;spriteCoords[5]=-(height-10)/(height*2)-.1f;
-        spriteCoords[6]=-(width-115)/(height)+.1f;spriteCoords[7]=-(height-10)/(height*2);*/
 
         spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.2f;
@@ -332,6 +326,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         sTemp[9]=(width-100)/height;sTemp[10]=(height-5)/height;
         myGrid = new grid(context,sTemp);
 
+    //SET MATRICES
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.setRotateM(zeroRotationMatrix, 0, 0, 0, 0, 1.0f);
+        Matrix.multiplyMM(stockMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);    
     }
 
     public void setVoronoiCoordinates(float s[],int i,int j){
@@ -350,10 +349,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] scratch = new float[16];
         float[] scratch2 = new float[16];
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+
+
+        Matrix.multiplyMM(scratch, 0, stockMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, 0, 0, 0);
         myGrid.Draw(scratch);
         Matrix.translateM(scratch, 0, 2f, 0, 0);
@@ -361,7 +359,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(scratch, 0, -4f, 0, 0);
         myGrid.Draw(scratch);
         Origin.Draw(mMVPMatrix);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .9f, -.8f, 0);
         scaleVis.Draw(scratch,1);
 
@@ -369,8 +367,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // DRAW TURTLES
         for (int i=0;i<maxBots;i++){
             if (turtleList[i].getOn()==1) {
-                Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
                 Matrix.rotateM(scratch, 0, turtleList[i].getRot(), 0, 0, 1f);
                 Matrix.scaleM(scratch, 0, scale, scale, scale);
@@ -387,8 +384,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
         }
 
-        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
         Matrix.scaleM(scratch, 0, scale, scale, scale);
         // DRAW VORONOI LINES
         if (vToggle==1) {
@@ -403,7 +399,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (fToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
                 fLine[i].draw(scratch);
-                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
                     Matrix.translateM(scratch2, 0, pathArray.pose[i].x*scale, pathArray.pose[i].y*scale, 0);
                     Matrix.scaleM(scratch2, 0, .5f,.5f,.5f);
@@ -435,7 +430,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             for (int i=0; i< centroids.pose.length;i++){
                 if(centroids.pose[i].active==true){
                     Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(scratch, 0, centroids.pose[i].x, centroids.pose[i].y, 0);
+                    Matrix.translateM(scratch, 0, centroids.pose[i].x*scale, centroids.pose[i].y*scale, 0);
                     wp.Draw(scratch);
                 }
             }

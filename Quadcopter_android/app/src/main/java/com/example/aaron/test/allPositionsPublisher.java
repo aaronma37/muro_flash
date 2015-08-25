@@ -80,9 +80,7 @@ public class allPositionsPublisher extends AbstractNodeMain {
                     pose.getHeader().setFrameId(dPose.header);
                     pose.getHeader().setSeq(0);
                     pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
-                    if (pose.getPoses().get(0).getPosition().getX()!=0  && pose.getPoses().get(0).getPosition().getY()!=0  ){
-                        publisher.publish(pose);
-                    }
+                    publisher.publish(pose);
                     flag=false;
                 }
             }

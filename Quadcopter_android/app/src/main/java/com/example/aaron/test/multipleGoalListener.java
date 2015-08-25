@@ -16,7 +16,7 @@ public class multipleGoalListener<T> implements NodeMain {
     public boolean flag=false;
 
     public multipleGoalListener() {
-        messageType= geometry_msgs.PoseArray._TYPE;
+        messageType= tf2_msgs.TFMessage._TYPE;
         dummyArray= new dummyPoseArray();
     }
 
@@ -27,15 +27,15 @@ public class multipleGoalListener<T> implements NodeMain {
 
     @Override
     public void onStart(ConnectedNode connectedNode) {
-        Subscriber<geometry_msgs.PoseArray> subscriber = connectedNode.newSubscriber("Centroids", messageType);
-        subscriber.addMessageListener(new MessageListener<PoseArray>() {
+        Subscriber<tf2_msgs.TFMessage> subscriber = connectedNode.newSubscriber("Centroids", messageType);
+        subscriber.addMessageListener(new MessageListener<tf2_msgs.TFMessage>() {
             @Override
-            public void onNewMessage(geometry_msgs.PoseArray poseArray) {
+            public void onNewMessage(tf2_msgs.TFMessage poseArray) {
                 if (flag==true){
                     dummyArray.Clear();
-                    for (int i =0;i<poseArray.getPoses().size();i++){
-                        dummyArray.pose[i].x=(float)poseArray.getPoses().get(i).getPosition().getX();
-                        dummyArray.pose[i].y=(float)poseArray.getPoses().get(i).getPosition().getY();
+                    for (int i =0;i<poseArray.getTransforms().size();i++){
+                        dummyArray.pose[i].x=(float)poseArray.getTransforms().get(i).getTransform().getTranslation().getX();
+                        dummyArray.pose[i].y=(float)poseArray.getTransforms().get(i).getTransform().getTranslation().getY();
                         if (dummyArray.pose[i].y!=0 && dummyArray.pose[i].x!=0){
                             dummyArray.pose[i].active=true;
                         }
@@ -43,7 +43,7 @@ public class multipleGoalListener<T> implements NodeMain {
                 }
 
             }
-        }, 10);
+        }, 100);
     }
 
     @Override

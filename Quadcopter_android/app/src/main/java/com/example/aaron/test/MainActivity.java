@@ -248,7 +248,7 @@ public class MainActivity extends RosActivity {
                     mGLView.setCentroids(MultipleGoalListener.dummyArray);
                 }
             }
-        }, 0, 500000, TimeUnit.MICROSECONDS);
+        }, 0, 50000, TimeUnit.MICROSECONDS);
 
 
         /*
