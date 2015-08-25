@@ -35,29 +35,27 @@
 using namespace std;
 double T=50;
 bool gotPose=false;
-const int maxNum=1000;
+const int maxNum=100;
 int countD;
 float xValues[maxNum];
 float yValues[maxNum];    
-float minX = 0, maxX = 100;    
-float minY = 0, maxY = 100;
+float minX = -1, maxX = 1;    
+float minY = -1, maxY = 1;
 geometry_msgs::PoseArray centroidPositions;
 
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
-	countD = pose->poses.size();
+	countD=0;
 	centroidPositions = *pose;
 	gotPose=true;
 
-	for (int i=0;i<countD;i++)
+	for (int i=0;i<maxNum;i++)
 	{
+		if (pose ->poses[i].position.x!=0 && pose ->poses[i].position.y!=0){
 		xValues[i]=pose ->poses[i].position.x;	
 		yValues[i]=pose ->poses[i].position.y;	
-	}
-	for (int i=countD;i<maxNum;i++)
-	{
-		xValues[i]=0;	
-		yValues[i]=0;
+			countD++;		
+		}
 	}
 }
 
@@ -365,12 +363,29 @@ int main(int argc, char **argv)
 	while (ros::ok()) 
 	{
 			ros::spinOnce();
-			
 			if (gotPose==true)
 			{
+			
+			float xValuesT[countD];
+			float yValuesT[countD];  
+			
+			
+			for (int i=0;i<countD;i++){
+				xValuesT[i]=xValues[i];
+				yValuesT[i]=yValues[i];			
+			}
+			nSites = Matrix_Size(xValuesT);
+			Matrix sitesPos(nSites,2);
+			printf("got pOse \n"); 
+			for(int i=0; i<Matrix_Size(xValuesT);i++){
+				sitesPos.setElement(i, 0, xValuesT[i]);      //sitePos.elements[i][0] = xValues[i];
+				sitesPos.setElement(i, 1, yValuesT[i]);
+			    }
+			printf("Pose Received \n");
 				CentroidGenerator cg;
 				VoronoiDiagramGenerator vdg;
-				vdg.generateVoronoi(xValues,yValues,countD, minX,maxX,minY,maxY,3);
+				cout<<"yValues: "<< countD <<"\n";
+				vdg.generateVoronoi(xValuesT,yValuesT,countD, minX,maxX,minY,maxY,3);
 			    
 				vdg.resetIterator();
 			    
@@ -399,13 +414,15 @@ int main(int argc, char **argv)
 		
 		
 				//Matrix sitesPos(nSites,2);
+				printf("Generating centroid \n");
+	
 				sitesPos = cg.generateCentroid(cg.posVertVector, sitesPos, nSites);
-		
+
 				for (int i=0; i<sitesPos.rows; i++) {
 				    centroidPositions.poses[i].position.x=sitesPos.elements[i][0];
 				    centroidPositions.poses[i].position.y=sitesPos.elements[i][1];
 				}
-			    
+			     	
 			    	centroid_pub_.publish(centroidPositions);
 				gotPose=false;
 			}
