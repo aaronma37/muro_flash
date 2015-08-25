@@ -337,7 +337,7 @@ int main(int argc, char **argv)
                     }
                 closestPointIndex = 0; // initialize to first point in path 
                 count = 0;
-                while(closestPointIndex <= lastPointOnPathIndex) // use interpolation
+                while(closestPointIndex != lastPointOnPathIndex) // use interpolation
                 {
                     ros::spinOnce();
                     if(newPath || !ros::ok()) // FIXME: break out if a different pose is published
@@ -345,7 +345,7 @@ int main(int argc, char **argv)
                         break;
                     }
                     //ROS_INFO("on interpolation loop OPEN\n");
-                    checkDistanceTraveled();
+                    //checkDistanceTraveled();
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
@@ -354,8 +354,8 @@ int main(int argc, char **argv)
                     std::cout << "Closest Point Index: " << closestPointIndex << "\n";
                     std::cout << "Last Point Index: " << lastPointOnPathIndex << "\n";
                     std::cout << "Line Distance: " << line_dist << "\n";
-                    std::cout << "Pose Est:\n" << poseEst << "\n\n";
                     std::cout << "Line Distance Traveled: " << line_dist_trav << "\n\n";
+                    std::cout << "Pose Est:\n" << poseEst << "\n\n";
                     std::cout << "Goal Pose:\n" << closestPointOnLine << "\n\n";
                     std::cout << "Constant Vel:\n" << constVelTerm << "\n\n";
                     std::cout << "---------------------------------------------------------------------\n\n";
