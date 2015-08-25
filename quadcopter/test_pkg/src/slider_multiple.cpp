@@ -180,6 +180,16 @@ void poseGoalCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 	}
 }
 
+// Updates goal position sent by android
+void poseGoalCallAllback(const geometry_msgs::PoseStamped::ConstPtr& poseAllPtr)
+{
+	for (int i=0;i<num;i++){
+			poseGoal[i].pose = poseAllPtr -> pose;
+    			poseGoalYaw[i] = tf::getYaw(poseAllPtr -> pose.orientation) + PI;
+	}
+}
+
+
 
 
 // Updates slider gain values
@@ -366,6 +376,7 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Subscriber poseGoalSub;
+    ros::Subscriber poseGoalAllSub;
     ros::Subscriber velEstSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
@@ -377,6 +388,7 @@ int main(int argc, char **argv)
     poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
     velEstSub = n.subscribe<tf2_msgs::TFMessage>("/velocityEstimation", 1, velocityEstCallback);
     poseGoalSub = n.subscribe<tf2_msgs::TFMessage>("/Centroids", 1, poseGoalCallback);
+    poseGoalAllSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallAllback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);

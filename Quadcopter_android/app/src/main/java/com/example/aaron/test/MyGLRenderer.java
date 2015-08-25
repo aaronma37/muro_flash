@@ -123,6 +123,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
     private final float[] mRotationMatrix = new float[16];
     private final float[] zeroRotationMatrix = new float[16];
+    float[] scratch = new float[16];
+    float[] scratch2 = new float[16];
     float poseData[]={0,0,0,0,0};
     public turtle turtleList[]= new turtle[maxBots];
     private float tempX;
@@ -327,10 +329,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         myGrid = new grid(context,sTemp);
 
     //SET MATRICES
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        Matrix.setRotateM(zeroRotationMatrix, 0, 0, 0, 0, 1.0f);
-        Matrix.multiplyMM(stockMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);    
+
+
+
     }
 
     public void setVoronoiCoordinates(float s[],int i,int j){
@@ -346,11 +347,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 unused) {
-        float[] scratch = new float[16];
-        float[] scratch2 = new float[16];
+
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+        Matrix.setRotateM(zeroRotationMatrix, 0, 0, 0, 0, 1.0f);
+        Matrix.multiplyMM(stockMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-
+        //GRID AND ORIGIN
         Matrix.multiplyMM(scratch, 0, stockMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, 0, 0, 0);
         myGrid.Draw(scratch);
@@ -362,7 +367,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .9f, -.8f, 0);
         scaleVis.Draw(scratch,1);
-
+        /////////////////
 
         // DRAW TURTLES
         for (int i=0;i<maxBots;i++){
@@ -380,7 +385,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 if (turtleList[i].getState()==1){
                     selected.Draw(scratch,1);
                 }
-
             }
         }
 
@@ -418,52 +422,37 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // DRAW WAYPOINT
         if (pToggle==1 && pToggle2==1) {
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
             Matrix.translateM(scratch, 0, pX, pY, 0);
             wp.Draw(scratch);
         }
-
 
         // DRAW CENTROIDS
         if (voronoiDeploymentToggle.active==true){
             for (int i=0; i< centroids.pose.length;i++){
                 if(centroids.pose[i].active==true){
-                    Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
                     Matrix.translateM(scratch, 0, centroids.pose[i].x*scale, centroids.pose[i].y*scale, 0);
                     wp.Draw(scratch);
                 }
             }
         }
 
-        /*scratch = new float[16];
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-        mTriangle.draw(scratch);*/
-
         // DRAW TARGET MARK
         if (tToggle==1){
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
             Matrix.translateM(scratch, 0, tempX, tempY, 0);
             tar.Draw(scratch);
         }
 
         //DRAW GAUSSIAN
         if (gToggle==1 && gToggle2==1){
-
-
-
                 for (int i = 0; i < 100; i++) {
                     if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
-                        float[] s = new float[16];
-                        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                        Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                        Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
-                        Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
-
-                        gaussArrayList.Draw(s);
-                        //System.out.println("DRAW");
+                        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
+                        Matrix.translateM(scratch, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
+                        Matrix.scaleM(scratch, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
+                        gaussArrayList.Draw(scratch);
                     }
                 }
 
