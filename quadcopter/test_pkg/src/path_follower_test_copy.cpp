@@ -344,6 +344,7 @@ int main(int argc, char **argv)
                         break;
                     }
                     //ROS_INFO("on interpolation loop OPEN\n");
+                    checkDistanceTraveled();
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
@@ -361,7 +362,6 @@ int main(int argc, char **argv)
                     //pathPose.poses[closestPointIndex].position.x = 0;
                     //pathPose.poses[closestPointIndex].position.y = 0;
                     calcClosestPointOnPath();
-                    checkDistanceTraveled();
                     ros::spinOnce();
                     loop_rate.sleep();
                 }
