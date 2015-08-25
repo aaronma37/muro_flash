@@ -112,13 +112,13 @@ void calcClosestPointOnPath (void)
       }
   }
   
-  if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
+  /*if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
   {
   	if(closestPointIndex != prevClosestPointIndex + 1)
   	{
   		closestPointIndex = prevClosestPointIndex + 1;
   	}
-  }
+  }*/
 }
 
 // Outputs a constant velocity term for the sliding mode controller
@@ -346,6 +346,7 @@ int main(int argc, char **argv)
                     }
                     //ROS_INFO("on interpolation loop OPEN\n");
                     //checkDistanceTraveled();
+                    calcClosestPointOnPath();
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
@@ -363,7 +364,6 @@ int main(int argc, char **argv)
                     goalPub.publish(closestPointOnLine);
                     //pathPose.poses[closestPointIndex].position.x = 0;
                     //pathPose.poses[closestPointIndex].position.y = 0;
-                    calcClosestPointOnPath();
                     loop_rate.sleep();
                 }
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
