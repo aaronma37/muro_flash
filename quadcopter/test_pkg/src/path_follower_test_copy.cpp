@@ -112,13 +112,13 @@ void calcClosestPointOnPath (void)
       }
   }
   
-  /*if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
+  if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
   {
   	if(closestPointIndex != prevClosestPointIndex + 1)
   	{
   		closestPointIndex = prevClosestPointIndex + 1;
   	}
-  }*/
+  }
 }
 
 // Outputs a constant velocity term for the sliding mode controller
