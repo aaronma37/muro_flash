@@ -337,7 +337,7 @@ int main(int argc, char **argv)
                     }
                 closestPointIndex = 0; // initialize to first point in path 
                 count = 0;
-                while(closestPointIndex != lastPointOnPathIndex) // use interpolation
+                while(closestPointIndex <= lastPointOnPathIndex) // use interpolation
                 {
                     ros::spinOnce();
                     if(newPath || !ros::ok()) // FIXME: break out if a different pose is published
