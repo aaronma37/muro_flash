@@ -39,10 +39,7 @@ const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
 const double LINE_DIST_RANGE = .9;
 
-//Testing
-ros::Rate pathLoop_rate(2);
-ros::Publisher goalPub;
-goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
+
 
 // Interpolation data
 int closestPointIndex = 0;
@@ -122,7 +119,7 @@ void calcClosestPointOnPath (void)
   	if(closestPointIndex != prevClosestPointIndex + 1)
   	{
   		closestPointIndex = prevClosestPointIndex + 1;
-  		goalPub.publish(closestPointOnLine);
+  	
   	}
   }
 }
@@ -291,12 +288,12 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber pathSub;
     ros::Subscriber poseEstSub;
-   // ros::Publisher goalPub;
+    ros::Publisher goalPub;
     ros::Publisher velPub;
 
     pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
-   // goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
+    goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
     velPub = n.advertise<geometry_msgs::Twist>("/path_vel", 1000, true);
    
     // Initialize msgs and flags
