@@ -181,7 +181,7 @@ void poseGoalCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 }
 
 // Updates goal position sent by android
-void poseGoalCallAllback(const geometry_msgs::PoseStamped& poseAllPtr)
+void poseGoalCallAllback(const geometry_msgs::PoseStamped::ConstPtr& poseAllPtr)
 {
 	for (int i=0;i<num;i++){
 			poseGoal[i].pose = poseAllPtr -> pose;
@@ -393,12 +393,13 @@ int main(int argc, char **argv)
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
     velPub = n.advertise<tf2_msgs::TFMessage>("/cmd_vel", 1000, true);
+    AR1Pub = n.advertise<geometry_msgs::Twist>("/ardrone1/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
     velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
 
     // Initialize msgs
 
-    
+    geometry_msgs::Twist vel_s;
 
     
     pathVel.linear.x = 0;
@@ -448,7 +449,19 @@ for (int i=0;i<num;i++){
 		calculateError(i);        
 		PID(i);
 		poseSysIdPub.publish(poseSysId[i]);
+			if (i==0) {
+				vel_s.linear.x=velocity.transforms[0].transform.translation.x;
+				vel_s.linear.y=velocity.transforms[0].transform.translation.y;
+				vel_s.linear.z=velocity.transforms[0].transform.translation.z;
+
+				vel_s.angular.x=velocity.transforms[0].transform.rotation.x;
+				vel_s.angular.y=velocity.transforms[0].transform.rotation.y;
+				vel_s.angular.z=velocity.transforms[0].transform.rotation.z;
+
+				AR1Pub.publish(vel_s);
+			}
 		}
+	
 	}
 	velPub.publish(velocity);
         loop_rate.sleep();
