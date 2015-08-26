@@ -100,10 +100,10 @@ void calcClosestPointOnPath (void)
   prevClosestPointIndex = closestPointIndex;
   for(int i = 0; i <= lastPointOnPathIndex; i++)
   {
-    /*if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
+    if ( (pathPose.poses[i].position.x == 0) && (pathPose.poses[i].position.y == 0) )
         {
             continue;
-        }*/
+        }
     tempClosestDistance = distanceFormula ( pathPose.poses[i].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[i].position.y, poseEst.pose.position.y );
 
@@ -114,14 +114,14 @@ void calcClosestPointOnPath (void)
       }
   }
   
-  if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
+  /*if(isOpenLoop && (closestPointIndex != prevClosestPointIndex) )
   {
   	if(closestPointIndex != prevClosestPointIndex + 1)
   	{
   		closestPointIndex = prevClosestPointIndex + 1;
   	
   	}
-  }
+  }*/
 }
 
 // Outputs a constant velocity term for the sliding mode controller
@@ -365,15 +365,15 @@ int main(int argc, char **argv)
                     std::cout << "---------------------------------------------------------------------\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
-                    //pathPose.poses[closestPointIndex].position.x = 0;
-                    //pathPose.poses[closestPointIndex].position.y = 0;
+                    pathPose.poses[closestPointIndex].position.x = 0;
+                    pathPose.poses[closestPointIndex].position.y = 0;
                     loop_rate.sleep();
                 }
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                 goalPub.publish(goalPose);
-                //pathPose.poses[closestPointIndex].position.x = 0;
-                //pathPose.poses[closestPointIndex].position.y = 0;
+                pathPose.poses[closestPointIndex].position.x = 0;
+                pathPose.poses[closestPointIndex].position.y = 0;
 		constVelTerm.linear.x = 0;
 		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
