@@ -338,12 +338,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     }
 
                     //Clear button
-                    /*if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
+                    if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
                         gInd = 0;
                         mRenderer.clearGauss();
                         v.vibrate(75);
                     }
-*/
+
                 }
 
 

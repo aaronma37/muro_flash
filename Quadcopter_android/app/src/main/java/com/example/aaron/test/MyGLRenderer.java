@@ -66,7 +66,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private ardroneImage myAr;
     private target tar;
     private origin Origin;
-    private buttons plus, minus, arrows, clear;
+    private buttons plus, minus, arrows, clear, clearAll;
     private gauss density;
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
@@ -197,6 +197,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         minus= new buttons(context,1);
         arrows= new buttons(context,2);
         clear = new buttons(context, 3);
+        clearAll = new buttons(context, 4);
 
 
 
@@ -487,7 +488,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ardronePrefToggle.Draw(scratch, APToggle);
         ardroneAddToggle.Draw(scratch, 0);
         gaussToggle.Draw(scratch,gToggle);
-        temptoggle.Draw(scratch,gpToggle);        //exit.Draw(scratch,1);
+        temptoggle.Draw(scratch, gpToggle);        //exit.Draw(scratch,1);
         if (voronoiDeploymentToggle.active==true){
             voronoiDeploymentToggle.Draw(scratch,1);
         }
@@ -504,9 +505,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(scratch, 0, .3f, 0f, 0);
         minus.Draw(scratch, 1);
 
-        Matrix.translateM(scratch, 0, -2.25f, .1f, 0);
+        Matrix.translateM(scratch, 0, -2.25f, .2f, 0);
         Matrix.scaleM(scratch, 0, 7f, 3f, 0);
         clear.Draw(scratch, 1);
+
+        Matrix.translateM(scratch, 0, 0, -.05f, 0);
+        Matrix.scaleM(scratch, 0, 1.3f, 1f, 0);
+        clearAll.Draw(scratch, 1);
+
+
+
 
 
         int temp = 0;
