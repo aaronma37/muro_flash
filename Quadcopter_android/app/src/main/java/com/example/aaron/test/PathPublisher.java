@@ -18,6 +18,7 @@ import geometry_msgs.PoseArray;
 public class PathPublisher extends AbstractNodeMain {
 
     public double x,y;
+    public int active=0;
     public geometry_msgs.PoseArray pose;
     public geometry_msgs.Pose intPose;
     public dummyPoseArray dPose;

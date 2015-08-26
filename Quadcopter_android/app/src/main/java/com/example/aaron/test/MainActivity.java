@@ -155,7 +155,7 @@ public class MainActivity extends RosActivity {
         vor = new Voronoi(.001);
 
         //NodeConfiguration nodeConfiguration = NodeConfiguration.newPrivate();
-        NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress().toString(), getMasterUri());
+        final NodeConfiguration nodeConfiguration = NodeConfiguration.newPublic(InetAddressFactory.newNonLoopback().getHostAddress().toString(), getMasterUri());
         nodeConfiguration.setMasterUri(getMasterUri());
         width1=mGLView.getWidth1();
         height1=mGLView.getHeight1();
@@ -163,13 +163,13 @@ public class MainActivity extends RosActivity {
         dummy=new dummyMaker(num);
         pathPublisher=new PathPublisher();
         nodeMainExecutor.execute(poseview, nodeConfiguration);
-        num=poseview.getX();
-        talker.setNum(num);
-        nodeMainExecutor.execute(talker, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
-        nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
-        nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
+
+        num=poseview.getX();
+        talker.setNum(num);
+
+
         //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
@@ -178,6 +178,7 @@ public class MainActivity extends RosActivity {
                 if (poseview.newMeasurementFlag == 1) {
                     turtleList = poseview.getTurtles();
                     poseview.newMeasurementFlag = 0;
+
                     mGLView.updateRen(turtleList);
                     time1 = System.currentTimeMillis();
                     for (int i = 0; i < turtleList.length; i++) {
@@ -187,12 +188,12 @@ public class MainActivity extends RosActivity {
                     }
                     time2 = time1;
                 } else {
-                    for (int i = 0; i < turtleList.length; i++) {
+                    /*for (int i = 0; i < turtleList.length; i++) {
                         if (turtleList[i].getOn() == 1) {
                             turtleList[i].runPredictor();
                         }
-                    }
-                    mGLView.updateRen(turtleList);
+                    }*/
+                    //mGLView.updateRen(turtleList);
                 }
 
 
@@ -203,48 +204,75 @@ public class MainActivity extends RosActivity {
         ScheduledThreadPoolExecutor exec2 = new ScheduledThreadPoolExecutor(5);
         exec2.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                if (flag==1){
+                if (flag == 1) {
                     mGLView.setVoronoiCoordinates();
                 }
-                flag=mGLView.vFlag;
+                flag = mGLView.vFlag;
                 mGLView.tick();
 
-                if (mGLView.pFlag==1 && mGLView.pFlag2==1){
-                    talker.setPoint(mGLView.getpX()/mGLView.getScale(),mGLView.getpY()/mGLView.getScale());
-                    talker.flag=1;
-                }
-                else {
-                    talker.flag=0;
-                }
 
-                if (mGLView.dummyFlag==1){
-                    dummy.flag=1;
-                    mGLView.dummyFlag=0;
-                }
-                else {
-                    dummy.flag=0;
-                    mGLView.dummyFlag=0;
+                if (mGLView.pFlag == 1 && mGLView.pFlag2 == 1) {
+                    if (talker.flag == 0) {
+                        nodeMainExecutor.execute(talker, nodeConfiguration);
+                    }
+                    talker.setPoint(mGLView.getpX() / mGLView.getScale(), mGLView.getpY() / mGLView.getScale());
+                    talker.flag = 1;
+                } else {
+                    nodeMainExecutor.shutdownNodeMain(talker);
+                    talker.flag = 0;
                 }
 
 
+                if (mGLView.dummyFlag == 1) {
+                    dummy.flag = 1;
+                    mGLView.dummyFlag = 0;
+                } else {
+                    mGLView.dummyFlag = 0;
+                }
 
-
+                for (int i=0;i<turtleList.length;i++){
+                    if(turtleList[i].getOn()==1){
+                        turtleList[i].setRot();
+                    }
+                }
+                mGLView.updateRen(turtleList);
             }
+
         }, 0, 50000, TimeUnit.MICROSECONDS);
+
+
+
+
 
         ScheduledThreadPoolExecutor exec3 = new ScheduledThreadPoolExecutor(5);
         exec3.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 if (mGLView.pathPublisherFlag==true){
+                    pathPublisher.active=1;
                     pathPublisher.setPathArray(mGLView.passPathArray());
                     pathPublisher.flag=true;
                     mGLView.pathPublisherFlag=false;
                 }
+                else{
+                    pathPublisher.active=0;
+                }
+
+
                 if (mGLView.getActive()==true){
+                    if(SelectedPositionsPublisher.active==0){
+                        nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
+                        //nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
+                    }
+                    SelectedPositionsPublisher.active=1;
                     SelectedPositionsPublisher.setPositions(turtleList);
                     SelectedPositionsPublisher.flag=true;
                     MultipleGoalListener.flag =true;
                     mGLView.setCentroids(MultipleGoalListener.dummyArray);
+                }
+                else{
+                    SelectedPositionsPublisher.active=0;
+                    nodeMainExecutor.shutdownNodeMain(SelectedPositionsPublisher);
+                    nodeMainExecutor.shutdownNodeMain(MultipleGoalListener);
                 }
             }
         }, 0, 50000, TimeUnit.MICROSECONDS);

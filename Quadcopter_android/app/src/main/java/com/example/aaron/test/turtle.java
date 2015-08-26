@@ -10,6 +10,10 @@ public class turtle {
     public float xOld=0;
     public float yOld=0;
     public float zOld=0;
+    public float Ai=0;
+    public float Aw=1;
+    public float Aj=0;
+    public float Ak=0;
     public float deltaT=1;
     public float rotOld=0;
     public float vX=0;
@@ -45,6 +49,10 @@ public class turtle {
     }
 
     public void setState(int i){state=i;}
+
+    public void setRot(){
+        rot =-(float)(Math.atan2(-2*(Ai*Aj-Aw*Ak), Aw*Aw+Ai*Ai-Aj*Aj-Ak*Ak)*57.2957795);
+    }
 
     public float getX() {
         return x;
@@ -129,5 +137,12 @@ public class turtle {
         vZ=vZ*.75f;
         vY=vZ*.75f;
         rot=rot;//+(float)(.01*vRot*.01);
+    }
+
+    public void setOrient(float[] f){
+        Aw=f[0];
+        Ai=f[1];
+        Aj=f[2];
+        Ak=f[3];
     }
 }
