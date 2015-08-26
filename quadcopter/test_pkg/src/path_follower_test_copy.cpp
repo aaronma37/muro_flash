@@ -276,7 +276,10 @@ void findIndexOfLastPointOnPath(void)
             break;
         }    
     }
+    if (i != 0) 
+    {
     lastPointOnPathIndex = i - 1;
+    }
 }
 
 int main(int argc, char **argv)
