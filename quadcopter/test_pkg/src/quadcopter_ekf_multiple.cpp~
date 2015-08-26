@@ -30,7 +30,7 @@ using Eigen::MatrixXd;
 
 // Declare matrixes used in the Kalman Filter
 int k=0;
-const int num=15;
+const int num=50;
 Matrix4f Q= Matrix4f::Zero();
 Matrix4f R= Matrix4f::Zero();
 Matrix4f W= Matrix4f::Identity();
