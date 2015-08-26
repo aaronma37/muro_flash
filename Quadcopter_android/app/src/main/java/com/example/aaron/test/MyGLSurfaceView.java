@@ -53,29 +53,42 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private float mapLeft,mapTop,mapBottom,workspace;
     private float pY=0;
     private Vibrator v;
-    private int grab=0;
     public int vFlag=0;
     public int dummyFlag=0;
     private int connectable=0;
     private float firstPointFreeDraw[] ={-1000,-1000};
+    private float tempTurtleList[]= new float[9];
     public int fFlag=0;
     public int gFlag = 0;
     public int gFlag2 = 0;
     public int gpFlag=0;
+    private int count=0;
+    private int i;
     public int pFlag=0;
+    private boolean recievedTurtles=false;
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
+
     private int freeDrawCount=0;
     private int gaussDrawCount=0;
+    private float vorCoords[] = {
+            -0.5f,  0.5f, 0.0f,   // top left
+            -0.5f, -0.5f, 0.0f,   // bottom left
+            0.5f, -0.5f, 0.0f,   // bottom right
+            0.5f,  0.5f, 0.0f }; // top right
+    private double cd;
+    private double cy;
+
+
+
+
     ArrayList<Double> temp= new ArrayList<Double>();
     ArrayList<Double> temp2= new ArrayList<Double>();
 
     private int gInd = 0;
     private float gaussScale;
 
-    /*private double temp[]=new double[10];
-    private double temp2[]=new double[10];*/
 
     public Voronoi vor;
     private List<GraphEdge> voronoiEdges;
@@ -116,13 +129,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void updateRen(turtle[] t){
         for (int i=0;i<maxBots;i++) {
-            if (t[i] != null) {
-                float temp[]=t[i].getData();
-                temp[5]=state[i];
-                tList[i].setData(temp, t[i].getIdentification(), t[i].getType());
-            }
+                tempTurtleList=t[i].getData();
+                tempTurtleList[5]=state[i];
+                tList[i].setData(tempTurtleList, t[i].getIdentification(), t[i].getType());
         }
-
         mRenderer.updateRen(tList);
     }
 
@@ -132,7 +142,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void tick(){
         antispam=antispam+1;
-        int count=0;
+       count=0;
         for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
@@ -191,7 +201,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
             case MotionEvent.ACTION_DOWN:
                 mRenderer.tToggle=1;
 
-                for (int i=0;i<10;i++){
+                for (int i=0;i<maxBots;i++){
                     if(tList[i].getOn()==1) {
                         cc=cc+1;
                         if (Math.abs(tList[i].getX()*getScale() - xGL) < .1f && Math.abs(tList[i].getY()*getScale() - yGL) < .1f) {
@@ -291,20 +301,23 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         if (mRenderer.getgpToggle() == 1) {
                             mRenderer.setgpToggle(0);
                             mRenderer.eraseGaussLine();
-                            gaussDrawCount=0;
-                            previousy=0;
-                            previousx=0;
                             v.vibrate(50);
                         } else {
                             mRenderer.setgpToggle(1);
-
-                            firstPointFreeDraw[0]=-1000;
-                            firstPointFreeDraw[1]=-1000;
+                            mRenderer.makeGaussPoints();
                             v.vibrate(50);
                         }
                     gpFlag = mRenderer.getgpToggle();
 
-
+                    //Toggle for voronoi deployment
+                    if (xGL<mRenderer.voronoiDeploymentToggle.getLeft()-mRenderer.slider && xGL>mRenderer.voronoiDeploymentToggle.getRight()-mRenderer.slider && yGL > mRenderer.voronoiDeploymentToggle.getDown() && yGL < mRenderer.voronoiDeploymentToggle.getUp())
+                        if (mRenderer.voronoiDeploymentToggle.active == true) {
+                            mRenderer.voronoiDeploymentToggle.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.voronoiDeploymentToggle.active = true;
+                            v.vibrate(50);
+                        }
 
 
 /*                    if (xGL<-(width1-90)/height1+.05f && xGL>-(width1-90)/height1 && yGL >-(height1-10)/(height1)-mRenderer.slider  && yGL < -(height1-10)/(height1)+05f-mRenderer.slider ){
@@ -321,6 +334,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         mRenderer.scale=mRenderer.scale-.5f;
                         mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
                         mRenderer.textList.get(2).setText( truncateDecimal(2 / mRenderer.scale,2) + " ft");
+                        v.vibrate(75);
+                    }
+
+                    //Clear button
+                    if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
+                        gInd = 0;
+                        mRenderer.clearGauss();
                         v.vibrate(75);
                     }
 
@@ -364,26 +384,29 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }*/
 
             case MotionEvent.ACTION_POINTER_DOWN:
-                System.out.println("GAUSS 0");
+                //System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
 
-                    float gaussX = e.getX(1);
 
-                    float gaussY = e.getY(1);
+                    if(gFlag==1){
+                        float gaussX = e.getX(1);
+
+                        float gaussY = e.getY(1);
 
 
-                    float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
-                    float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
+                        float gauss_xGL = (width1 / 2 - gaussX) / (float) (height1 / 1.85);
+                        float gauss_yGL = (height1 / 2 + 30 - gaussY) / (float) (height1 / 1.85);
 
-                    float gauss_dx = gauss_xGL - xGL;
-                    float gauss_dy = gauss_yGL - yGL;
+                        float gauss_dx = gauss_xGL - xGL;
+                        float gauss_dy = gauss_yGL - yGL;
 
-                    float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
+                        float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
 
-                    gaussScale = dgauss/.2f;
-                    System.out.println("SCALE");
-                    //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
-                    mRenderer.setGaussScale(gInd-1, gaussScale);
+                        gaussScale = dgauss/.2f;
+                        //System.out.println("SCALE");
+                        //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
+                        mRenderer.setGaussScale(gInd-1, gaussScale);
+                    }
                 }
 
 
@@ -393,7 +416,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
 
-                if (fFlag==1 && Math.abs(xGL-previousx)> .01f && Math.abs(yGL -previousy)>.01f && xGL>workspace
+                if (fFlag==1 && (Math.abs(xGL-previousx)> .03f || Math.abs(yGL -previousy)>.03f) && xGL>workspace
                         && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom) {
                     if (previousx!=0 && previousy!=0){
                         if (firstPointFreeDraw[0]==-1000){
@@ -415,39 +438,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                     }
 
-                    if (gpFlag==1 && Math.abs(xGL-previousx)> .01f && Math.abs(yGL -previousy)>.01f && xGL>workspace
-                            && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom) {
-                        if (previousx!=0 && previousy!=0){
-                            if (firstPointFreeDraw[0]==-1000){
-                                firstPointFreeDraw[0]=previousx;
-                                firstPointFreeDraw[1]=previousy;
-                            }
-                            else if (xGL > firstPointFreeDraw[0]+.1f || xGL < firstPointFreeDraw[0]-.1f || yGL > firstPointFreeDraw[1]+.1f || yGL < firstPointFreeDraw[1]-.1f){
-                                connectable=1;
-                            }
-                            else if (connectable==1){
-                                gpFlag=0;
-                                setFreeDrawCoordinates(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy,true);
-                                setGaussPath(firstPointFreeDraw[0],firstPointFreeDraw[1], previousx, previousy,true);
-                                v.vibrate(50);
-                            }
-
-                            if (gpFlag == 1) {
-                                setFreeDrawCoordinates(xGL,yGL, previousx, previousy,false);
-                                setGaussPath(xGL,yGL, previousx, previousy,false);
-                            }
-
-                        }
-
-
-                        previousx=xGL;
-                        previousy=yGL;
-                    }
-
-
                     previousx=xGL;
                     previousy=yGL;
                 }
+
 
                 // reverse direction of rotation above the mid-line
                 if (y > getHeight() / 2) {
@@ -509,14 +503,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         return true;
     }
 
-    public void rr(){requestRender();}
-
     public void setVoronoiCoordinates(){
-        float vorCoords[] = {
-                -0.5f,  0.5f, 0.0f,   // top left
-                -0.5f, -0.5f, 0.0f,   // bottom left
-                0.5f, -0.5f, 0.0f,   // bottom right
-                0.5f,  0.5f, 0.0f }; // top right
 
         temp.clear();
         temp2.clear();
@@ -524,9 +511,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
             if (tList[i].getOn()==1) {
                 temp.add((double) tList[i].getX());
                 temp2.add((double) tList[i].getY());
+                recievedTurtles=true;
             }
         }
-        if (temp!=null) {
+        if (temp!=null && recievedTurtles==true) {
 
             double[] temp3 = new double[temp.size()];
             double[] temp4 = new double[temp.size()];
@@ -536,10 +524,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
             }
 
             voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / height1, width1 / height1, -height1 / (height1), height1 / height1);
-
             for(int i = 0; i < voronoiEdges.size(); i++) {
-                double cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
-                double cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
+                cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
+                cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
 
                 vorCoords[0] = (float) voronoiEdges.get(i).x1 + (float) cd * .005f/mRenderer.scale;
                 vorCoords[1] = (float) voronoiEdges.get(i).y1 - (float) cy * .005f/mRenderer.scale;
@@ -561,8 +548,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
     public void setFreeDrawCoordinates(float x, float y, float xp, float yp,boolean closed){
-        /*xp=(width1/2-xp)/(float)(height1/1.85);
-        yp=(height1/2+85-yp)/(float)(height1/1.85);*/
 
         float Coords[] = {
                 -0.5f,  0.5f, 0.0f,   // top left
@@ -570,20 +555,30 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 0.5f, -0.5f, 0.0f,   // bottom right
                 0.5f,  0.5f, 0.0f }; // top right
 
-                double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
+               double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
                 double cy = Math.sin(Math.atan((x - xp) / (y - yp)));
 
                 Coords[0] = x + (float) cd * .005f;
+                Coords[0]=Coords[0]/mRenderer.scale;
                 Coords[1] = y - (float) cy * .005f;
+                Coords[1]=Coords[1]/mRenderer.scale;
+
 
                 Coords[9] = xp + (float) cd * .005f;
+                Coords[9]=Coords[9]/mRenderer.scale;
                 Coords[10] =  yp - (float) cy * .005f;
+                Coords[10]=Coords[10]/mRenderer.scale;
 
                 Coords[3] = x - (float) cd * .005f;
+                Coords[3]=Coords[3]/mRenderer.scale;
                 Coords[4] = y + (float) cy * .005f;
+                Coords[4]=Coords[4]/mRenderer.scale;
 
                 Coords[6] = xp - (float) cd * .005f;
+                Coords[6]=Coords[6]/mRenderer.scale;
                 Coords[7] = yp + (float) cy * .005f;
+                Coords[7]=Coords[7]/mRenderer.scale;
+
         freeDrawCount++;
                 if (freeDrawCount<100){
                     mRenderer.setFreeDrawCoordinates(Coords,freeDrawCount-1,freeDrawCount,x,y,closed);
@@ -592,53 +587,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     }
 
-    public void setGaussPath(float x, float y, float xp, float yp,boolean closed){
-        /*xp=(width1/2-xp)/(float)(height1/1.85);
-        yp=(height1/2+85-yp)/(float)(height1/1.85);*/
 
-        float Coords[] = {
-                -0.5f,  0.5f, 0.0f,   // top left
-                -0.5f, -0.5f, 0.0f,   // bottom left
-                0.5f, -0.5f, 0.0f,   // bottom right
-                0.5f,  0.5f, 0.0f }; // top right
 
-        double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
-        double cy = Math.sin(Math.atan((x - xp) / (y - yp)));
-
-        Coords[0] = x + (float) cd * .105f;
-        Coords[1] = y + (float) cy * .095f;
-
-        Coords[9] = xp + (float) cd * .105f;
-        Coords[10] =  yp + (float) cy * .095f;
-
-        Coords[3] = x + (float) cd * .005f;
-        Coords[4] = y + (float) cy * .105f;
-
-        Coords[6] = xp + (float) cd * .095f;
-        Coords[7] = yp + (float) cy * .105f;
-
-        float Coords2[] = {
-                -0.5f,  0.5f, 0.0f,   // top left
-                -0.5f, -0.5f, 0.0f,   // bottom left
-                0.5f, -0.5f, 0.0f,   // bottom right
-                0.5f,  0.5f, 0.0f }; // top right
-
-        Coords2[0] = x - (float) cd * .105f;
-        Coords2[1] = y - (float) cy * .095f;
-
-        Coords2[9] = xp - (float) cd * .105f;
-        Coords2[10] =  yp - (float) cy * .095f;
-
-        Coords2[3] = x - (float) cd * .005f;
-        Coords2[4] = y - (float) cy * .105f;
-
-        Coords2[6] = xp - (float) cd * .095f;
-        Coords2[7] = yp - (float) cy * .105f;
-        gaussDrawCount++;
-        if (gaussDrawCount<100){
-            mRenderer.setGaussDrawCoordinates(Coords,Coords2,gaussDrawCount-1,gaussDrawCount,x,y,closed);
-        }
-    }
 
     public float getpX(){
         return pX;
@@ -669,6 +619,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
         return mRenderer.scale;
     }
 
+    public boolean getActive(){
+        return mRenderer.voronoiDeploymentToggle.active;
+    }
+
     private static BigDecimal truncateDecimal(float x,int numberofDecimals)
     {
         if ( x > 0) {
@@ -676,6 +630,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
         } else {
             return new BigDecimal(String.valueOf(x)).setScale(numberofDecimals, BigDecimal.ROUND_HALF_DOWN);
         }
+    }
+
+    public void setCentroids(dummyPoseArray tempArray){
+        mRenderer.centroids=tempArray;
     }
 
 }

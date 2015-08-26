@@ -55,7 +55,7 @@ tf2_msgs::TFMessage poseEstimationTF;
 // Keep track of Quadcopter state
 bool got_pose_[num], stationary, got_vel_[num];
 double theta,x,y;
-double T = 50; // ROS loop rate
+double T = 1; // ROS loop rate
 double T1[num];
 double T2[num];
 double xOld[num];

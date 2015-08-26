@@ -99,7 +99,7 @@ public class Talker extends AbstractNodeMain {
                     publisher.publish(pose);
 
                 }
-                //Thread.sleep(10000);
+
             }
         });
     }

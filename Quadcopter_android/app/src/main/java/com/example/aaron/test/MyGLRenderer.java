@@ -25,11 +25,11 @@ package com.example.aaron.test;
         import android.opengl.Matrix;
         import android.util.Log;
 
-        import org.ros.node.ConnectedNode;
+/*        import org.ros.node.ConnectedNode;
         import org.ros.node.DefaultNodeFactory;
         import org.ros.node.Node;
         import org.ros.node.NodeConfiguration;
-        import org.ros.node.NodeFactory;
+        import org.ros.node.NodeFactory;*/
 
         import java.nio.FloatBuffer;
         import java.util.ArrayList;
@@ -48,8 +48,7 @@ package com.example.aaron.test;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private static final String TAG = "MyGLRenderer";
-    private Triangle mTriangle, robot;
-    private Square   mSquare, mArena, mArena2;
+    private Square mArena2;
     final int maxBots=50;
     private selection selected;
     private scalevis scaleVis;
@@ -59,8 +58,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Square gLine[] = new Square[100];
     private Square gLine2[] = new Square[100];
     public  dummyPoseArray pathArray = new dummyPoseArray();
-    public NodeFactory nodeFactory;
-    public geometry_msgs.Pose tempPose;
+    public  dummyPoseArray centroids = new dummyPoseArray();
     private waypoint wp;
     private gauss gg;
     private grid myGrid;
@@ -68,12 +66,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private ardroneImage myAr;
     private target tar;
     private origin Origin;
-    private buttons plus, minus, arrows;
+    private buttons plus, minus, arrows, clear, clearAll;
     private gauss density;
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    private toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle;
+    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
     private FloatBuffer textureBuffer;
@@ -92,11 +90,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int gToggle=0;
     private int gToggle2=0;
     private int gpToggle=0;
+    public GaussPoint gaussPoint[]=new GaussPoint[100];
     private int pToggle=0;
     private int pToggle2=0;
     private int framecounter=0;
     public int tToggle=0;
-    public Node node;
+    //public Node node;
     private float pX=0;
     private float pY=0;
     private int vSize=0;
@@ -119,9 +118,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
+    private final float[] stockMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private final float[] mRotationMatrix = new float[16];
+    private final float[] zeroRotationMatrix = new float[16];
+    float[] scratch = new float[16];
+    float[] scratch2 = new float[16];
     float poseData[]={0,0,0,0,0};
     public turtle turtleList[]= new turtle[maxBots];
     private float tempX;
@@ -135,6 +138,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         height=h;
         poseData=f;context=context1;
 
+        //SET STATIC MATRICES
+
+
+
 
     for (int i=0;i<maxBots;i++){
         turtleList[i]=new turtle();
@@ -146,10 +153,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void updateRen(turtle t[]){
-        for (int i=0;i<15;i++){
-            if (t[i]!=null){
+        for (int i=0;i<maxBots;i++){
                 turtleList[i].setData(t[i].getData(), t[i].getIdentification(), t[i].getType());}
-        }
     }
 
     @Override
@@ -158,7 +163,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mTriangle = new Triangle();
 
         float sTemp[] = {
                 -0.5f,  0.5f, 0.0f,   // top left
@@ -166,13 +170,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 0.5f, -0.5f, 0.0f,   // bottom right
                 0.5f,  0.5f, 0.0f };
         float c[] = { 0f,255f,255f, 1.0f };
-        mSquare   = new Square();
         Origin    = new origin(context);
         sTemp[0]=-width/height;sTemp[1]=height/height;
         sTemp[3]=-width/height;;sTemp[4]=-height/(height*2);
         sTemp[6]=width/height;;sTemp[7]=-height/(height*2);
         sTemp[9]=width/height;sTemp[10]=height/height;
-        mArena  = new Square(sTemp);
+
         sTemp[0]=-(width-100)/height;sTemp[1]=(height-5)/height;
         sTemp[3]=-(width-100)/height;sTemp[4]=-(height-10)/(height*2);
         sTemp[6]=(width-100)/height;;sTemp[7]=-(height-10)/(height*2);
@@ -186,19 +189,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         wp= new waypoint(context);
         myAr=new ardroneImage(context);
-        //gg = new gauss(context);
         scaleVis=new scalevis(context);
         selected=new selection(context);
         mArena2.setColor(c);
-        robot = new Triangle();
+
         plus= new buttons(context,0);
         minus= new buttons(context,1);
         arrows= new buttons(context,2);
+        clear = new buttons(context, 3);
+        clearAll = new buttons(context, 4);
+
 
 
         turt1 = new turtB(context);
         tar =new target(context);
-        //density = new gauss(context);
+
 
         sTemp[0]=-(width-100)/height;sTemp[1]=0;
         sTemp[3]=-(width-100)/height;sTemp[4]=-.01f;
@@ -213,11 +218,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             fLine[i] = new Square(sTemp);
             c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
             fLine[i].setColor(c);
-            c[0]=255;c[1]=0;c[2]=255;c[3]=.2f;
+            c[0]=255;c[1]=255;c[2]=255;c[3]=.2f;
             gLine[i] = new Square(sTemp);
             gLine2[i] = new Square(sTemp);
             gLine[i].setColor(c);
             gLine2[i].setColor(c);
+            gaussPoint[i]= new GaussPoint();
         }
 
         float spriteCoords[] = {
@@ -225,11 +231,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 -0.05f, -0.05f,   // bottom left
                 0.05f, -0.05f,   // bottom right
                 0.05f,  0.05f}; //top right
-
-        /*spriteCoords[0]=-(width-115)/(height);spriteCoords[1]=-(height-10)/(height*2);
-        spriteCoords[2]=-(width-115)/(height);spriteCoords[3]=-(height-10)/(height*2)-.1f;
-        spriteCoords[4]=-(width-115)/(height)+.1f;spriteCoords[5]=-(height-10)/(height*2)-.1f;
-        spriteCoords[6]=-(width-115)/(height)+.1f;spriteCoords[7]=-(height-10)/(height*2);*/
 
         spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.2f;
@@ -279,6 +280,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.67f;spriteCoords[7]=(height)/(height)-.1f;
         temptoggle = new toggles(context, spriteCoords, 7);
 
+        spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height)-.21f;
+        spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.31f;
+        spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.31f;
+        spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.21f;
+        voronoiDeploymentToggle = new toggles(context, spriteCoords, 8);
+
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
         spriteCoords[4]=-(width-115)/(height*2)+.05f;spriteCoords[5]=-(height)/(height);
@@ -323,6 +330,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         sTemp[9]=(width-100)/height;sTemp[10]=(height-5)/height;
         myGrid = new grid(context,sTemp);
 
+    //SET MATRICES
+
+
+
     }
 
     public void setVoronoiCoordinates(float s[],int i,int j){
@@ -338,20 +349,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 unused) {
-        float[] scratch = new float[16];
-        float[] scratch2 = new float[16];
-        // Draw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-        // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-        // DRAW OUTLINE
-        //mArena.draw(mMVPMatrix);
-        //mArena2.draw(mMVPMatrix);
-        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-        //Matrix.scaleM(scratch,0,scale,scale,scale);
+        Matrix.setRotateM(zeroRotationMatrix, 0, 0, 0, 0, 1.0f);
+        Matrix.multiplyMM(stockMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
+
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+
+        //GRID AND ORIGIN
+        Matrix.multiplyMM(scratch, 0, stockMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, 0, 0, 0);
         myGrid.Draw(scratch);
         Matrix.translateM(scratch, 0, 2f, 0, 0);
@@ -359,16 +365,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(scratch, 0, -4f, 0, 0);
         myGrid.Draw(scratch);
         Origin.Draw(mMVPMatrix);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .9f, -.8f, 0);
         scaleVis.Draw(scratch,1);
-
+        /////////////////
 
         // DRAW TURTLES
         for (int i=0;i<maxBots;i++){
+            //System.out.println("turtle #"+i);
+            //System.out.println("active: "+turtleList[i].getX());
             if (turtleList[i].getOn()==1) {
-                Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
                 Matrix.rotateM(scratch, 0, turtleList[i].getRot(), 0, 0, 1f);
                 Matrix.scaleM(scratch, 0, scale, scale, scale);
@@ -381,96 +388,80 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 if (turtleList[i].getState()==1){
                     selected.Draw(scratch,1);
                 }
-
             }
         }
 
-        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
         Matrix.scaleM(scratch, 0, scale, scale, scale);
         // DRAW VORONOI LINES
         if (vToggle==1) {
             for (int i = 0; i < vSize; i++) {
-                vLine[i].draw(scratch);
+                if (i<vLine.length){
+                    vLine[i].draw(scratch);
+                }
             }
         }
 
         // DRAW FREE LINES
         if (fToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
-                fLine[i].draw(mMVPMatrix);
-                gLine[i].draw(mMVPMatrix);
-                if(i%1==0){
-                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+                fLine[i].draw(scratch);
                     Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);
+                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x*scale, pathArray.pose[i].y*scale, 0);
+                    Matrix.scaleM(scratch2, 0, .5f,.5f,.5f);
                     Matrix.rotateM(scratch2, 0, pathArray.pose[i].direction, 0, 0, 1f);
                     arrows.Draw(scratch2,0);
-                }
             }
         }
 
         if (gpToggle==1) {
-            for (int i = 0; i < fSize  ; i++) {
-                fLine[i].draw(mMVPMatrix);
-                if(i%1==0){
-                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                    Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(scratch2, 0, pathArray.pose[i].x, pathArray.pose[i].y, 0);
-                    Matrix.rotateM(scratch2, 0, pathArray.pose[i].direction, 0, 0, 1f);
-                    arrows.Draw(scratch2,0);
-                }
+            for (int i = 0; i < gpSize  ; i++) {
+                Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                Matrix.translateM(scratch2, 0, gaussPoint[i].x * scale, gaussPoint[i].y * scale, 0);
+                Matrix.scaleM(scratch2, 0, .1f, .1f, .1f);
+                arrows.Draw(scratch2,0);
             }
         }
 
         // DRAW WAYPOINT
         if (pToggle==1 && pToggle2==1) {
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
             Matrix.translateM(scratch, 0, pX, pY, 0);
             wp.Draw(scratch);
         }
 
-        /*scratch = new float[16];
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, 1.0f);
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-        mTriangle.draw(scratch);*/
+        // DRAW CENTROIDS
+        if (voronoiDeploymentToggle.active==true){
+            for (int i=0; i< centroids.pose.length;i++){
+                if(centroids.pose[i].active==true){
+                    Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
+                    Matrix.translateM(scratch, 0, centroids.pose[i].x*scale, centroids.pose[i].y*scale, 0);
+                    wp.Draw(scratch);
+                }
+            }
+        }
 
         // DRAW TARGET MARK
         if (tToggle==1){
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
             Matrix.translateM(scratch, 0, tempX, tempY, 0);
             tar.Draw(scratch);
         }
 
         //DRAW GAUSSIAN
         if (gToggle==1 && gToggle2==1){
+            for (int i = 0; i < 100; i++) {
+                if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
+                    float[] s = new float[16];
+                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+                    Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
+                    Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
 
-
-
-                for (int i = 0; i < 100; i++) {
-                    if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
-                        float[] s = new float[16];
-                        Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-                        Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                        Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
-                        Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
-
-                        gaussArrayList.Draw(s);
-                        //System.out.println("DRAW");
-                    }
+                    gaussArrayList.Draw(s);
+                    //System.out.println("DRAW");
                 }
-
-
-
-
-/*            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-            Matrix.translateM(scratch, 0, pX, pY, 0);
-            Matrix.scaleM(scratch, 0, sX, sY, sZ);
-            gg.Draw(scratch);*/
-
+            }
 
         }
 
@@ -497,14 +488,33 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         ardronePrefToggle.Draw(scratch, APToggle);
         ardroneAddToggle.Draw(scratch, 0);
         gaussToggle.Draw(scratch,gToggle);
-        temptoggle.Draw(scratch,gpToggle);        //exit.Draw(scratch,1);
+        temptoggle.Draw(scratch, gpToggle);        //exit.Draw(scratch,1);
+        if (voronoiDeploymentToggle.active==true){
+            voronoiDeploymentToggle.Draw(scratch,1);
+        }
+        else {
+            voronoiDeploymentToggle.Draw(scratch,0);
+        }
+
+
         Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .75f, -.85f, 0);
         // DRAW BUTTONS
-        plus.Draw(scratch,1);
+        plus.Draw(scratch, 1);
         Matrix.translateM(scratch, 0, .3f, 0f, 0);
-        minus.Draw(scratch,1);
+        minus.Draw(scratch, 1);
+
+        Matrix.translateM(scratch, 0, -2.25f, .2f, 0);
+        Matrix.scaleM(scratch, 0, 7f, 3f, 0);
+        clear.Draw(scratch, 1);
+
+        Matrix.translateM(scratch, 0, 0, -.05f, 0);
+        Matrix.scaleM(scratch, 0, 1.3f, 1f, 0);
+        clearAll.Draw(scratch, 1);
+
+
+
 
 
         int temp = 0;
@@ -727,7 +737,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setGaussScale(int i, float x) {
         gaussArrayList.scale[i] = x;
-
     }
 
     public void setgInd(int i){
@@ -757,18 +766,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return gaussArrayList.scale;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
+    public void clearGauss() {
+        for (int i = 0; i< 100; i++){
+            gaussArrayList.locX[i] = 0;
+            gaussArrayList.locY[i] = 0;
+            gaussArrayList.scale[i] = 0;
+        }
+    }
 
 
 
@@ -778,8 +782,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         fSize = j;
 
         pathArray.header="OPEN";
-        pathArray.pose[i].x=xPos;
-        pathArray.pose[i].y=yPos;
+        pathArray.pose[i].x=xPos/scale;
+        pathArray.pose[i].y=yPos/scale;
         pathArray.pose[i].active=true;
         if (i%10==0 && i>1){
             pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
@@ -794,26 +798,77 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
     }
 
-    public void setGaussDrawCoordinates(float s[], float s2[],int i, int j, float xPos, float yPos, boolean closed){
-        gLine[i].setSquareCoords(s);
-        gLine2[i].setSquareCoords(s2);
-        gpSize = j;
 
-/*        pathArray.header="OPEN";
-        pathArray.pose[i].x=xPos;
-        pathArray.pose[i].y=yPos;
-        pathArray.pose[i].active=true;
-        if (i%10==0 && i>1){
-            pathArray.pose[i].direction=(float)Math.acos((pathArray.pose[i].x-pathArray.pose[i-1].x)/(Math.sqrt(pathArray.pose[i].x*pathArray.pose[i].x+pathArray.pose[i].y*pathArray.pose[i].y)));
-            pathArray.pose[i].direction=pathArray.pose[i].direction+180;
-        }
-        else{
-            pathArray.pose[i].direction=45;
-        }
+    public void makeGaussPoints(){
+        int pastDir=1;
+        if (fSize>1) {
+            float Coords[] = {
+                    -0.5f,  0.5f, 0.0f,   // top left
+                    -0.5f, -0.5f, 0.0f,   // bottom left
+                    0.5f, -0.5f, 0.0f,   // bottom right
+                    0.5f,  0.5f, 0.0f }; // top right
 
-        if (closed==true){
-            pathArray.header="CLOSED";
-        }*/
+                Coords= fLine[0].getSquareCoords();
+
+            float angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+            double cd = Math.cos(angle);
+            double cy = Math.sin(angle);
+            if ((Coords[1] - Coords[10])<0){
+                cd=-cd;
+                cy=-cy;
+                pastDir=-1;
+            }
+            else{
+                pastDir=1;
+            }
+            gaussPoint[0].x=Coords[9]+ (float) cd * .1f;
+            gaussPoint[0].y=Coords[10]+ (float) cy * .1f;
+            gpSize=1;
+            float pastAngle = angle;
+                for (int i = 1; i < fSize-1; i++) {
+                    Coords= fLine[i].getSquareCoords();
+                    if(pastDir*(Coords[1] - Coords[10])<0){
+                        if ((Coords[0] - Coords[9])<0)
+                        {
+                            pastAngle=pastAngle-3.14f*pastDir;
+                        }
+                        else{
+                            pastAngle=pastAngle+3.14f*pastDir;
+                        }
+
+                    }
+                    angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+                    cd = Math.cos((angle + pastAngle) / 2);
+                    cy = Math.sin((angle+pastAngle)/2);
+                    if ((Coords[1] - Coords[10])<0){
+                        cd=-cd;
+                        cy=-cy;
+                        pastDir=-1;
+                    }
+                    else{
+                        pastDir=1;
+                    }
+                    gaussPoint[i].x=Coords[9]+ (float) cd * .1f;
+                    gaussPoint[i].y=Coords[10]+ (float) cy * .1f;
+                    pastAngle=angle;
+                    gpSize++;
+
+
+
+                }
+            Coords= fLine[fSize-1].getSquareCoords();
+            angle=(float) Math.atan(-(Coords[0] - Coords[9]) / (Coords[1] - Coords[10]));
+            cd = Math.cos((angle) / 2);
+            cy = Math.sin((angle)/2);
+            if ((Coords[1] - Coords[10])<0){
+                cd=-cd;
+                cy=-cy;
+            }
+
+            gaussPoint[fSize-1].x=Coords[0]+ (float) cd * .1f;
+            gaussPoint[fSize-1].y=Coords[1]+ (float) cy * .1f;
+            gpSize++;
+        }
     }
 
 

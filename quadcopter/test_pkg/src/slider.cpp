@@ -42,6 +42,7 @@ rostopic echo -p /topic_name > data.txt
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
+#include <time.h> 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <vector>
@@ -61,6 +62,7 @@ geometry_msgs::Twist velocity; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
+geometry_msgs::Twist pathVel; // velocity along path
 
 
 // Keep track of Quadcopter state
@@ -114,7 +116,9 @@ float maArrayY [numSamples] = {0};
 float maArrayZ [numSamples] = {0};
 float maArrayYaw [numSamples] = {0};
 float *maResults = new float[4];
+float activeAngle=0;
 int maIndex = 1;
+double counterTemp=0;
 
 // PID controller terms
 geometry_msgs::PoseStamped pastError; // This is the integral term
@@ -132,7 +136,7 @@ void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
     poseSysId.x = poseEstimation.pose.position.x; // Update current pose estimation data
     poseSysId.y = poseEstimation.pose.position.y;
     poseSysId.z = poseEstimation.pose.position.z;
-    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI;
+    poseEstYaw = tf::getYaw(poseEstimation.pose.orientation) + PI/3;
 }
 
 void velocityEstCallback(const geometry_msgs::Twist::ConstPtr& twistPtr)
@@ -160,6 +164,12 @@ void pidGainZCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
     kpZ = (double) gainPtr -> x;
     kiZ = (double) gainPtr -> y;
     kdZ = (double) gainPtr -> z;
+}
+
+// Updates pid gain values for z dimension
+void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
+{
+    pathVel = *pathVelPtr;
 }
 
 // Calculates updated error to be used by PID
@@ -297,7 +307,7 @@ void PID(void)
     
     calcMoveAvg(sX - sXprev, sY - sYprev, sZ - sZprev, poseErrYaw - poseErrYawPrev);
       
-    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0]));
+    velocity.linear.x = sX*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;
     if (velocity.linear.x > 1){
       velocity.linear.x = 1;
     }
@@ -305,7 +315,7 @@ void PID(void)
       velocity.linear.x = -1;
     }
     
-    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1]));
+    velocity.linear.y = sY*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;
     if (velocity.linear.y > 1){
       velocity.linear.y = 1;
     }
@@ -328,6 +338,30 @@ void PID(void)
     
     velocity.angular.z = (kpYaw*poseErrYaw) + (kiYaw*pastYawErr) + (kdYaw*T*(maResults[3]));
     
+      if (velocity.linear.x!=0 && velocity.linear.y!=0){
+    double dummyA=1;
+    double dummyO=tan(poseEstYaw+PI);
+    double norm1=sqrt((velocity.linear.x*velocity.linear.x+velocity.linear.y*velocity.linear.y));
+
+/*    double dot=velocity.linear.x*dummyA+velocity.linear.y*dummyO;
+    double norm2=sqrt(1+dummyO*dummyO);
+          activeAngle=acos(dot/(norm1*norm2));*/
+    double dot = dummyA*velocity.linear.x + dummyO*velocity.linear.y;   
+    double det = dummyA*velocity.linear.y - dummyO*velocity.linear.x;   
+    double activeAngle = atan2(det, dot);
+      
+
+/*      
+      if (velocity.linear.y<0){
+       activeAngle=2*PI-activeAngle;
+    }*/
+    std::cout<<"Vx: \n"<<velocity.linear.x<<"\n\n";
+    std::cout<<"Vy: \n"<<velocity.linear.y<<"\n\n";
+    std::cout<<"Active Angle: \n"<<57*activeAngle<<"\n\n";
+    velocity.linear.x =  norm1*cos(activeAngle);
+    velocity.linear.y =  norm1*sin(activeAngle);
+    }
+    
     // For modeling purposes
     velPoseEstX.x = poseEstimation.pose.position.x;
     velPoseEstX.y = velocity.linear.x;
@@ -338,13 +372,14 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "Quadcopter Hover: version 1, EKF pose estimations only"); //Ros Initialize
     ros::start();
     ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
-
+    srand (time(NULL));
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Subscriber poseGoalSub;
     ros::Subscriber velEstSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
+    ros::Subscriber pathVelSub;
     ros::Publisher velPub;
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
@@ -354,6 +389,7 @@ int main(int argc, char **argv)
     poseGoalSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
+    pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
     velPoseEstXPub = n.advertise<geometry_msgs::Vector3>("/vel_poseEstX", 1000, true);
@@ -370,6 +406,12 @@ int main(int argc, char **argv)
     pastError.pose.position.x = 0;
     pastError.pose.position.y = 0;
     pastError.pose.position.z = 0;
+    pathVel.linear.x = 0;
+    pathVel.linear.y = 0;
+    pathVel.linear.z = 0;
+    pathVel.angular.x = 0;
+    pathVel.angular.y = 0;
+    pathVel.angular.z = 0;
 
     velPoseEstX.z = 0;
 

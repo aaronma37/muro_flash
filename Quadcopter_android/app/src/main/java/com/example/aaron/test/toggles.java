@@ -64,6 +64,7 @@ public class toggles
     private int mPositionHandle;
     private int mColorHandle;
     private int mMVPMatrixHandle;
+    public  boolean active=false;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
@@ -142,6 +143,8 @@ public class toggles
         mTextureDataHandle = loadTexture(mActivityContext, R.drawable.vortoggleoff);
         selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.vortoggleon);
     }
+
+
 
     public toggles(final Context activityContext, float s[], int j)
     {
@@ -235,7 +238,27 @@ public class toggles
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.tempoff);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.tempon);
         }
+        else if (j==8){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.voronoicentroid1off);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.voronoicentroid1on);
+        }
 
+    }
+
+    public float getUp(){
+        return spriteCoords[1];
+    }
+
+    public float getDown(){
+        return spriteCoords[3];
+    }
+
+    public float getLeft(){
+        return spriteCoords[4];
+    }
+
+    public float getRight(){
+        return spriteCoords[0];
     }
 
     public void Draw(float[] mvpMatrix, int s)

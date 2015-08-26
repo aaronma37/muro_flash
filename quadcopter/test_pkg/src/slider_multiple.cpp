@@ -181,7 +181,7 @@ void poseGoalCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 }
 
 // Updates goal position sent by android
-void poseGoalCallAllback(const geometry_msgs::PoseStamped& poseAllPtr)
+void poseGoalCallAllback(const geometry_msgs::PoseStamped::ConstPtr& poseAllPtr)
 {
 	for (int i=0;i<num;i++){
 			poseGoal[i].pose = poseAllPtr -> pose;

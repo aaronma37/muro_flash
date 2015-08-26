@@ -102,10 +102,10 @@ public class dummyMaker extends AbstractNodeMain {
                 geometry_msgs.TransformStamped tf = connectedNode.getTopicMessageFactory().newFromType(geometry_msgs.TransformStamped._TYPE);
                 tf.getTransform().getTranslation().setX(Math.random() * .1);
                 tf.getTransform().getTranslation().setY(Math.random() * .1);
-                tf.getTransform().getTranslation().setZ(0);
+                tf.getTransform().getTranslation().setZ(Math.random() * .1);
                 tf.getTransform().getRotation().setX(0);
                 tf.getTransform().getRotation().setY(0);
-                tf.getTransform().getRotation().setZ(1);
+                tf.getTransform().getRotation().setZ(0);
                 tf.getTransform().getRotation().setW(1);
                 tf.getHeader().setFrameId("ORB_SLAM/World");
                 tf.getHeader().setSeq(1);
@@ -117,7 +117,7 @@ public class dummyMaker extends AbstractNodeMain {
                     publisher.publish(pose);
                 }
                 flag=0;
-                //Thread.sleep(10000);
+/*                Thread.sleep(10000);*/
             }
         });
     }

@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include "VoronoiDiagramGenerator.h"
 #include "CentroidGenerator.h"
-
+#include <tf2_msgs/TFMessage.h>
 
 #include <iostream>
 #include <stdio.h>
@@ -35,29 +35,31 @@
 using namespace std;
 double T=50;
 bool gotPose=false;
-const int maxNum=1000;
+const int maxNum=50;
 int countD;
 float xValues[maxNum];
-float yValues[maxNum];    
-float minX = 0, maxX = 100;    
-float minY = 0, maxY = 100;
-geometry_msgs::PoseArray centroidPositions;
+float yValues[maxNum];   
+int selectedIndices[maxNum]; 
+float minX = -.25, maxX = .25;    
+float minY = -.25, maxY = .25;
+//geometry_msgs::PoseArray centroidPositions;
 
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
-	countD = pose->poses.size();
-	centroidPositions = *pose;
+	countD=0;
+	//centroidPositions = *pose;
+	gotPose=true;
 
-	for (int i=0;i<countD;i++)
+	for (int i=0;i<maxNum;i++)
 	{
-		xValues[i]=pose ->poses[i].position.x;	
-		yValues[i]=pose ->poses[i].position.y;	
+		if (pose ->poses[i].position.x!=0 || pose ->poses[i].position.y!=0){
+			xValues[i]=pose ->poses[i].position.x;	
+			yValues[i]=pose ->poses[i].position.y;
+			selectedIndices[countD]=i;	
+			countD++;		
+		}
 	}
-	for (int i=countD;i<maxNum;i++)
-	{
-		xValues[i]=0;	
-		yValues[i]=0;
-	}
+	 
 }
 
 
@@ -330,6 +332,11 @@ Matrix CentroidGenerator::generateCentroid(std::vector<float> allVertices, Matri
     
     return centroidMatrix;
 }
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
@@ -337,6 +344,8 @@ int main(int argc, char **argv)
     
     //Store the position of the sites
     int nSites = Matrix_Size(xValues);
+    tf2_msgs::TFMessage centroidPositions;
+    centroidPositions.transforms.resize(maxNum);
     countD=5;
     Matrix sitesPos(nSites,2);
     for(int i=0; i<Matrix_Size(xValues);i++){
@@ -353,18 +362,43 @@ int main(int argc, char **argv)
 
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
-		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/path", 1000,poseCallback);
-		centroid_pub_ = nh_.advertise<geometry_msgs::PoseArray>("Centroids", 1000, true);
+		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
+		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
 
 	while (ros::ok()) 
 	{
 			ros::spinOnce();
-
 			if (gotPose==true)
 			{
+			
+			float xValuesT[countD];
+			float yValuesT[countD];  
+			
+			
+			for (int i=0;i<maxNum;i++){
+				for (int j=0; j<countD;j++){
+						if(selectedIndices[j]==i){
+						xValuesT[j]=xValues[i];
+						yValuesT[j]=yValues[i];	
+						}
+				}
+			}
+			cout<<"\n\n";
+			nSites = Matrix_Size(xValuesT);
+			Matrix sitesPos(nSites,2);
+			for(int i=0; i<Matrix_Size(xValuesT);i++){
+				sitesPos.setElement(i, 0, xValuesT[i]);      //sitePos.elements[i][0] = xValues[i];
+				sitesPos.setElement(i, 1, yValuesT[i]);
+				cout<<"Site: "<< i <<"\n";
+				cout<<"X: "<< xValuesT[i] <<"\n";
+				cout<<"Y: "<< yValuesT[i] <<"\n\n";
+			    }
+			
 				CentroidGenerator cg;
 				VoronoiDiagramGenerator vdg;
-				vdg.generateVoronoi(xValues,yValues,countD, minX,maxX,minY,maxY,3);
+				cout<<"Number of Sites: "<< countD <<"\n";
+				
+				vdg.generateVoronoi(xValuesT,yValuesT,countD, minX,maxX,minY,maxY,.001);
 			    
 				vdg.resetIterator();
 			    
@@ -393,13 +427,29 @@ int main(int argc, char **argv)
 		
 		
 				//Matrix sitesPos(nSites,2);
+				
 				sitesPos = cg.generateCentroid(cg.posVertVector, sitesPos, nSites);
-		
-				for (int i=0; i<sitesPos.rows; i++) {
-				    centroidPositions.poses[i].position.x=sitesPos.elements[i][0];
-				    centroidPositions.poses[i].position.y=sitesPos.elements[i][1];
+				cout<<"Checkpoint \n";
+				float tempX=0;
+				float tempY=0;
+				string cfi;
+				
+				for (int i=0; i<maxNum; i++) {
+					cfi = "OFF";
+					for (int j=0; j<countD;j++){
+						if(selectedIndices[j]==i){
+						cfi="ON";
+						tempX=sitesPos.elements[j][0];
+						tempY=sitesPos.elements[j][1];	
+						break;					
+						}
+					}
+					centroidPositions.transforms[i].transform.translation.x=tempX;
+				    	centroidPositions.transforms[i].transform.translation.y=tempY;
+					centroidPositions.transforms[i].transform.rotation.w=1;
+					centroidPositions.transforms[i].child_frame_id=cfi;
 				}
-			    
+			     	
 			    	centroid_pub_.publish(centroidPositions);
 				gotPose=false;
 			}
