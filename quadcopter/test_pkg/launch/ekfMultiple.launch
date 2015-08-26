@@ -13,4 +13,7 @@
 <node pkg="test_pkg" type="deserializeForAndroid" name="Deserializer" output="screen">
 </node>
 
+<node pkg="test_pkg" type="centroidGeneratorRos" name="centroidGeneratorRos" output="screen">
+</node>
+
 </launch>
