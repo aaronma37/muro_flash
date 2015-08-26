@@ -39,7 +39,7 @@ const int NUM_ITERATIONS = 10;
 const double PATH_VEL = .1;
 const double LINE_DIST_RANGE = .9;
 
-ros::Rate loop_rate(T);
+ros::Rate pathLoop_rate(2);
 
 // Interpolation data
 int closestPointIndex = 0;
@@ -119,6 +119,7 @@ void calcClosestPointOnPath (void)
   	if(closestPointIndex != prevClosestPointIndex + 1)
   	{
   		closestPointIndex = prevClosestPointIndex + 1;
+  		pathLoop_rate.sleep();
   	}
   }
 }
@@ -282,7 +283,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "path_follower_test_copy"); //Ros Initialize
     ros::start();
-    //ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
+    ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 
     ros::NodeHandle n;
     ros::Subscriber pathSub;
