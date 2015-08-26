@@ -172,9 +172,7 @@ int i=0;
 	if(i>=num){
 		i=0;	
 	}
-	i=9;
 	poseSysIdPub.publish(poseEstimation[i]);
-	
         loop_rate.sleep();
     }
 }

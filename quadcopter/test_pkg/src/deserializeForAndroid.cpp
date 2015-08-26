@@ -52,7 +52,7 @@ rostopic echo -p /topic_name > data.txt
 #include <sstream>
 
 using namespace std;
-const int num=15;
+const int num=50;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
 geometry_msgs::Twist velEstimation[num];
@@ -66,7 +66,7 @@ geometry_msgs::Twist pathVel; // velocity along path
 
 
 // Keep track of Quadcopter state
-double T = 5000; // ROS loop rate
+double T = 25*num; // ROS loop rate
 
 // Constants
 
