@@ -40,7 +40,7 @@ public class MainActivity extends RosActivity {
     private poseView poseview;
     private MyGLSurfaceView mGLView;
     private PathPublisher pathPublisher;
-    private GaussPublisher gaussPublisher;
+    //private GaussPublisher gaussPublisher;
     private multipleGoalListener MultipleGoalListener;
     private allPositionsPublisher SelectedPositionsPublisher;
 
@@ -148,7 +148,7 @@ public class MainActivity extends RosActivity {
         talker = new Talker(num);
         dummy=new dummyMaker(num);
         pathPublisher=new PathPublisher();
-        gaussPublisher = new GaussPublisher();
+        //gaussPublisher = new GaussPublisher();
         poseview = new poseView();
         MultipleGoalListener = new multipleGoalListener();
         SelectedPositionsPublisher= new allPositionsPublisher();

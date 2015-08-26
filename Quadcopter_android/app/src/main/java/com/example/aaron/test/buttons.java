@@ -160,6 +160,10 @@ import std_msgs.Char;
         else if (s==2){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.dot);
         }
+        else if (s==3){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearbutton);
+        }
+
 
     }
 

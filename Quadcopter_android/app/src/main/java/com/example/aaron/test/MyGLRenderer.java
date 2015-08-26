@@ -25,11 +25,11 @@ package com.example.aaron.test;
         import android.opengl.Matrix;
         import android.util.Log;
 
-        import org.ros.node.ConnectedNode;
+/*        import org.ros.node.ConnectedNode;
         import org.ros.node.DefaultNodeFactory;
         import org.ros.node.Node;
         import org.ros.node.NodeConfiguration;
-        import org.ros.node.NodeFactory;
+        import org.ros.node.NodeFactory;*/
 
         import java.nio.FloatBuffer;
         import java.util.ArrayList;
@@ -66,7 +66,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private ardroneImage myAr;
     private target tar;
     private origin Origin;
-    private buttons plus, minus, arrows;
+    private buttons plus, minus, arrows, clear;
     private gauss density;
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
@@ -95,7 +95,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int pToggle2=0;
     private int framecounter=0;
     public int tToggle=0;
-    public Node node;
+    //public Node node;
     private float pX=0;
     private float pY=0;
     private int vSize=0;
@@ -189,7 +189,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         wp= new waypoint(context);
         myAr=new ardroneImage(context);
-        //gg = new gauss(context);
         scaleVis=new scalevis(context);
         selected=new selection(context);
         mArena2.setColor(c);
@@ -197,11 +196,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         plus= new buttons(context,0);
         minus= new buttons(context,1);
         arrows= new buttons(context,2);
+        clear = new buttons(context, 3);
+
 
 
         turt1 = new turtB(context);
         tar =new target(context);
-        //density = new gauss(context);
+
 
         sTemp[0]=-(width-100)/height;sTemp[1]=0;
         sTemp[3]=-(width-100)/height;sTemp[4]=-.01f;
@@ -370,8 +371,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // DRAW TURTLES
         for (int i=0;i<maxBots;i++){
-            System.out.println("turtle #"+i);
-            System.out.println("active: "+turtleList[i].getX());
+            //System.out.println("turtle #"+i);
+            //System.out.println("active: "+turtleList[i].getX());
             if (turtleList[i].getOn()==1) {
                 Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
@@ -448,24 +449,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         //DRAW GAUSSIAN
         if (gToggle==1 && gToggle2==1){
-                for (int i = 0; i < 100; i++) {
-                    if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
-                        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
-                        Matrix.translateM(scratch, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
-                        Matrix.scaleM(scratch, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
-                        gaussArrayList.Draw(scratch);
-                    }
+            for (int i = 0; i < 100; i++) {
+                if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
+                    float[] s = new float[16];
+                    Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+                    Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
+                    Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
+
+                    gaussArrayList.Draw(s);
+                    //System.out.println("DRAW");
                 }
-
-
-
-
-            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
-            Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-            Matrix.translateM(scratch, 0, pX, pY, 0);
-            Matrix.scaleM(scratch, 0, sX, sY, sZ);
-            gg.Draw(scratch);
-
+            }
 
         }
 
@@ -505,9 +500,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, .75f, -.85f, 0);
         // DRAW BUTTONS
-        plus.Draw(scratch,1);
+        plus.Draw(scratch, 1);
         Matrix.translateM(scratch, 0, .3f, 0f, 0);
-        minus.Draw(scratch,1);
+        minus.Draw(scratch, 1);
+
+        Matrix.translateM(scratch, 0, -2.25f, .1f, 0);
+        Matrix.scaleM(scratch, 0, 7f, 3f, 0);
+        clear.Draw(scratch, 1);
 
 
         int temp = 0;
@@ -757,6 +756,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public float[] getGaussScale(){
         return gaussArrayList.scale;
+    }
+
+    public void clearGauss() {
+        for (int i = 0; i< 100; i++){
+            gaussArrayList.locX[i] = 0;
+            gaussArrayList.locY[i] = 0;
+            gaussArrayList.scale[i] = 0;
+        }
     }
 
 

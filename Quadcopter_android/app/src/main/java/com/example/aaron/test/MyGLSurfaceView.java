@@ -337,6 +337,13 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         v.vibrate(75);
                     }
 
+                    //Clear button
+                    /*if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
+                        gInd = 0;
+                        mRenderer.clearGauss();
+                        v.vibrate(75);
+                    }
+*/
                 }
 
 
@@ -377,7 +384,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }*/
 
             case MotionEvent.ACTION_POINTER_DOWN:
-                System.out.println("GAUSS 0");
+                //System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
 
 
@@ -396,7 +403,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         float dgauss = (float)Math.sqrt(Math.pow(gauss_dx, 2)+ Math.pow(gauss_dy, 2));
 
                         gaussScale = dgauss/.2f;
-                        System.out.println("SCALE");
+                        //System.out.println("SCALE");
                         //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
                         mRenderer.setGaussScale(gInd-1, gaussScale);
                     }
