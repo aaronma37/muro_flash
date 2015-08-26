@@ -53,30 +53,42 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private float mapLeft,mapTop,mapBottom,workspace;
     private float pY=0;
     private Vibrator v;
-    private int grab=0;
     public int vFlag=0;
     public int dummyFlag=0;
     private int connectable=0;
     private float firstPointFreeDraw[] ={-1000,-1000};
+    private float tempTurtleList[]= new float[9];
     public int fFlag=0;
     public int gFlag = 0;
     public int gFlag2 = 0;
     public int gpFlag=0;
+    private int count=0;
+    private int i;
     public int pFlag=0;
     private boolean recievedTurtles=false;
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
+
     private int freeDrawCount=0;
     private int gaussDrawCount=0;
+    private float vorCoords[] = {
+            -0.5f,  0.5f, 0.0f,   // top left
+            -0.5f, -0.5f, 0.0f,   // bottom left
+            0.5f, -0.5f, 0.0f,   // bottom right
+            0.5f,  0.5f, 0.0f }; // top right
+    private double cd;
+    private double cy;
+
+
+
+
     ArrayList<Double> temp= new ArrayList<Double>();
     ArrayList<Double> temp2= new ArrayList<Double>();
 
     private int gInd = 0;
     private float gaussScale;
 
-    /*private double temp[]=new double[10];
-    private double temp2[]=new double[10];*/
 
     public Voronoi vor;
     private List<GraphEdge> voronoiEdges;
@@ -117,11 +129,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void updateRen(turtle[] t){
         for (int i=0;i<maxBots;i++) {
-            System.out.println("turtle #"+i);
-            System.out.println("active: "+t[i].getData()[6]);
-                float temp[]=t[i].getData();
-                temp[5]=state[i];
-                tList[i].setData(temp, t[i].getIdentification(), t[i].getType());
+                tempTurtleList=t[i].getData();
+                tempTurtleList[5]=state[i];
+                tList[i].setData(tempTurtleList, t[i].getIdentification(), t[i].getType());
         }
         mRenderer.updateRen(tList);
     }
@@ -132,7 +142,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public void tick(){
         antispam=antispam+1;
-        int count=0;
+       count=0;
         for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
@@ -486,14 +496,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         return true;
     }
 
-    public void rr(){requestRender();}
-
     public void setVoronoiCoordinates(){
-        float vorCoords[] = {
-                -0.5f,  0.5f, 0.0f,   // top left
-                -0.5f, -0.5f, 0.0f,   // bottom left
-                0.5f, -0.5f, 0.0f,   // bottom right
-                0.5f,  0.5f, 0.0f }; // top right
 
         temp.clear();
         temp2.clear();
@@ -514,10 +517,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
             }
 
             voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / height1, width1 / height1, -height1 / (height1), height1 / height1);
-
             for(int i = 0; i < voronoiEdges.size(); i++) {
-                double cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
-                double cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
+                cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
+                cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
 
                 vorCoords[0] = (float) voronoiEdges.get(i).x1 + (float) cd * .005f/mRenderer.scale;
                 vorCoords[1] = (float) voronoiEdges.get(i).y1 - (float) cy * .005f/mRenderer.scale;
@@ -539,8 +541,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
     public void setFreeDrawCoordinates(float x, float y, float xp, float yp,boolean closed){
-        /*xp=(width1/2-xp)/(float)(height1/1.85);
-        yp=(height1/2+85-yp)/(float)(height1/1.85);*/
 
         float Coords[] = {
                 -0.5f,  0.5f, 0.0f,   // top left
@@ -548,7 +548,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 0.5f, -0.5f, 0.0f,   // bottom right
                 0.5f,  0.5f, 0.0f }; // top right
 
-                double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
+               double cd = Math.cos(Math.atan((x - xp) / (y - yp)));
                 double cy = Math.sin(Math.atan((x - xp) / (y - yp)));
 
                 Coords[0] = x + (float) cd * .005f;

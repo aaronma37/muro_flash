@@ -165,17 +165,16 @@ public class MainActivity extends RosActivity {
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         num=poseview.getX();
         talker.setNum(num);
-        nodeMainExecutor.execute(talker, nodeConfiguration);
-        nodeMainExecutor.execute(dummy, nodeConfiguration);
-        nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
-        nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
-        nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
+        //nodeMainExecutor.execute(talker, nodeConfiguration);
+        //nodeMainExecutor.execute(dummy, nodeConfiguration);
+        //nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        //nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
+        //nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
         //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
         exec.scheduleAtFixedRate(new Runnable() {
             public void run() {
-
                 if (poseview.newMeasurementFlag == 1) {
                     turtleList = poseview.getTurtles();
                     poseview.newMeasurementFlag = 0;
@@ -198,7 +197,7 @@ public class MainActivity extends RosActivity {
 
 
             }
-        }, 0, 20000, TimeUnit.MICROSECONDS);
+        }, 0, 35000, TimeUnit.MICROSECONDS);
 
 
         ScheduledThreadPoolExecutor exec2 = new ScheduledThreadPoolExecutor(5);

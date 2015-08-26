@@ -347,7 +347,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onDrawFrame(GL10 unused) {
-
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         Matrix.setRotateM(zeroRotationMatrix, 0, 0, 0, 0, 1.0f);
@@ -371,6 +370,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // DRAW TURTLES
         for (int i=0;i<maxBots;i++){
+            System.out.println("turtle #"+i);
+            System.out.println("active: "+turtleList[i].getX());
             if (turtleList[i].getOn()==1) {
                 Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, zeroRotationMatrix, 0);
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
@@ -459,11 +460,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
 
-/*            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
+            Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
             Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
             Matrix.translateM(scratch, 0, pX, pY, 0);
             Matrix.scaleM(scratch, 0, sX, sY, sZ);
-            gg.Draw(scratch);*/
+            gg.Draw(scratch);
 
 
         }
