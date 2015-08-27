@@ -374,6 +374,10 @@ int main(int argc, char **argv)
                     ros::spinOnce();
                     loop_rate.sleep();
                 }
+                constVelTerm.linear.x = 0;
+		constVelTerm.linear.y = 0;
+		velPub.publish(constVelTerm);
+		ROS_INFO("finished CLOSED loop");
             }
         }
         
