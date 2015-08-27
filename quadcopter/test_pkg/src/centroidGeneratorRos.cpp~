@@ -446,6 +446,7 @@ int main(int argc, char **argv)
 					}
 					centroidPositions.transforms[i].transform.translation.x=tempX;
 				    	centroidPositions.transforms[i].transform.translation.y=tempY;
+					centroidPositions.transforms[i].transform.rotation.w=1;
 					centroidPositions.transforms[i].child_frame_id=cfi;
 				}
 			     	

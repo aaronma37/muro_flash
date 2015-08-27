@@ -51,7 +51,7 @@ public class allPositionsPublisher extends AbstractNodeMain {
                 connectedNode.newPublisher("/toVoronoiDeployment", pose._TYPE);
 
         pose = publisher.newMessage();
-        for (int i=0;i<200;i++){
+        for (int i=0;i<50;i++){
             intPose = connectedNode.getTopicMessageFactory().newFromType(geometry_msgs.Pose._TYPE);
             pose.getPoses().add(intPose);
         }
@@ -67,15 +67,17 @@ public class allPositionsPublisher extends AbstractNodeMain {
             protected void loop() throws InterruptedException {
 
                 if (flag==true){
-                        for (int i=0;i<200;i++){
-                            pose.getPoses().get(i).getPosition().setX(dPose.pose[i].x);
-                            pose.getPoses().get(i).getPosition().setY(dPose.pose[i].y);
-                            pose.getPoses().get(i).getPosition().setZ(dPose.pose[i].z);
+                        for (int i=0;i<50;i++){
+                            if (i<dPose.pose.length){
+                                pose.getPoses().get(i).getPosition().setX(dPose.pose[i].x);
+                                pose.getPoses().get(i).getPosition().setY(dPose.pose[i].y);
+                                pose.getPoses().get(i).getPosition().setZ(dPose.pose[i].z);
 
-                            pose.getPoses().get(i).getOrientation().setX(dPose.pose[i].ax);
-                            pose.getPoses().get(i).getOrientation().setY(dPose.pose[i].ay);
-                            pose.getPoses().get(i).getOrientation().setZ(dPose.pose[i].az);
-                            pose.getPoses().get(i).getOrientation().setW(dPose.pose[i].aw);
+                                pose.getPoses().get(i).getOrientation().setX(dPose.pose[i].ax);
+                                pose.getPoses().get(i).getOrientation().setY(dPose.pose[i].ay);
+                                pose.getPoses().get(i).getOrientation().setZ(dPose.pose[i].az);
+                                pose.getPoses().get(i).getOrientation().setW(dPose.pose[i].aw);
+                            }
                     }
 
                     pose.getHeader().setFrameId(dPose.header);

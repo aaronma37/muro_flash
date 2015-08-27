@@ -71,7 +71,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle;
+    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle, dragToggle;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
     private FloatBuffer textureBuffer;
@@ -286,6 +286,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.21f;
         voronoiDeploymentToggle = new toggles(context, spriteCoords, 8);
 
+        spriteCoords[0]=-(width-115)/(height*2)-.22f;spriteCoords[1]=(height)/(height)-.21f;
+        spriteCoords[2]=-(width-115)/(height*2)-.22f;spriteCoords[3]=(height)/(height)-.31f;
+        spriteCoords[4]=-(width-115)/(height*2)-.12f;spriteCoords[5]=(height)/(height)-.31f;
+        spriteCoords[6]=-(width-115)/(height*2)-.12f;spriteCoords[7]=(height)/(height)-.21f;
+        dragToggle = new toggles(context, spriteCoords, 7);
+
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
         spriteCoords[4]=-(width-115)/(height*2)+.05f;spriteCoords[5]=-(height)/(height);
@@ -494,6 +500,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         else {
             voronoiDeploymentToggle.Draw(scratch,0);
+        }
+        if (dragToggle.active=true){
+            dragToggle.Draw(scratch,1);
+        }
+        else {
+            dragToggle.Draw(scratch,0);
         }
 
 

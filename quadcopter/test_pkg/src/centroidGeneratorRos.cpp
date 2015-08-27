@@ -40,8 +40,8 @@ int countD;
 float xValues[maxNum];
 float yValues[maxNum];   
 int selectedIndices[maxNum]; 
-float minX = -.25, maxX = .25;    
-float minY = -.25, maxY = .25;
+float minX = -.45, maxX = .45;    
+float minY = -.45, maxY = .45;
 //geometry_msgs::PoseArray centroidPositions;
 
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)

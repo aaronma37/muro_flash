@@ -47,6 +47,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public float poseData[];
     final int maxBots=50;
     public turtle tList[]=new turtle[maxBots];
+    public turtle obsticle = new turtle();
     private float width1;
     private float height1;
     private float pX=0;
@@ -310,12 +311,23 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gpFlag = mRenderer.getgpToggle();
 
                     //Toggle for voronoi deployment
-                    if (xGL<mRenderer.voronoiDeploymentToggle.getLeft()-mRenderer.slider && xGL>mRenderer.voronoiDeploymentToggle.getRight()-mRenderer.slider && yGL > mRenderer.voronoiDeploymentToggle.getDown() && yGL < mRenderer.voronoiDeploymentToggle.getUp())
+                    if (xGL<-(width1-115)/(height1*2)-.01f-mRenderer.slider&& xGL>-(width1-115)/(height1*2)-.1f-mRenderer.slider&& yGL > (height1)/(height1)-.3f && yGL < (height1)/(height1)-.2f)
                         if (mRenderer.voronoiDeploymentToggle.active == true) {
                             mRenderer.voronoiDeploymentToggle.active =  false;
                             v.vibrate(50);
                         } else {
                             mRenderer.voronoiDeploymentToggle.active = true;
+                            v.vibrate(50);
+                        }
+
+                    if (xGL<-(width1-115)/(height1*2)-.12f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.22f-mRenderer.slider && yGL >(height1)/(height1)-.3f&& yGL < (height1)/(height1)-.2f)
+                        if (mRenderer.dragToggle.active == true) {
+                            mRenderer.dragToggle.active =  false;
+                            obsticle.on=1;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.dragToggle.active = true;
+                            obsticle.on=0;
                             v.vibrate(50);
                         }
 
@@ -415,6 +427,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 mRenderer.tToggle=1;
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
+
+
+                    if (mRenderer.dragToggle.active==true && xGL>workspace
+                    && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom){
+                        obsticle.x=xGL/getScale();
+                        obsticle.y=yGL/getScale();
+                        obsticle.Aw=1;
+                    }
+
+
 
                 if (fFlag==1 && (Math.abs(xGL-previousx)> .03f || Math.abs(yGL -previousy)>.03f) && xGL>workspace
                         && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom) {
@@ -635,6 +657,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void setCentroids(dummyPoseArray tempArray){
         mRenderer.centroids=tempArray;
     }
+
+    public boolean getObsticleActivity(){
+        return mRenderer.dragToggle.active;
+    }
+
 
 }
 
