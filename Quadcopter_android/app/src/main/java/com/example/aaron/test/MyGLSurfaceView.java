@@ -218,7 +218,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                 if (antispam>1) {
                     //Turn on voronoi toggle
-                    if (xGL<-(width1-115)/(height1*2)-.01f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.11f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.vorToggle.left- mRenderer.slider&& xGL>mRenderer.vorToggle.right-mRenderer.slider&& yGL > mRenderer.vorToggle.down && yGL < mRenderer.vorToggle   .up)
                     if (mRenderer.getvToggle() == 1) {
                         mRenderer.setvToggle(0);
                         v.vibrate(500);
@@ -229,7 +229,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
                     //Turn on Free Draw Toggle
-                    if (xGL<-(width1-115)/(height1*2)-.12f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.22f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f)
+                    if (xGL<mRenderer.freeDrawToggle.left- mRenderer.slider&& xGL>mRenderer.freeDrawToggle.right-mRenderer.slider&& yGL > mRenderer.freeDrawToggle.down && yGL < mRenderer.freeDrawToggle.up)
                         if (mRenderer.getfToggle() == 1) {
                             mRenderer.setfToggle(0);
                             mRenderer.eraseFreeLine();
@@ -248,24 +248,26 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         }
 
                     //Turn on Way Point Toggle
-                    if (xGL<-(width1-115)/(height1*2)-.23f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.32f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.wayPointToggle.left- mRenderer.slider&& xGL>mRenderer.wayPointToggle.right-mRenderer.slider&& yGL > mRenderer.wayPointToggle.down && yGL < mRenderer.wayPointToggle.up)
                         if (mRenderer.getpToggle() == 1) {
                             mRenderer.setpToggle(0);
                             pFlag2=0;
                             mRenderer.setpToggle2(pFlag2);
                             mRenderer.tToggle=1;
                             pX=0; pY=0;
+
                             v.vibrate(50);
                         } else {
                             mRenderer.tToggle=0;
                             mRenderer.setpToggle(1);
+                            mRenderer.voronoiDeploymentToggle.active=false;
                             pX=0; pY=0;
                             v.vibrate(50);
                         }
                     pFlag = mRenderer.getpToggle();
 
                     //Turn on AndroneToggle
-                    if (xGL<-(width1-115)/(height1*2)-.34f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.43f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.ardronePrefToggle.left- mRenderer.slider&& xGL>mRenderer.ardronePrefToggle.right-mRenderer.slider&& yGL > mRenderer.ardronePrefToggle.down && yGL < mRenderer.ardronePrefToggle.up)
                         if (mRenderer.getAPToggle() == 1) {
                             mRenderer.setAPToggle(0);
                             v.vibrate(50);
@@ -274,14 +276,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
-                    if (xGL<-(width1-115)/(height1*2)-.45f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.54f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.ardroneAddToggle.left- mRenderer.slider&& xGL>mRenderer.ardroneAddToggle.right-mRenderer.slider&& yGL > mRenderer.ardroneAddToggle.down && yGL < mRenderer.ardroneAddToggle.up)
                     {
                         dummyFlag=1;
                         v.vibrate(50);
                     }
 
                     //IF GAUSS TOGGLE SELECTED
-                    if (xGL<-(width1-115)/(height1*2)-.56f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.65f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.gaussToggle.left- mRenderer.slider&& xGL>mRenderer.gaussToggle.right-mRenderer.slider&& yGL > mRenderer.gaussToggle.down && yGL < mRenderer.gaussToggle.up)
                         if (mRenderer.getgToggle() == 1) {
                             mRenderer.setgToggle(0);
                             gFlag2 = 0;
@@ -298,7 +300,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gFlag = mRenderer.getgToggle();
 
                     //IF GAUSSPATH TOGGLE SELECTED
-                    if (xGL<-(width1-115)/(height1*2)-.66f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.76f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.temptoggle.left- mRenderer.slider&& xGL>mRenderer.temptoggle.right-mRenderer.slider&& yGL > mRenderer.temptoggle.down && yGL < mRenderer.temptoggle.up)
                         if (mRenderer.getgpToggle() == 1) {
                             mRenderer.setgpToggle(0);
                             mRenderer.eraseGaussLine();
@@ -311,23 +313,25 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gpFlag = mRenderer.getgpToggle();
 
                     //Toggle for voronoi deployment
-                    if (xGL<-(width1-115)/(height1*2)-.01f-mRenderer.slider&& xGL>-(width1-115)/(height1*2)-.1f-mRenderer.slider&& yGL > (height1)/(height1)-.3f && yGL < (height1)/(height1)-.2f)
+                    if (xGL<mRenderer.voronoiDeploymentToggle.left- mRenderer.slider&& xGL>mRenderer.voronoiDeploymentToggle.right-mRenderer.slider&& yGL > mRenderer.voronoiDeploymentToggle.down && yGL < mRenderer.voronoiDeploymentToggle.up)
                         if (mRenderer.voronoiDeploymentToggle.active == true) {
                             mRenderer.voronoiDeploymentToggle.active =  false;
                             v.vibrate(50);
                         } else {
                             mRenderer.voronoiDeploymentToggle.active = true;
+                            mRenderer.setpToggle(0);
+                            mRenderer.setpToggle2(0);
                             v.vibrate(50);
                         }
 
-                    if (xGL<-(width1-115)/(height1*2)-.12f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.22f-mRenderer.slider && yGL >(height1)/(height1)-.3f&& yGL < (height1)/(height1)-.2f)
+                    if (xGL<mRenderer.dragToggle.left- mRenderer.slider&& xGL>mRenderer.dragToggle.right-mRenderer.slider&& yGL > mRenderer.dragToggle.down && yGL < mRenderer.dragToggle.up)
                         if (mRenderer.dragToggle.active == true) {
                             mRenderer.dragToggle.active =  false;
-                            obsticle.on=1;
+                            obsticle.on=0;
                             v.vibrate(50);
                         } else {
                             mRenderer.dragToggle.active = true;
-                            obsticle.on=0;
+                            obsticle.on=1;
                             v.vibrate(50);
                         }
 
@@ -386,15 +390,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gInd++;
                 }
 
-
-
-                /*if (yGL > -(height1)/(height1*2)-mRenderer.slider && yGL < -(height1-100)/(height1*2)-mRenderer.slider &&xGL>-(-200)/height1 && xGL < (200)/height1){
-                    grab=1;
-                }
-                else{
-                    grab=0;
-                }*/
-
             case MotionEvent.ACTION_POINTER_DOWN:
                 //System.out.println("GAUSS 0");
                 if (e.getActionIndex() == 1) {
@@ -434,6 +429,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         obsticle.x=xGL/getScale();
                         obsticle.y=yGL/getScale();
                         obsticle.Aw=1;
+                        obsticle.on=1;
                     }
 
 

@@ -131,6 +131,12 @@ target_link_libraries(centroidGeneratorRos
 ${catkin_LIBRARIES}
 )
 
+add_executable(CoMGeneratorRos src/CoMGeneratorRos.cpp src/VoronoiDiagramGenerator.cpp)
+add_dependencies(CoMGeneratorRos ${catkin_EXPORTED_TARGETS})
+target_link_libraries(CoMGeneratorRos
+${catkin_LIBRARIES}
+)
+
 	
 
 add_message_files(FILES Navdata.msg)

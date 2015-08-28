@@ -293,7 +293,7 @@ void CoMGenerator::getTriangleCOM(double &Mass, double &c_x, double &c_y, double
         //Density Funtion!!!!!
         //||----------------||
         //||----------------||
-        DENSITY = 1/(100*x)+y;//pow(x,10) + pow(y,10); //1.0;
+        DENSITY = 1/x+y;//pow(x,10) + pow(y,10); //1.0;
         //||----------------||
         //||----------------||
         

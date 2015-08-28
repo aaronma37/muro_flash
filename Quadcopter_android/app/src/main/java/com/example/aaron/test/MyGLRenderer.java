@@ -236,61 +236,61 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.1f;
-        vorToggle = new toggles(context,spriteCoords,0);
+        vorToggle = new toggles(context,spriteCoords,0,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.22f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.22f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.12f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.12f;spriteCoords[7]=(height)/(height)-.1f;
-        freeDrawToggle = new toggles(context, spriteCoords,1);
+        freeDrawToggle = new toggles(context, spriteCoords,1,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.33f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.33f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.23f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.23f;spriteCoords[7]=(height)/(height)-.1f;
-        wayPointToggle = new toggles(context, spriteCoords,2);
+        wayPointToggle = new toggles(context, spriteCoords,2,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.44f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.44f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.34f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.34f;spriteCoords[7]=(height)/(height)-.1f;
-        ardronePrefToggle = new toggles(context, spriteCoords,5);
+        ardronePrefToggle = new toggles(context, spriteCoords,5,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.55f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.55f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.45f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.45f;spriteCoords[7]=(height)/(height)-.1f;
-        ardroneAddToggle = new toggles(context, spriteCoords,6);
+        ardroneAddToggle = new toggles(context, spriteCoords,6,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.1f;
         spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.1f;
         spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height);
-        exit = new toggles(context, spriteCoords,4);
+        exit = new toggles(context, spriteCoords,4,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.66f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.66f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.56f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.56f;spriteCoords[7]=(height)/(height)-.1f;
-        gaussToggle = new toggles(context, spriteCoords, 3);
+        gaussToggle = new toggles(context, spriteCoords, 3,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.77f;spriteCoords[1]=(height)/(height)-.1f;
         spriteCoords[2]=-(width-115)/(height*2)-.77f;spriteCoords[3]=(height)/(height)-.2f;
         spriteCoords[4]=-(width-115)/(height*2)-.67f;spriteCoords[5]=(height)/(height)-.2f;
         spriteCoords[6]=-(width-115)/(height*2)-.67f;spriteCoords[7]=(height)/(height)-.1f;
-        temptoggle = new toggles(context, spriteCoords, 7);
+        temptoggle = new toggles(context, spriteCoords, 7,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.11f;spriteCoords[1]=(height)/(height)-.21f;
         spriteCoords[2]=-(width-115)/(height*2)-.11f;spriteCoords[3]=(height)/(height)-.31f;
         spriteCoords[4]=-(width-115)/(height*2)-.01f;spriteCoords[5]=(height)/(height)-.31f;
         spriteCoords[6]=-(width-115)/(height*2)-.01f;spriteCoords[7]=(height)/(height)-.21f;
-        voronoiDeploymentToggle = new toggles(context, spriteCoords, 8);
+        voronoiDeploymentToggle = new toggles(context, spriteCoords, 8,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.22f;spriteCoords[1]=(height)/(height)-.21f;
         spriteCoords[2]=-(width-115)/(height*2)-.22f;spriteCoords[3]=(height)/(height)-.31f;
         spriteCoords[4]=-(width-115)/(height*2)-.12f;spriteCoords[5]=(height)/(height)-.31f;
         spriteCoords[6]=-(width-115)/(height*2)-.12f;spriteCoords[7]=(height)/(height)-.21f;
-        dragToggle = new toggles(context, spriteCoords, 7);
+        dragToggle = new toggles(context, spriteCoords, 7,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
@@ -654,32 +654,29 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
     public void setvToggle(int i){
-        setAllToggles(0);
         vToggle=i;
     }
     public int getvToggle(){
         return vToggle;
     }
     public void setfToggle(int i){
-        setAllToggles(0);
         fToggle=i;
     }
     public int getfToggle(){
         return fToggle;
     }
     public void setpToggle(int i){
-        setAllToggles(0);
         pToggle=i;
     }
     public void setpToggle2(int i){
         pToggle2=i;
+
     }
     public int getpToggle(){
         return pToggle;
     }
 
     public void setgToggle(int i) {
-        setAllToggles(0);
         gToggle = i;
     }
 
@@ -689,7 +686,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public int getgToggle() { return gToggle;}
     public void setAPToggle(int i){
-        setAllToggles(0);
         APToggle=i;
     }
     public int getAPToggle(){

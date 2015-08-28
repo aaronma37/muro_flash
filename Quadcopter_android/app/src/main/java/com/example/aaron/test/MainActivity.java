@@ -235,7 +235,7 @@ public class MainActivity extends RosActivity {
                         turtleList[i].setRot();
                     }
                 }
-                if (mGLView.obsticle.getOn()==1){
+                if (mGLView.obsticle.on==1){
                     turtleList[49]=mGLView.obsticle;
                 }
                 else {

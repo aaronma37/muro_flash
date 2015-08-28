@@ -31,6 +31,7 @@ public class toggles
     private int mTextureCoordinateHandle;
     private final int mTextureCoordinateDataSize = 2;
     private int mTextureDataHandle, selectedTextureDataHandle;
+    public float left,right,up,down;
 
     private final String vertexShaderCode =
 //Test
@@ -146,10 +147,14 @@ public class toggles
 
 
 
-    public toggles(final Context activityContext, float s[], int j)
+    public toggles(final Context activityContext, float s[], int j, float left1, float right1, float up1, float down1)
     {
         spriteCoords=s;
         mActivityContext = activityContext;
+        left=left1;
+        right=right1;
+        up=up1;
+        down=down1;
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -246,19 +251,19 @@ public class toggles
     }
 
     public float getUp(){
-        return spriteCoords[1];
+        return up;
     }
 
     public float getDown(){
-        return spriteCoords[3];
+        return down;
     }
 
     public float getLeft(){
-        return spriteCoords[4];
+        return left;
     }
 
     public float getRight(){
-        return spriteCoords[0];
+        return right;
     }
 
     public void Draw(float[] mvpMatrix, int s)

@@ -63,6 +63,9 @@ geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId[num]; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
 geometry_msgs::Twist pathVel; // velocity along path
+geometry_msgs::Twist zeroVel;
+geometry_msgs::Twist aVel[num]; //Avoidance Velocity
+geometry_msgs::Twist tempVel;
 geometry_msgs::Quaternion tempOrientation;
 
 // Keep track of Quadcopter state
@@ -106,6 +109,7 @@ double windupCap;
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw[num] ; // twist or oscillation about a vertical axis
 bool active[num];
+bool gotav[num];
 double poseGoalYaw[num];
 double poseErrYaw[num];
 double poseErrYawPrev[num]; // for PID derivative term
@@ -214,6 +218,32 @@ void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
     pathVel = *pathVelPtr;
 }
 
+void aVelCallback(const geometry_msgs::TwistStamped::ConstPtr& aVelPtr)
+{
+
+	if (aVelPtr -> header.frame_id.compare("dummy 1")){k=11;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 2")){k=12;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 3")){k=13;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 4")){k=14;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 5")){k=15;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 6")){k=16;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 7")){k=17;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 8")){k=18;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 9")){k=19;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 10")){k=20;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 11")){k=21;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 12")){k=22;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 13")){k=23;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 14")){k=24;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 15")){k=25;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 16")){k=26;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 17")){k=27;}
+    
+
+    gotav[k]=true;
+    aVel[k] = aVelPtr -> twist;
+}
+
 // Calculates updated error to be used by PID
 void calculateError(int i)
 {
@@ -312,6 +342,13 @@ void PID(int i)
     {
       pastError[i].pose.position.y = -windupCap;
     }
+
+    if (gotav[i]==true){
+	tempVel=aVel[i];
+	}
+    else{
+	tempVel=zeroVel;
+	}
     
     // Store previous s value to determine derivative term
     sXprev = sX[i];
@@ -326,7 +363,7 @@ void PID(int i)
     
     calcMoveAvg(sX[i] - sXprev, sY[i] - sYprev, sZ[i] - sZprev, poseErrYaw[i] - poseErrYawPrev[i]);
       
-    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;
+    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x+tempVel.linear.x;
     if (velocity.transforms[i].transform.translation.x > 1){
       velocity.transforms[i].transform.translation.x = 1;
     }
@@ -334,7 +371,7 @@ void PID(int i)
       velocity.transforms[i].transform.translation.x = -1;
     }
     
-    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;
+    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y+tempVel.linear.y;
     if (velocity.transforms[i].transform.translation.y > 1){
       velocity.transforms[i].transform.translation.y = 1;
     }
@@ -381,6 +418,7 @@ int main(int argc, char **argv)
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
     ros::Subscriber pathVelSub;
+    ros::Subscriber aVelSub;
     ros::Publisher velPub, AR1Pub;
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
@@ -392,6 +430,7 @@ int main(int argc, char **argv)
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
+    aVelSub = n.subscribe<geometry_msgs::TwistStamped>("/path_vel", 1, aVelCallback);
     velPub = n.advertise<tf2_msgs::TFMessage>("/cmd_vel", 1000, true);
     AR1Pub = n.advertise<geometry_msgs::Twist>("/ardrone1/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
@@ -439,6 +478,7 @@ for (int i=0;i<num;i++){
     poseGoal[i].pose.position.z = 0;
 	
     active[i]=false;
+    gotav[i]=false;
     }
 
     while (ros::ok()) 
@@ -453,14 +493,15 @@ for (int i=0;i<num;i++){
 				vel_s.linear.x=velocity.transforms[0].transform.translation.x;
 				vel_s.linear.y=velocity.transforms[0].transform.translation.y;
 				vel_s.linear.z=velocity.transforms[0].transform.translation.z;
-
 				vel_s.angular.x=velocity.transforms[0].transform.rotation.x;
 				vel_s.angular.y=velocity.transforms[0].transform.rotation.y;
 				vel_s.angular.z=velocity.transforms[0].transform.rotation.z;
 
 				AR1Pub.publish(vel_s);
 			}
+		gotav[i]=false;
 		}
+		
 	
 	}
 	velPub.publish(velocity);
