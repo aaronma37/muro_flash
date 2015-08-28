@@ -16,7 +16,6 @@
 <node pkg="test_pkg" type="CoMGeneratorRos" name="centroidGeneratorRos" output="screen">
 </node>
 
-<node pkg="test_pkg" type="collisionAvoidance" name="collisionAvoidance" output="screen">
-</node>
+
 
 </launch>

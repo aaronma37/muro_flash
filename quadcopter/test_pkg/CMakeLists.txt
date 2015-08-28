@@ -125,6 +125,12 @@ target_link_libraries(deserializeForAndroid
 ${catkin_LIBRARIES}
 )
 
+add_executable(collisionAvoidance src/collisionAvoidance.cpp)
+add_dependencies(collisionAvoidance ${catkin_EXPORTED_TARGETS})
+target_link_libraries(collisionAvoidance
+${catkin_LIBRARIES}
+)
+
 add_executable(centroidGeneratorRos src/centroidGeneratorRos.cpp src/VoronoiDiagramGenerator.cpp)
 add_dependencies(centroidGeneratorRos ${catkin_EXPORTED_TARGETS})
 target_link_libraries(centroidGeneratorRos

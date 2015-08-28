@@ -66,7 +66,6 @@ Matrix::Matrix(int r, int c, float data) {
     }
 }
 Matrix::~Matrix(){
-    //cout << endl << "End program" << endl;
 }
 void Matrix::setMatrix(int r, int c, float data) {
     elements = new float*[r];
@@ -293,7 +292,7 @@ void CoMGenerator::getTriangleCOM(double &Mass, double &c_x, double &c_y, double
         //Density Funtion!!!!!
         //||----------------||
         //||----------------||
-        DENSITY = 1/(100*x)+y;//pow(x,10) + pow(y,10); //1.0;
+        DENSITY = 1;//pow(x,10) + pow(y,10); //1.0;
         //||----------------||
         //||----------------||
         
@@ -423,7 +422,7 @@ Matrix CoMGenerator::generateCenterOfMass(std::vector<float> allVertices, Matrix
     else cout << centerOfMass.elements[i][1] << ", "; }
     */
     
-    centerOfMass.printArray("Center of Mass");
+    //centerOfMass.printArray("Center of Mass");
     
     return centerOfMass;
 }
@@ -471,19 +470,15 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-		cout<<"\n\n";
+
 		nSites = Matrix_Size(xValuesT);
 		Matrix sitesPos(nSites,2);
 		for(int i=0; i<Matrix_Size(xValuesT);i++){
 			sitesPos.setElement(i, 0, xValuesT[i]);      //sitePos.elements[i][0] = xValues[i];
 			sitesPos.setElement(i, 1, yValuesT[i]);
-			cout<<"Site: "<< i <<"\n";
-			cout<<"X: "<< xValuesT[i] <<"\n";
-			cout<<"Y: "<< yValuesT[i] <<"\n\n";
 		}
         	CoMGenerator cg;
         	VoronoiDiagramGenerator vdg;
-		cout<<"Number of Sites: "<< countD <<"\n";
 
         	vdg.generateVoronoi(xValuesT,yValuesT,countD, minX,maxX,minY,maxY,0.001);
         
@@ -491,12 +486,8 @@ int main(int argc, char **argv)
         
         	float x1,y1,x2,y2;
         	int a=1;
-        	printf("\n-------------------------------\n");
         	while(vdg.getNext(x1,y1,x2,y2))
         	{
-            		//printf("GOT Line (%.4f,%.4f)->(%.4f,%.4f)\n", x1,y1,x2,y2);
-            		//printf("v%dx = [%.4f,%.4f];\n", a, x1,x2);    //to work with MATLAB
-            		//printf("v%dy = [%.4f,%.4f];\n", a, y1,y2);    //to work with MATLAB
             		a++;
             		if (x1!=x2 || y1!=y2)  //if condition necessary due to some unknown problem (Fortune's Algorithm generating vertices that shouldn't exist)
             		{
@@ -504,7 +495,7 @@ int main(int argc, char **argv)
                 		cg.posVertVector.push_back(x2); cg.posVertVector.push_back(y2);
             		}
         	}
-        	cout << endl;
+
         
         	//After store position of all vertices, store the position of the edges of the plane (rectangular plane)
         	cg.posVertVector.push_back(minX); cg.posVertVector.push_back(minY);
@@ -515,7 +506,6 @@ int main(int argc, char **argv)
         
         	//Return the position of the Centers of Mass
         	sitesPos = cg.generateCenterOfMass(cg.posVertVector, sitesPos, nSites);
-		cout<<"Checkpoint \n";
 		float tempX=0;
 		float tempY=0;
 		string cfi;

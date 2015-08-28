@@ -220,28 +220,43 @@ void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
 
 void aVelCallback(const geometry_msgs::TwistStamped::ConstPtr& aVelPtr)
 {
+	int kk=0;
 
-	if (aVelPtr -> header.frame_id.compare("dummy 1")){k=11;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 2")){k=12;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 3")){k=13;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 4")){k=14;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 5")){k=15;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 6")){k=16;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 7")){k=17;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 8")){k=18;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 9")){k=19;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 10")){k=20;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 11")){k=21;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 12")){k=22;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 13")){k=23;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 14")){k=24;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 15")){k=25;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 16")){k=26;}
-                    else if(aVelPtr -> header.frame_id.compare("dummy 17")){k=27;}
-                    else{poseData[4]=0;}
+if (aVelPtr -> header.frame_id.compare("not_init")!=0){
+	            if (aVelPtr -> header.frame_id.compare("dummy1"))
+			{kk=11;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy2"))
+			{kk=12;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy3"))
+			{kk=13;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy4"))
+			{kk=14;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy5"))
+			{kk=15;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy6"))
+			{kk=16;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy7"))
+			{kk=17;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy8"))
+			{kk=18;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy9"))
+			{kk=19;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 10")){kk=20;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 11")){kk=21;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 12")){kk=22;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 13")){kk=23;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 14")){kk=24;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 15")){kk=25;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 16")){kk=26;}
+                    else if(aVelPtr -> header.frame_id.compare("dummy 17")){kk=27;}
+kk=(int)aVelPtr->twist.angular.x;
 
-    gotav[k]=true;
-    aVel[k] = aVelPtr -> twist;
+ 
+    cout<<kk <<"\n";
+    cout<<aVelPtr-> header.frame_id <<"\n";
+    gotav[kk]=true;
+    aVel[kk] = aVelPtr -> twist;
+}
 }
 
 // Calculates updated error to be used by PID
@@ -356,14 +371,14 @@ void PID(int i)
     sZprev = sZ[i];
     
     // Linear Sliding Mode
-    sX[i] = -sliderSlope*poseError[i].pose.position.x + velEstimation[i].linear.x;
-    sY[i] = -sliderSlope*poseError[i].pose.position.y + velEstimation[i].linear.y;
+    sX[i] = -sliderSlope*poseError[i].pose.position.x + velEstimation[i].linear.x-tempVel.linear.x;
+    sY[i] = -sliderSlope*poseError[i].pose.position.y + velEstimation[i].linear.y-tempVel.linear.y;
     sZ[i] = -sliderSlope*poseError[i].pose.position.z + velEstimation[i].linear.z;
     
     
     calcMoveAvg(sX[i] - sXprev, sY[i] - sYprev, sZ[i] - sZprev, poseErrYaw[i] - poseErrYawPrev[i]);
       
-    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x+tempVel.linear.x;
+    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;//+tempVel.linear.x;
     if (velocity.transforms[i].transform.translation.x > 1){
       velocity.transforms[i].transform.translation.x = 1;
     }
@@ -371,7 +386,7 @@ void PID(int i)
       velocity.transforms[i].transform.translation.x = -1;
     }
     
-    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y+tempVel.linear.y;
+    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;//+tempVel.linear.y;
     if (velocity.transforms[i].transform.translation.y > 1){
       velocity.transforms[i].transform.translation.y = 1;
     }
@@ -429,8 +444,8 @@ int main(int argc, char **argv)
     poseGoalAllSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallAllback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
-    pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
-    aVelSub = n.subscribe<geometry_msgs::TwistStamped>("/path_vel", 1, aVelCallback);
+    pathVelSub = n.subscribe<geometry_msgs::Twist>("\path_vel", 1, pathVelCallback);
+    aVelSub = n.subscribe<geometry_msgs::TwistStamped>("/aVel", 1, aVelCallback);
     velPub = n.advertise<tf2_msgs::TFMessage>("/cmd_vel", 1000, true);
     AR1Pub = n.advertise<geometry_msgs::Twist>("/ardrone1/cmd_vel", 1000, true);
     poseSysIdPub = n.advertise<geometry_msgs::Vector3>("/sys_id", 1000, true);
@@ -452,7 +467,7 @@ int main(int argc, char **argv)
 velocity.transforms.resize(num);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
-cout<<"CHECK \n";
+
 for (int i=1;i<40;i++){
 std::ostringstream ss;
 ss << i;
