@@ -40,7 +40,7 @@ public class MainActivity extends RosActivity {
     private poseView poseview;
     private MyGLSurfaceView mGLView;
     private PathPublisher pathPublisher;
-    //private GaussPublisher gaussPublisher;
+    private GaussPublisher gaussPublisher;
     private multipleGoalListener MultipleGoalListener;
     private allPositionsPublisher SelectedPositionsPublisher;
 
@@ -148,7 +148,7 @@ public class MainActivity extends RosActivity {
         talker = new Talker(num);
         dummy=new dummyMaker(num);
         pathPublisher=new PathPublisher();
-        //gaussPublisher = new GaussPublisher();
+        gaussPublisher = new GaussPublisher();
         poseview = new poseView();
         MultipleGoalListener = new multipleGoalListener();
         SelectedPositionsPublisher= new allPositionsPublisher();
@@ -170,7 +170,7 @@ public class MainActivity extends RosActivity {
         talker.setNum(num);
 
 
-        //nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
+
 
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(5);
         exec.scheduleAtFixedRate(new Runnable() {
@@ -282,6 +282,13 @@ public class MainActivity extends RosActivity {
                     nodeMainExecutor.shutdownNodeMain(SelectedPositionsPublisher);
                     nodeMainExecutor.shutdownNodeMain(MultipleGoalListener);
                 }
+
+                /*if (mGLView.gFlag==1){
+                    if(gaussPublisher.active==0){
+                        nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
+                        gaussPublisher.active=1;
+                    }
+                }*/
             }
         }, 0, 50000, TimeUnit.MICROSECONDS);
 

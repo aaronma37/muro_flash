@@ -144,28 +144,30 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void tick(){
         antispam=antispam+1;
        count=0;
+
+
         for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
                 if (count>1){
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("Multiple Robots Selected");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
+                    mRenderer.textListARINFO.get(0).setText("Multiple Robots Selected");
+                    mRenderer.textListARINFO.get(2).setText(" X:");
+                    mRenderer.textListARINFO.get(3).setText(" Y:");
+                    mRenderer.textListARINFO.get(4).setText(" Z:");
                 }
                 else{
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText(tList[i].getIdentification());
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:" + truncateDecimal(tList[i].getX(),3));
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
+                    mRenderer.textListARINFO.get(0).setText(tList[i].getIdentification());
+                    mRenderer.textListARINFO.get(2).setText(" X:" + truncateDecimal(tList[i].getX(),3));
+                    mRenderer.textListARINFO.get(3).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
+                    mRenderer.textListARINFO.get(4).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
                 }
             }
         }
         if (count==0){
-            mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("No Robots Selected");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
+            mRenderer.textListARINFO.get(0).setText("No Robots Selected");
+            mRenderer.textListARINFO.get(2).setText(" X:");
+            mRenderer.textListARINFO.get(3).setText(" Y:");
+            mRenderer.textListARINFO.get(4).setText(" Z:");
         }
 
     }
@@ -217,6 +219,32 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }
 
                 if (antispam>1) {
+
+                    if (xGL< .85 && xGL>.65 && yGL > -.95 && yGL < -.75 ){
+                        mRenderer.scale=mRenderer.scale+.5f;
+                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                        mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
+                        v.vibrate(75);
+                        break;
+                    }
+                    if (xGL< 1.2f && xGL>.95f && yGL > -.85f && yGL < -.75 && mRenderer.scale>.5f){
+                        mRenderer.scale=mRenderer.scale-.5f;
+                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                        mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
+                        v.vibrate(75);
+                        break;
+                    }
+
+                    if (xGL<mRenderer.commit.left- mRenderer.slider&& xGL>mRenderer.commit.right-mRenderer.slider&& yGL > mRenderer.commit.down && yGL < mRenderer.commit.up)
+                        if (mRenderer.commit.active==true) {
+                            mRenderer.commit.active=false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.commit.active=true;
+                            v.vibrate(50);
+                        }
+
+
                     //Turn on voronoi toggle
                     if (xGL<mRenderer.vorToggle.left- mRenderer.slider&& xGL>mRenderer.vorToggle.right-mRenderer.slider&& yGL > mRenderer.vorToggle.down && yGL < mRenderer.vorToggle   .up)
                     if (mRenderer.getvToggle() == 1) {
@@ -340,18 +368,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
                     }*/
 
-                    if (xGL< .85 && xGL>.65 && yGL > -.95 && yGL < -.75 ){
-                            mRenderer.scale=mRenderer.scale+.5f;
-                            mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
-                            mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
-                            v.vibrate(75);
-                        }
-                    if (xGL< 1.2f && xGL>.95f && yGL > -.85f && yGL < -.75 && mRenderer.scale>.5f){
-                        mRenderer.scale=mRenderer.scale-.5f;
-                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
-                        mRenderer.textList.get(2).setText( truncateDecimal(2 / mRenderer.scale,2) + " ft");
-                        v.vibrate(75);
-                    }
+
 
                     //Clear button
                     if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
@@ -541,7 +558,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 temp4[i]=temp2.get(i);
             }
 
-            voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / height1, width1 / height1, -height1 / (height1), height1 / height1);
+            voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / (height1*mRenderer.scale), width1 / (height1*mRenderer.scale), -height1 / (height1*mRenderer.scale), height1 / (height1*mRenderer.scale));
             for(int i = 0; i < voronoiEdges.size(); i++) {
                 cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
                 cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));

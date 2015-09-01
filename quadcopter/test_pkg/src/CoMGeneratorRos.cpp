@@ -4,6 +4,7 @@
 #include <geometry_msgs/Twist.h>
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/PoseArray.h>
 #include <tf/tf.h>
 #include <fstream>
@@ -31,8 +32,11 @@ int countD;
 float xValues[maxNum];
 float yValues[maxNum];   
 int selectedIndices[maxNum]; 
-float minX = -.45, maxX = .45;    
-float minY = -.45, maxY = .45;
+float minX = -3, maxX = 3;    
+float sigma=.5;
+float muX=0;
+float muY=0;
+float minY = -3, maxY = 3;
 //geometry_msgs::PoseArray centroidPositions;
 
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
@@ -51,6 +55,13 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 		}
 	}
 	 
+}
+
+void gCallback(const geometry_msgs::Vector3::ConstPtr& gaussPtr)
+{
+sigma=gaussPtr -> z;
+muX=gaussPtr->x;
+muY=gaussPtr->y;
 }
 
 Matrix uniqueVertices(50,2);
@@ -288,11 +299,13 @@ void CoMGenerator::getTriangleCOM(double &Mass, double &c_x, double &c_y, double
         x = N1*xpoints[0] + N2*xpoints[1] + N3*xpoints[2];
         y = N1*ypoints[0] + N2*ypoints[1] + N3*ypoints[2];
         
-        
+	        
+
+
         //Density Funtion!!!!!
         //||----------------||
         //||----------------||
-        DENSITY = 1;//pow(x,10) + pow(y,10); //1.0;
+        DENSITY = 1/(sigma*sqrt(2*3.14))  *  exp(-sqrt((x-muX)*(x-muX)+(y-muY)*(y-muY))/(2*pow(sigma,2)));  
         //||----------------||
         //||----------------||
         
@@ -445,12 +458,13 @@ int main(int argc, char **argv)
 		ros::start();
 		ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
 		ros::NodeHandle nh_;
-		ros::Subscriber pos_sub_ ;
+		ros::Subscriber pos_sub_ ,g_sub_;
 		ros::Publisher centroid_pub_ ;
 
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
 		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
+                g_sub_= nh_.subscribe<geometry_msgs::Vector3>("/gauss", 1000,gCallback);
 		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
 
     while (ros::ok())

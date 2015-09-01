@@ -26,6 +26,7 @@ public class GaussPublisher extends AbstractNodeMain {
     private float[] stdDevs;
     public geometry_msgs.Pose intPose;
     private float OGsize = 0.4f;
+    public int active=0;
 
     public geometry_msgs.PoseArray pose;
 
