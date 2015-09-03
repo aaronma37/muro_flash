@@ -34,7 +34,8 @@ float yValues[maxNum];
 int selectedIndices[maxNum]; 
 float minX = -3, maxX = 3;    
 float sigma=.5;
-float mu=0;
+float muX=0;
+float muY=0;
 float minY = -3, maxY = 3;
 //geometry_msgs::PoseArray centroidPositions;
 
@@ -56,9 +57,11 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 	 
 }
 
-void gCallback(const geometry_msgs::Vector3::ConstPtr& gaussPtr)
+void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 {
-sigma=gaussPtr -> z;
+sigma=gaussPtr -> poses[0].pose.position.z;
+muX=gaussPtr-> poses[0].pose.position.x;
+muY=gaussPtr-> poses[0].pose.position.y;
 }
 
 Matrix uniqueVertices(50,2);
@@ -302,7 +305,7 @@ void CoMGenerator::getTriangleCOM(double &Mass, double &c_x, double &c_y, double
         //Density Funtion!!!!!
         //||----------------||
         //||----------------||
-        DENSITY = 1/(sigma*sqrt(2*3.14))  *  exp(-sqrt((x-mu)*(x-mu)+(y-mu)*(y-mu))/(2*pow(sigma,2)));  
+        DENSITY = 1/(sigma*sqrt(2*3.14))  *  exp(-sqrt((x-muX)*(x-muX)+(y-muY)*(y-muY))/(2*pow(sigma,2)));  
         //||----------------||
         //||----------------||
         
@@ -461,7 +464,7 @@ int main(int argc, char **argv)
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
 		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
-                g_sub_= nh_.subscribe<geometry_msgs::Vector3>("/gauss", 1000,gCallback);
+                g_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/gauss", 1000,gCallback);
 		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
 
     while (ros::ok())

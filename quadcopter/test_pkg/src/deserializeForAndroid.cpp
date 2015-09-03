@@ -39,6 +39,7 @@ rostopic echo -p /topic_name > data.txt
 #include "geometry_msgs/TransformStamped.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
+#include <std_msgs/Empty.h>
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
@@ -106,6 +107,7 @@ double windupCap;
 // Kepp track of yaw to determine angular component of velocity 
 double poseEstYaw[num] ; // twist or oscillation about a vertical axis
 bool active[num];
+bool gotPing=false;
 double poseGoalYaw = PI;
 double poseErrYaw[num];
 double poseErrYawPrev[num]; // for PID derivative term
@@ -150,6 +152,11 @@ void poseEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 	}    
 }
 
+void pingCallback(const std_msgs::Empty::ConstPtr& posePtr)
+{
+	 gotPing=true;
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "Deserializer for Android Application"); //Ros Initialize
@@ -159,15 +166,25 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Publisher poseSysIdPub;
+    ros::Publisher pinger;
+    ros::Subscriber pingListener;
+
+    std_msgs::Empty j;
 
     poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
     poseSysIdPub = n.advertise<geometry_msgs::PoseStamped>("/poseEstimationForAndroid", 1000, true);
+    pinger = n.advertise<std_msgs::Empty>("/pingBack",1,true);
+    pingListener = n.subscribe<std_msgs::Empty>("/ping", 1, pingCallback);
     geometry_msgs::PoseStamped poseStamped;
 
 int i=0;
     while (ros::ok()) 
     {
         ros::spinOnce();
+	if(gotPing==true){
+		pinger.publish(j);
+		gotPing=false;
+	}
 	i++;
 	if(i>=num){
 		i=0;	

@@ -19,28 +19,36 @@ import geometry_msgs.PoseArray;
  * Created by sumegamandadi on 8/12/15.
  */
 public class GaussPublisher extends AbstractNodeMain {
-
-    private float[] xLocs;
-    private float[] yLocs;
-    private float[] scales;
-    private float[] stdDevs;
+    final private int num=5;
+    private float[] xLocs = new float[num];
+    private float[] yLocs = new float [num];
+    private float[] scales = new float[num];
+    private float[] stdDevs= new float[num];
     public geometry_msgs.Pose intPose;
-    private float OGsize = 0.4f;
+    private float OGsize = 0.25f;
     public int active=0;
 
     public geometry_msgs.PoseArray pose;
 
     public GaussPublisher(){
 
+        for (int i=0;i<num;i++){
+            xLocs[i]=0;
+            yLocs[i]=0;
+            scales[i]=0;
+            stdDevs[i]=0;
+        }
+
     }
 
-    public void getGuassData(float[] x, float[] y, float[] s){
-        xLocs = x;
-        yLocs = y;
-        scales = s;
+    public void getGaussData(gauss g){
+
+        xLocs = g.locX;
+        yLocs = g.locY;
+        scales= g.scaleG;
 
         //connvert scales to std deviations
-        for (int i= 0; i<100; i++){
+        for (int i= 0; i<num; i++){
             stdDevs[i] = scales[i]*OGsize;
         }
     }
@@ -60,7 +68,7 @@ public class GaussPublisher extends AbstractNodeMain {
 
         //pose = publisher.newMessage();
 
-        for (int i=0;i<200;i++){
+        for (int i=0;i<num;i++){
             intPose = connectedNode.getTopicMessageFactory().newFromType(geometry_msgs.Pose._TYPE);
             pose.getPoses().add(intPose);
         }
@@ -79,24 +87,17 @@ public class GaussPublisher extends AbstractNodeMain {
                 //geometry_msgs.PoseStamped pose = publisher.newMessage();
                 pose.getHeader().setFrameId("s");
                 pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
-                for (int i = 0; i<100; i++) {
+                for (int i = 0; i<num; i++) {
 
                     pose.getPoses().get(i).getOrientation().setW(1);
-                    pose.getPoses().get(i).getOrientation().setW(0);
-                    pose.getPoses().get(i).getOrientation().setW(0);
-                    pose.getPoses().get(i).getOrientation().setW(0);
-
 
                     pose.getPoses().get(i).getPosition().setX(xLocs[i]);
-                    pose.getPoses().get(i).getPosition().setX(yLocs[i]);
-                    pose.getPoses().get(i).getPosition().setX(stdDevs[i]);
+                    pose.getPoses().get(i).getPosition().setY(yLocs[i]);
+                    pose.getPoses().get(i).getPosition().setZ(stdDevs[i]);
+
+                    publisher.publish(pose);
 
 
-
-/*                    if (gaussflag == 1) {
-                        publisher.publish(pose);
-
-                    }*/
                 }
 
             }

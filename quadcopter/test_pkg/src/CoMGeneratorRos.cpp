@@ -57,11 +57,11 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 	 
 }
 
-void gCallback(const geometry_msgs::Vector3::ConstPtr& gaussPtr)
+void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 {
-sigma=gaussPtr -> z;
-muX=gaussPtr->x;
-muY=gaussPtr->y;
+sigma=gaussPtr -> poses[0].position.z;
+muX=gaussPtr-> poses[0].position.x;
+muY=gaussPtr-> poses[0].position.y;
 }
 
 Matrix uniqueVertices(50,2);
@@ -464,7 +464,7 @@ int main(int argc, char **argv)
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
 		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
-                g_sub_= nh_.subscribe<geometry_msgs::Vector3>("/gauss", 1000,gCallback);
+                g_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/gauss", 1000,gCallback);
 		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
 
     while (ros::ok())

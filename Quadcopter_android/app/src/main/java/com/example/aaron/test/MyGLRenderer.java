@@ -50,6 +50,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private static final String TAG = "MyGLRenderer";
     private Square mArena2;
     final int maxBots=50;
+    final int gMaxNum=5;
     private selection selected;
     private scalevis scaleVis;
     private interfaceImage interfacePull;
@@ -79,7 +80,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
     public ArrayList<toText> textListARINFO = new ArrayList<toText>();
-    public ArrayList<toText> textListOPTIONS = new ArrayList<toText>();
+    public ArrayList<toText> textListSINFO = new ArrayList<toText>();
+    public boolean SINFO_FLAG=true;
     private FloatBuffer textureBuffer;
     public Context context;
 
@@ -90,6 +92,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private int fToggle=0;
     private int APToggle=0;
     public float scale=2f;
+    public float ping=0;
     private float sX = 1f;
     private float sY = 1f;
     private float sZ = 1f;
@@ -282,10 +285,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         temptoggle = new toggles(context, spriteCoords, 7,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
 
-        spriteCoords[0]=-(width-115)/(height*2)-.22f;spriteCoords[1]=(height)/(height)+dheight;
-        spriteCoords[2]=-(width-115)/(height*2)-.22f;spriteCoords[3]=(height)/(height)+dheight-.1f;
-        spriteCoords[4]=-(width-115)/(height*2)-.12f;spriteCoords[5]=(height)/(height)+dheight-.1f;
-        spriteCoords[6]=-(width-115)/(height*2)-.12f;spriteCoords[7]=(height)/(height)+dheight;
+        spriteCoords[0]=-(width-115)/(height*2)-.55f;spriteCoords[1]=(height)/(height)+dheight;
+        spriteCoords[2]=-(width-115)/(height*2)-.55f;spriteCoords[3]=(height)/(height)+dheight-.1f;
+        spriteCoords[4]=-(width-115)/(height*2)-.45f;spriteCoords[5]=(height)/(height)+dheight-.1f;
+        spriteCoords[6]=-(width-115)/(height*2)-.45f;spriteCoords[7]=(height)/(height)+dheight;
         freeDrawToggle = new toggles(context, spriteCoords,1,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2)-.33f;
@@ -334,6 +337,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         textListARINFO.add(new toText(infoheight+newline*3,-(width-115)/(height*2)-.05f,0,"Vx:",1,1));
         textListARINFO.add(new toText(infoheight+newline*3,-(width-115)/(height*2)-.05f+tab,0,"Vy:",1,1));
         textListARINFO.add(new toText(infoheight+newline*3,-(width-115)/(height*2)-.05f+tab*2,0,"Vz:",1,1));
+
+        textListSINFO.add(new toText(infoheight,-(width-115)/(height*2)-.05f,0,"Standard Output",1,1));
+        textListSINFO.add(new toText(infoheight+newline,-(width-115)/(height*2)-.05f,0,"Ping: "+ping,1,1));
 
 
 
@@ -475,21 +481,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }*/
 
         //DRAW GAUSSIAN
-        if (gToggle==1 && gToggle2==1){
-            for (int i = 0; i < 100; i++) {
+        //if (gToggle==1 && gToggle2==1){
+            for (int i = 0; i < gMaxNum; i++) {
                 if (gaussArrayList.locX[i]!=0&&gaussArrayList.locY[i]!=0){
                     float[] s = new float[16];
                     Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.translateM(s, 0, gaussArrayList.locX[i], gaussArrayList.locY[i], 0);
-                    Matrix.scaleM(s, 0, gaussArrayList.scale[i], gaussArrayList.scale[i], gaussArrayList.scale[i]);
+                    Matrix.scaleM(s, 0, gaussArrayList.scaleG[i]*scale, gaussArrayList.scaleG[i]*scale, gaussArrayList.scaleG[i]*scale);
+                    Matrix.translateM(s, 0, gaussArrayList.locX[i] * scale, gaussArrayList.locY[i] * scale, 0);
+
 
                     gaussArrayList.Draw(s);
                     //System.out.println("DRAW");
                 }
             }
-
-        }
+        //}
 
 
             //gList[g].Draw(scratch);
@@ -521,7 +527,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         else {
             voronoiDeploymentToggle.Draw(scratch,0);
         }
-        if (dragToggle.active=true){
+        if (dragToggle.active==true){
             dragToggle.Draw(scratch,1);
         }
         else {
@@ -610,6 +616,48 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         Matrix.translateM(scratch, 0, textListARINFO.get(j).getyGl(), textListARINFO.get(j).getxGl(), 0);
                     }
                     String tempString = textListARINFO.get(j).getText();
+                    for (int i = 0; i<tempString.length();i++){
+                        String s = String.valueOf(tempString.charAt(i));
+
+                        if (Character.isUpperCase(tempString.codePointAt(i))==true || s.equals(" ")){
+                            if (temp!=0){
+                                Matrix.translateM(scratch, 0, -.01f, 0f, 0);
+                            }
+                            textSystem.Draw(scratch, s, 0);
+                            temp++;
+                            Matrix.translateM(scratch, 0, -.001f, 0f, 0);
+                        }
+                        else{
+                            textSystem.Draw(scratch, s, 1);
+                            temp = 0;
+                        }
+                        if (s.equals("i")|| s.equals("t")||s.equals("l")|| s.equals("r")){
+                            Matrix.translateM(scratch, 0, -.013f, 0f, 0);
+                        }
+                        else if (s.equals("m")){
+                            Matrix.translateM(scratch, 0, -.036f, 0f, 0);
+                        }
+                        else Matrix.translateM(scratch, 0, -.023f, 0f, 0);
+                        if (s.equals(".")||s.equals(":") || s.equals(" ")||s.equals("m")){
+                            Matrix.translateM(scratch, 0, .009f, 0f, 0);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (SINFO_FLAG==true){
+            temp = 0;
+            for (int j = 0; j<textListSINFO.size();j++){
+                if (textListSINFO.get(j).getActive()==1){
+                    Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+                    if (textListSINFO.get(j).getSlides()==1){
+                        Matrix.translateM(scratch, 0, textListSINFO.get(j).getyGl()-slider, textListSINFO.get(j).getxGl(), 0);
+                    }
+                    else{
+                        Matrix.translateM(scratch, 0, textListSINFO.get(j).getyGl(), textListSINFO.get(j).getxGl(), 0);
+                    }
+                    String tempString = textListSINFO.get(j).getText();
                     for (int i = 0; i<tempString.length();i++){
                         String s = String.valueOf(tempString.charAt(i));
 
@@ -816,23 +864,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void setGaussScale(int i, float x) {
-        gaussArrayList.scale[i] = x;
+        gaussArrayList.scaleG[i] = x/scale;
     }
 
     public void setgInd(int i){
         g = i;
     }
 
-    public void addGaussStuff(float xPos, float yPos, float scale, int gInd){
-        gaussArrayList.locY[gInd]=yPos;
-        gaussArrayList.locX[gInd]=xPos;
-        gaussArrayList.scale[gInd]=scale;
+    public void addGaussStuff(float xPos, float yPos, float s, int gInd){
+        gaussArrayList.locY[gInd]=yPos/scale;
+        gaussArrayList.locX[gInd]=xPos/scale;
+        gaussArrayList.scaleG[gInd]=s/scale;
         gaussFlag = true;
     }
 
     public void updateGauss(float xPos, float yPos, int gInd){
-        gaussArrayList.locX[gInd]= xPos;
-        gaussArrayList.locY[gInd]= yPos;
+        gaussArrayList.locX[gInd]= xPos/scale;
+        gaussArrayList.locY[gInd]= yPos/scale;
     }
     public float[] getGaussX(){
         return gaussArrayList.locY;
@@ -843,14 +891,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public float[] getGaussScale(){
-        return gaussArrayList.scale;
+        return gaussArrayList.scaleG;
     }
 
     public void clearGauss() {
-        for (int i = 0; i< 100; i++){
+        for (int i = 0; i< gMaxNum; i++){
             gaussArrayList.locX[i] = 0;
             gaussArrayList.locY[i] = 0;
-            gaussArrayList.scale[i] = 0;
+            gaussArrayList.scaleG[i] = 0;
         }
     }
 

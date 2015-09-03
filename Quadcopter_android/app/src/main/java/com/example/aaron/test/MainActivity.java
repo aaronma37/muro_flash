@@ -41,13 +41,16 @@ public class MainActivity extends RosActivity {
     private MyGLSurfaceView mGLView;
     private PathPublisher pathPublisher;
     private GaussPublisher gaussPublisher;
+    private pingSender pinger;
     private multipleGoalListener MultipleGoalListener;
     private allPositionsPublisher SelectedPositionsPublisher;
-
+    private pingListener pinging;
     private float width1,height1;
+    private messager message;
     final int maxBots=50;
     private int flag=0;
     private long time1=0;
+    public float ping=0;
     private long time2=0;
     public Intent intent;
     public Voronoi vor;
@@ -162,9 +165,13 @@ public class MainActivity extends RosActivity {
         talker=new Talker(num);
         dummy=new dummyMaker(num);
         pathPublisher=new PathPublisher();
+        pinger = new pingSender();
+        pinging = new pingListener();
+        message = new messager();
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        //nodeMainExecutor.execute(message, nodeConfiguration);
 
         num=poseview.getX();
         talker.setNum(num);
@@ -230,20 +237,20 @@ public class MainActivity extends RosActivity {
                     mGLView.dummyFlag = 0;
                 }
 
-                for (int i=0;i<turtleList.length;i++){
-                    if(turtleList[i].getOn()==1){
+                for (int i = 0; i < turtleList.length; i++) {
+                    if (turtleList[i].getOn() == 1) {
                         turtleList[i].setRot();
                     }
                 }
-                if (mGLView.obsticle.on==1){
-                    turtleList[49]=mGLView.obsticle;
-                }
-                else {
-                    turtleList[49].x=0;
-                    turtleList[49].y=0;
-                    turtleList[49].z=0;
+                if (mGLView.obsticle.on == 1) {
+                    turtleList[49] = mGLView.obsticle;
+                } else {
+                    turtleList[49].x = 0;
+                    turtleList[49].y = 0;
+                    turtleList[49].z = 0;
                 }
                 mGLView.updateRen(turtleList);
+
             }
 
         }, 0, 50000, TimeUnit.MICROSECONDS);
@@ -267,6 +274,7 @@ public class MainActivity extends RosActivity {
 
 
                 if (mGLView.getActive()==true){
+
                     if(SelectedPositionsPublisher.active==0){
                         nodeMainExecutor.execute(SelectedPositionsPublisher, nodeConfiguration);
                         //nodeMainExecutor.execute(MultipleGoalListener, nodeConfiguration);
@@ -283,24 +291,36 @@ public class MainActivity extends RosActivity {
                     nodeMainExecutor.shutdownNodeMain(MultipleGoalListener);
                 }
 
-                /*if (mGLView.gFlag==1){
+                if (mGLView.gFlag==1){
                     if(gaussPublisher.active==0){
+                        gaussPublisher.getGaussData(mGLView.getGausses());
                         nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
                         gaussPublisher.active=1;
                     }
-                }*/
+                }
+
+
             }
         }, 0, 50000, TimeUnit.MICROSECONDS);
 
 
-        /*
+      /*  nodeMainExecutor.execute(pinger, nodeConfiguration);
+        nodeMainExecutor.execute(pinging, nodeConfiguration);
         ScheduledThreadPoolExecutor exec4 = new ScheduledThreadPoolExecutor(6);
         exec4.scheduleAtFixedRate(new Runnable() {
             public void run() {
+                pinger.flag=true;
+                pinging.received=false;
 
+                //while(pinger.flag==true){}
+
+
+                //while (pinging.received==false){}
+                ping=pinging.timeEnd -pinger.timeStart;
+                mGLView.updatePing(ping);
 
             }
-        }, 0, 50000, TimeUnit.MICROSECONDS);*/
+        }, 0, 500000, TimeUnit.MICROSECONDS);*/
 
     }
 }

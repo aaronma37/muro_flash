@@ -163,6 +163,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }
             }
         }
+
+        mRenderer.textListSINFO.get(1).setText("Ping: Good");
         if (count==0){
             mRenderer.textListARINFO.get(0).setText("No Robots Selected");
             mRenderer.textListARINFO.get(2).setText(" X:");
@@ -298,9 +300,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     if (xGL<mRenderer.ardronePrefToggle.left- mRenderer.slider&& xGL>mRenderer.ardronePrefToggle.right-mRenderer.slider&& yGL > mRenderer.ardronePrefToggle.down && yGL < mRenderer.ardronePrefToggle.up)
                         if (mRenderer.getAPToggle() == 1) {
                             mRenderer.setAPToggle(0);
+                            mRenderer.SINFO_FLAG=true;
                             v.vibrate(50);
                         } else {
                             mRenderer.setAPToggle(1);
+                            mRenderer.SINFO_FLAG=false;
                             v.vibrate(50);
                         }
 
@@ -352,16 +356,18 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
-                    if (xGL<mRenderer.dragToggle.left- mRenderer.slider&& xGL>mRenderer.dragToggle.right-mRenderer.slider&& yGL > mRenderer.dragToggle.down && yGL < mRenderer.dragToggle.up)
+                    if (xGL<mRenderer.dragToggle.left- mRenderer.slider&& xGL>mRenderer.dragToggle.right-mRenderer.slider&& yGL > mRenderer.dragToggle.down && yGL < mRenderer.dragToggle.up){
                         if (mRenderer.dragToggle.active == true) {
                             mRenderer.dragToggle.active =  false;
-                            obsticle.on=0;
+                            System.out.println("Ping End:");
                             v.vibrate(50);
                         } else {
                             mRenderer.dragToggle.active = true;
                             obsticle.on=1;
                             v.vibrate(50);
                         }
+                    }
+
 
 
 /*                    if (xGL<-(width1-90)/height1+.05f && xGL>-(width1-90)/height1 && yGL >-(height1-10)/(height1)-mRenderer.slider  && yGL < -(height1-10)/(height1)+05f-mRenderer.slider ){
@@ -371,9 +377,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
                     //Clear button
-                    if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
-                        gInd = 0;
-                        mRenderer.clearGauss();
+                    if (xGL<mRenderer.clear.left- mRenderer.slider&& xGL>mRenderer.clear.right-mRenderer.slider&& yGL > mRenderer.clear.down && yGL < mRenderer.clear.up){
+                        if(mRenderer.getgToggle()==1){
+                            gInd = 0;
+                            mRenderer.clearGauss();
+                        }
+                        if(mRenderer.dragToggle.active==true){
+                            obsticle.on=0;
+                        }
                         v.vibrate(75);
                     }
 
@@ -673,6 +684,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
     public boolean getObsticleActivity(){
         return mRenderer.dragToggle.active;
+    }
+
+    public void updatePing(float p){
+        mRenderer.ping=p;
+    }
+
+    public gauss getGausses(){
+        return mRenderer.gaussArrayList;
     }
 
 

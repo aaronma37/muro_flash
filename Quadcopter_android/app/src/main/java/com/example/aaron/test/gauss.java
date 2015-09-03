@@ -29,7 +29,7 @@ import javax.microedition.khronos.opengles.GL10;
 
     public float locX[]= new float[100];
     public float locY[]=new float[100];
-    public float scale[]=new float[100];
+    public float scaleG[]=new float[100];
     private float[] mvpMat;
 
     private final String vertexShaderCode =
@@ -68,10 +68,10 @@ import javax.microedition.khronos.opengles.GL10;
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 2;
     static float spriteCoords[] = {
-            -0.4f,  0.4f,   // top left
-            -0.4f, -0.4f,   // bottom left
-            0.4f, -0.4f,   // bottom right
-            0.4f,  0.4f}; //top right
+            -1f,  1f,   // top left
+            -1f, -1f,   // bottom left
+            1f, -1f,   // bottom right
+            1f,  1f}; //top right
 
     private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; //Order to draw vertices
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
@@ -86,7 +86,7 @@ import javax.microedition.khronos.opengles.GL10;
         for (int i=0; i<10;i++){
             locY[i]=0;
             locX[i]=0;
-            scale[i]=1;
+            scaleG[i]=1;
         }
 
 
