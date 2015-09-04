@@ -259,7 +259,7 @@ kk=(int)aVelPtr->twist.angular.x;
     cout<<aVelPtr-> header.frame_id <<"\n";
     gotav[kk]=true;
     aVel[kk] = aVelPtr -> twist;
-    aSlider[kk]=1+(aVelPtr-> twist.angular.y)*1.5;
+    aSlider[kk]=1+(aVelPtr-> twist.angular.y)*1.25;
 }
 }
 

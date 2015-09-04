@@ -444,6 +444,8 @@ int main(int argc, char **argv)
     ros::Publisher poseSysIdPub;
     ros::Publisher velPoseEstXPub;
 
+    
+
     poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
     velEstSub = n.subscribe<tf2_msgs::TFMessage>("/velocityEstimation", 1, velocityEstCallback);
     poseGoalSub = n.subscribe<tf2_msgs::TFMessage>("/Centroids", 1, poseGoalCallback);
@@ -505,6 +507,7 @@ for (int i=0;i<num;i++){
 
     while (ros::ok()) 
     {
+	
         ros::spinOnce();
 	for (int i=0;i<num;i++){
 		if (active[i]==true){

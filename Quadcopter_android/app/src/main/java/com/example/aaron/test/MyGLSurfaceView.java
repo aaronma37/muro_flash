@@ -67,6 +67,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int i;
     public int pFlag=0;
     private boolean recievedTurtles=false;
+    public boolean newAction=false;
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
@@ -348,8 +349,10 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     if (xGL<mRenderer.voronoiDeploymentToggle.left- mRenderer.slider&& xGL>mRenderer.voronoiDeploymentToggle.right-mRenderer.slider&& yGL > mRenderer.voronoiDeploymentToggle.down && yGL < mRenderer.voronoiDeploymentToggle.up)
                         if (mRenderer.voronoiDeploymentToggle.active == true) {
                             mRenderer.voronoiDeploymentToggle.active =  false;
+                            newAction=true;
                             v.vibrate(50);
                         } else {
+                            newAction=true;
                             mRenderer.voronoiDeploymentToggle.active = true;
                             mRenderer.setpToggle(0);
                             mRenderer.setpToggle2(0);

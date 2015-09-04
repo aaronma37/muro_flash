@@ -20,16 +20,31 @@ import geometry_msgs.PoseArray;
  */
 public class messager extends AbstractNodeMain {
 
-    public std_msgs.String str;
+    public std_msgs.Int32MultiArray IMA;
     public boolean active=false;
+    private int maxNum=50;
+    private int intArray[]= new int[50];
     public boolean sent=false;
+    private int method=0;
+    public String str = new String();
 
     public messager(){
-        //str.setData("Empty");
+       for(int i=0;i<maxNum;i++){
+           intArray[i]=1;
+       }
+        str="NOT_INITIALIZED";
     }
 
     public void setMessage(String s){
-        //str.setData(s);
+        str=s;
+    }
+
+    public void setIntArray(int[] intA){
+        intArray=intA;
+    }
+
+    public void setMethod(int j){
+        method = j;
     }
 
     @Override
@@ -44,10 +59,18 @@ public class messager extends AbstractNodeMain {
     @Override
     public void onStart(final ConnectedNode connectedNode) {
 
-        final Publisher<std_msgs.String> publisher =
-                connectedNode.newPublisher("/messages", str._TYPE);
+        final Publisher<std_msgs.Int32MultiArray> publisher =
+                connectedNode.newPublisher("/message", IMA._TYPE);
+        IMA = publisher.newMessage();
+        IMA.setData(intArray);
+        IMA.getLayout().setDataOffset(0);
+        //std_msgs.MultiArrayDimension f = connectedNode.getTopicMessageFactory().newFromType(std_msgs.MultiArrayDimension._TYPE);
+/*        IMA.getLayout().getDim().add(f);
+        IMA.getLayout().getDim().get(0).setSize(0);
+        IMA.getLayout().getDim().get(0).setLabel(str);
+        IMA.getLayout().getDim().get(0).setStride(0);*/
 
-        str = publisher.newMessage();
+
 
         connectedNode.executeCancellableLoop(new CancellableLoop() {
 
@@ -57,7 +80,10 @@ public class messager extends AbstractNodeMain {
 
             @Override
             protected void loop() throws InterruptedException {
-                publisher.publish(str);
+                IMA.setData(intArray);
+                IMA.getLayout().setDataOffset(method);
+                //IMA.getLayout().getDim().get(0).setLabel(str);
+                publisher.publish(IMA);
                 active=false;
                 sent=true;
             }

@@ -1,35 +1,4 @@
-/*
-The main function of this node is to process position (pose) 
-data, compute the error between desired and estimated pose, 
-and then use a tuned PID controller to determine the correct 
-velocity needed to minimize that error and approximate the 
-goal pose.
-This node subcribes to "/poseEstimation" topic where it will 
-listen for any pose data coming in from the ekf filter node.
-These pose coordinates are the best estimates for where the
-Quadcopter is currently located.
-This node subscribes to "/goalPose" topic where 
-it will listen for any pose data coming from the android node. 
-These pose coordinates are the desired position for the 
-Quadcopter.
-FIXME: This subscriber is yet to be implemented.
-This node publishes to "/cmd_vel" topic where it will update 
-its velocity, to be used by the ekf node for pose estimation.
-*/
 
-// We need to record using the command below so we can get a good system id
-//
-// we have add in controls for when yaw isnt 0. for example, we are still sending a pure x signal even when the yaw ~=0, meaning 
-// that sin(yaw)*linear.x is in the y component.  we haven't accounted for that yet here.
-//
-// TOOLS AGAINST INTEGRAL WINDUP
-// GAIN SCHEDULING 
-// write a bash script to automatically launch all files
-
-/*
-This is the command to record to a txt file
-rostopic echo -p /topic_name > data.txt
-*/
 
 #include <iostream>
 #include <stdio.h>
@@ -39,7 +8,9 @@ rostopic echo -p /topic_name > data.txt
 #include "geometry_msgs/TransformStamped.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/PoseArray.h>
 #include <std_msgs/Empty.h>
+#include <std_msgs/Int32MultiArray.h>
 #include <tf/tf.h>
 #include <fstream>
 #include <math.h>
@@ -56,6 +27,7 @@ using namespace std;
 const int num=50;
 // Position and movement messages
 geometry_msgs::PoseStamped poseEstimation[num]; // Where the Quadcopter thinks it is
+geometry_msgs::PoseArray poseArrayCentroids;
 geometry_msgs::Twist velEstimation[num];
 geometry_msgs::PoseStamped poseGoal; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError[num]; // Difference between desired pose and current pose
@@ -67,7 +39,7 @@ geometry_msgs::Twist pathVel; // velocity along path
 
 
 // Keep track of Quadcopter state
-double T = 25*num; // ROS loop rate
+double T = 50; // ROS loop rate
 
 // Constants
 
@@ -108,6 +80,7 @@ double windupCap;
 double poseEstYaw[num] ; // twist or oscillation about a vertical axis
 bool active[num];
 bool gotPing=false;
+bool centroid_deployment_active=false;
 double poseGoalYaw = PI;
 double poseErrYaw[num];
 double poseErrYawPrev[num]; // for PID derivative term
@@ -132,23 +105,14 @@ geometry_msgs::PoseStamped poseErrorPrev[num] ; // This is used to determine the
 void poseEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 {
 	for (int i =0;i<num;i++){
-		poseEstimation[i].pose.position.x = posePtr -> transforms[i].transform.translation.x;
-		poseEstimation[i].pose.position.y = posePtr -> transforms[i].transform.translation.y;
-		poseEstimation[i].pose.position.z = posePtr -> transforms[i].transform.translation.z;
+		poseArrayCentroids.poses[i].position.x = posePtr -> transforms[i].transform.translation.x;
+		poseArrayCentroids.poses[i].position.y = posePtr -> transforms[i].transform.translation.y;
+		poseArrayCentroids.poses[i].position.z = posePtr -> transforms[i].transform.translation.z;
 
-		poseEstimation[i].pose.orientation.x = posePtr -> transforms[i].transform.rotation.x;
-		poseEstimation[i].pose.orientation.y = posePtr -> transforms[i].transform.rotation.y;
-		poseEstimation[i].pose.orientation.z = posePtr -> transforms[i].transform.rotation.z;
-		poseEstimation[i].pose.orientation.w = posePtr -> transforms[i].transform.rotation.w;
-		poseEstimation[i].header.frame_id=posePtr -> transforms[i].header.frame_id;
-
-    		poseSysId[i].x = poseEstimation[i].pose.position.x; 
-    		poseSysId[i].y = poseEstimation[i].pose.position.y;
-    		poseSysId[i].z = poseEstimation[i].pose.position.z;
-    		poseEstYaw[i] = tf::getYaw(poseEstimation[i].pose.orientation) + PI;
-    		if (poseEstimation[i].pose.position.y!=0 || poseEstimation[i].pose.position.x!=0){
-			active[i]=true;
-		}
+		poseArrayCentroids.poses[i].orientation.x = posePtr -> transforms[i].transform.rotation.x;
+		poseArrayCentroids.poses[i].orientation.y = posePtr -> transforms[i].transform.rotation.y;
+		poseArrayCentroids.poses[i].orientation.z = posePtr -> transforms[i].transform.rotation.z;
+		poseArrayCentroids.poses[i].orientation.w = posePtr -> transforms[i].transform.rotation.w;
 	}    
 }
 
@@ -156,6 +120,16 @@ void pingCallback(const std_msgs::Empty::ConstPtr& posePtr)
 {
 	 gotPing=true;
 }
+
+void messageCallback(const std_msgs::Int32MultiArray::ConstPtr& iPtr){
+	if (iPtr -> layout.dim[0].label.compare("CENTROID_DEPLOYMENT_ON")){
+		centroid_deployment_active=true;
+	}
+	else if (iPtr -> layout.dim[0].label.compare("CENTROID_DEPLOYMENT_OFF")){
+		centroid_deployment_active=false;
+	}
+}
+
 
 int main(int argc, char **argv)
 {
@@ -166,14 +140,22 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber poseEstSub;
     ros::Publisher poseSysIdPub;
+    ros::Publisher poseA;
     ros::Publisher pinger;
     ros::Subscriber pingListener;
+    ros::Subscriber message_Sub;
+    
 
+
+    poseArrayCentroids.poses.resize(50);
+	
     std_msgs::Empty j;
 
     poseEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1, poseEstCallback);
     poseSysIdPub = n.advertise<geometry_msgs::PoseStamped>("/poseEstimationForAndroid", 1000, true);
-    pinger = n.advertise<std_msgs::Empty>("/ping",1,true);
+    message_Sub = n.subscribe<std_msgs::Int32MultiArray>("/message", 1, messageCallback);
+    poseA = n.advertise<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000, true);
+    pinger = n.advertise<std_msgs::Empty>("/pingBack",1,true);
     pingListener = n.subscribe<std_msgs::Empty>("/ping", 1, pingCallback);
     geometry_msgs::PoseStamped poseStamped;
 
@@ -181,15 +163,10 @@ int i=0;
     while (ros::ok()) 
     {
         ros::spinOnce();
-	if(gotPing==true){
-		pinger.publish(j);
-		gotPing==false;
-	}
-	i++;
-	if(i>=num){
-		i=0;	
-	}
-	poseSysIdPub.publish(poseEstimation[i]);
+	if (centroid_deployment_active==true){
+		poseA.publish(poseArrayCentroids);
+	}	
+
         loop_rate.sleep();
     }
 }

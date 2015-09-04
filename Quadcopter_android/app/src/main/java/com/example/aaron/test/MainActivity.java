@@ -14,6 +14,7 @@ import org.ros.android.MessageCallable;
 import org.ros.android.RosActivity;
 import org.ros.android.view.RosTextView;
 import org.ros.node.ConnectedNode;
+import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMainExecutor;
 import geometry_msgs.Point;
@@ -147,6 +148,7 @@ public class MainActivity extends RosActivity {
 
     @Override
     protected void init(final NodeMainExecutor nodeMainExecutor) {
+
         double num=1;
         talker = new Talker(num);
         dummy=new dummyMaker(num);
@@ -171,11 +173,10 @@ public class MainActivity extends RosActivity {
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
-        //nodeMainExecutor.execute(message, nodeConfiguration);
+
 
         num=poseview.getX();
         talker.setNum(num);
-
 
 
 
@@ -257,8 +258,6 @@ public class MainActivity extends RosActivity {
 
 
 
-
-
         ScheduledThreadPoolExecutor exec3 = new ScheduledThreadPoolExecutor(5);
         exec3.scheduleAtFixedRate(new Runnable() {
             public void run() {
@@ -272,6 +271,32 @@ public class MainActivity extends RosActivity {
                     pathPublisher.active=0;
                 }
 
+
+                /*if (mGLView.getActive()==true){
+                    message.setMethod(1);
+                    if (mGLView.newAction==true){
+                        message.active=true;
+                        nodeMainExecutor.execute(message, nodeConfiguration);
+                        mGLView.newAction=false;
+                    }
+
+                    *//*if (message.active==false){
+                        nodeMainExecutor.shutdownNodeMain(message);
+                    }*//*
+
+                }
+                else{
+                    message.setMethod(0);
+                    if (mGLView.newAction==true){
+                        message.active=true;
+                        nodeMainExecutor.execute(message, nodeConfiguration);
+                        mGLView.newAction=false;
+                    }
+
+                    *//*if (message.active==false){
+                        nodeMainExecutor.shutdownNodeMain(message);
+                    }*//*
+                }*/
 
                 if (mGLView.getActive()==true){
 
@@ -297,6 +322,9 @@ public class MainActivity extends RosActivity {
                         nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
                         gaussPublisher.active=1;
                     }
+                }
+                else{
+                    //nodeMainExecutor.shutdownNodeMain(gaussPublisher);
                 }
 
 
