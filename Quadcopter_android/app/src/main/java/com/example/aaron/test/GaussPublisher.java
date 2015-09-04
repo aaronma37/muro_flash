@@ -99,7 +99,7 @@ public class GaussPublisher extends AbstractNodeMain {
 
 
                 }
-
+                Thread.sleep(1000);
             }
         });
     }

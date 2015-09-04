@@ -118,7 +118,7 @@ public class dummyMaker extends AbstractNodeMain {
                     flag=0;
                 }
 
-/*                Thread.sleep(10000);*/
+               Thread.sleep(500);
             }
         });
     }

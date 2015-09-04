@@ -345,7 +345,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         textListARINFO.add(new toText(infoheight+newline*3,-(width-115)/(height*2)-.05f+tab*2,0,"Vz:",1,1));
 
         textListSINFO.add(new toText(infoheight,-(width-115)/(height*2)-.05f,0,"Standard Output",1,1));
-        textListSINFO.add(new toText(infoheight+newline,-(width-115)/(height*2)-.05f,0,"Ping: "+ping,1,1));
+        textListSINFO.add(new toText(infoheight+newline,-(width-115)/(height*2)-.05f,0,"Connection: DISCONNECTED" ,1,1));
+        textListSINFO.add(new toText(infoheight+newline*2,-(width-115)/(height*2)-.05f,0,"Network: Undetected",1,1));
+        textListSINFO.add(new toText(infoheight+newline*3,-(width-115)/(height*2)-.05f,0,"Deployment: None",1,1));
 
 
 
@@ -440,7 +442,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             }
         }
 
-        // DRAW FREE LINES
+        // DRAW FREE LINE   S
         if (fToggle==1) {
             for (int i = 0; i < fSize  ; i++) {
                 fLine[i].draw(scratch);
@@ -671,6 +673,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                             if (temp!=0){
                                 Matrix.translateM(scratch, 0, -.01f, 0f, 0);
                             }
+                            Matrix.translateM(scratch, 0, .005f, 0f, 0);
                             textSystem.Draw(scratch, s, 0);
                             temp++;
                             Matrix.translateM(scratch, 0, -.001f, 0f, 0);

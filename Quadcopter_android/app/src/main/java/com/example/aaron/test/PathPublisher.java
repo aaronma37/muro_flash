@@ -65,6 +65,7 @@ public class PathPublisher extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
 
+
                 if (flag==true){
                     if (dPose.header.equals("OPEN")||dPose.header.equals("CLOSED")){
                         for (int i=0;i<200;i++){
@@ -87,6 +88,7 @@ public class PathPublisher extends AbstractNodeMain {
                     }
                     flag=false;
                 }
+                Thread.sleep(100);
             }
         });
     }

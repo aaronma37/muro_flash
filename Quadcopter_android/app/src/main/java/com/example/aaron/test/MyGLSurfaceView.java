@@ -19,6 +19,10 @@ package com.example.aaron.test;
         import com.example.aaron.simplevoronoi.src.main.java.be.humphreys.simplevoronoi.*;
         import android.content.Context;
         import android.graphics.Point;
+        import android.net.ConnectivityManager;
+        import android.net.NetworkInfo;
+        import android.net.wifi.WifiInfo;
+        import android.net.wifi.WifiManager;
         import android.opengl.GLSurfaceView;
         import android.util.DisplayMetrics;
         import android.view.Display;
@@ -26,6 +30,14 @@ package com.example.aaron.test;
         import android.view.View;
         import android.view.WindowManager;
         import android.os.Vibrator;
+
+        import org.apache.http.HttpResponse;
+        import org.apache.http.client.HttpClient;
+        import org.apache.http.client.methods.HttpGet;
+        import org.apache.http.impl.client.DefaultHttpClient;
+        import org.apache.http.params.BasicHttpParams;
+        import org.apache.http.params.HttpConnectionParams;
+        import org.apache.http.params.HttpParams;
 
         import java.math.BigDecimal;
         import java.text.DecimalFormat;
@@ -71,6 +83,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
+    private Context context1;
 
     private int freeDrawCount=0;
     private int gaussDrawCount=0;
@@ -82,6 +95,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private double cd;
     private double cy;
 
+
+
+
+
+    String ssid = null;
 
 
 
@@ -97,9 +115,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int state[]=new int[maxBots];
     public MyGLSurfaceView(Context context, float f[], turtle turtleList[]) {
         super(context);
-
-
-
+        context1=context;
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vor = new Voronoi(.001);
         DisplayMetrics metrics = new DisplayMetrics();
@@ -147,6 +163,22 @@ public class MyGLSurfaceView extends GLSurfaceView {
        count=0;
 
 
+
+        WifiInfo wifiInfo =getWifi(context1);
+        NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(wifiInfo.getSupplicantState());
+
+        mRenderer.textListSINFO.get(1).setText("Latency: " + wifiInfo.getLinkSpeed());
+        if (state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
+            mRenderer.textListSINFO.get(2).setText("Network: " + wifiInfo.getSSID());
+        }
+
+        if (mRenderer.voronoiDeploymentToggle.active==true) {
+            mRenderer.textListSINFO.get(3).setText("Deployment: Multi-agent Voronoi");
+        }
+        else if (pFlag==1) {
+            mRenderer.textListSINFO.get(3).setText("Go to Goal");
+        }
+
         for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
@@ -165,7 +197,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
             }
         }
 
-        mRenderer.textListSINFO.get(1).setText("Ping: Good");
         if (count==0){
             mRenderer.textListARINFO.get(0).setText("No Robots Selected");
             mRenderer.textListARINFO.get(2).setText(" X:");
@@ -362,7 +393,6 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     if (xGL<mRenderer.dragToggle.left- mRenderer.slider&& xGL>mRenderer.dragToggle.right-mRenderer.slider&& yGL > mRenderer.dragToggle.down && yGL < mRenderer.dragToggle.up){
                         if (mRenderer.dragToggle.active == true) {
                             mRenderer.dragToggle.active =  false;
-                            System.out.println("Ping End:");
                             v.vibrate(50);
                         } else {
                             mRenderer.dragToggle.active = true;
@@ -689,13 +719,25 @@ public class MyGLSurfaceView extends GLSurfaceView {
         return mRenderer.dragToggle.active;
     }
 
-    public void updatePing(float p){
-        mRenderer.ping=p;
-    }
 
     public gauss getGausses(){
         return mRenderer.gaussArrayList;
     }
+
+
+
+    //FOUND_ONLINE
+    public WifiInfo getWifi(Context context) {
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (manager.isWifiEnabled()) {
+            WifiInfo wifiInfo = manager.getConnectionInfo();
+            if (wifiInfo != null) {
+                return wifiInfo;
+            }
+        }
+        return null;
+    }
+
 
 
 }

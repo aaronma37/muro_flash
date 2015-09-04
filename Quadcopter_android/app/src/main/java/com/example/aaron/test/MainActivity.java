@@ -1,7 +1,10 @@
 package com.example.aaron.test;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.net.nsd.NsdManager;
+import android.net.wifi.WifiManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,15 +18,20 @@ import org.ros.android.RosActivity;
 import org.ros.android.view.RosTextView;
 import org.ros.node.ConnectedNode;
 import org.ros.node.DefaultNodeMainExecutor;
+import org.ros.node.Node;
 import org.ros.node.NodeConfiguration;
+import org.ros.node.NodeListener;
 import org.ros.node.NodeMainExecutor;
 import geometry_msgs.Point;
 import geometry_msgs.Pose;
 
 import com.example.aaron.simplevoronoi.src.main.java.be.humphreys.simplevoronoi.Voronoi;
 import com.example.aaron.test.Talker;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -149,6 +157,8 @@ public class MainActivity extends RosActivity {
     @Override
     protected void init(final NodeMainExecutor nodeMainExecutor) {
 
+
+
         double num=1;
         talker = new Talker(num);
         dummy=new dummyMaker(num);
@@ -172,7 +182,7 @@ public class MainActivity extends RosActivity {
         message = new messager();
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
-        nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+
 
 
         num=poseview.getX();
@@ -262,6 +272,7 @@ public class MainActivity extends RosActivity {
         exec3.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 if (mGLView.pathPublisherFlag==true){
+                    nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
                     pathPublisher.active=1;
                     pathPublisher.setPathArray(mGLView.passPathArray());
                     pathPublisher.flag=true;
@@ -269,6 +280,7 @@ public class MainActivity extends RosActivity {
                 }
                 else{
                     pathPublisher.active=0;
+                    nodeMainExecutor.shutdownNodeMain(pathPublisher);
                 }
 
 
@@ -317,14 +329,15 @@ public class MainActivity extends RosActivity {
                 }
 
                 if (mGLView.gFlag==1){
+                    gaussPublisher.getGaussData(mGLView.getGausses());
                     if(gaussPublisher.active==0){
-                        gaussPublisher.getGaussData(mGLView.getGausses());
                         nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
                         gaussPublisher.active=1;
                     }
                 }
                 else{
-                    //nodeMainExecutor.shutdownNodeMain(gaussPublisher);
+                    nodeMainExecutor.shutdownNodeMain(gaussPublisher);
+                    gaussPublisher.active=0;
                 }
 
 

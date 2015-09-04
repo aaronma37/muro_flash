@@ -86,6 +86,7 @@ public class allPositionsPublisher extends AbstractNodeMain {
                     publisher.publish(pose);
                     flag=false;
                 }
+                Thread.sleep(100);
             }
         });
     }

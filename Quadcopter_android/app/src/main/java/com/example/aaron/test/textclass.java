@@ -292,6 +292,9 @@ import std_msgs.Char;
         else if (s.equals(".")){
             j=312;
         }
+        else{
+            return;
+        }
 
 
 

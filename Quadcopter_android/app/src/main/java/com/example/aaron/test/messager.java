@@ -54,6 +54,16 @@ public class messager extends AbstractNodeMain {
 
 
 
+    public void pub(final ConnectedNode connectedNode){
+        final Publisher<std_msgs.Int32MultiArray> publisher =
+                connectedNode.newPublisher("/message", IMA._TYPE);
+        IMA = publisher.newMessage();
+        IMA.setData(intArray);
+        IMA.getLayout().setDataOffset(0);
+        publisher.publish(IMA);
+        active=false;
+        sent=true;
+    }
 
 
     @Override
@@ -86,6 +96,7 @@ public class messager extends AbstractNodeMain {
                 publisher.publish(IMA);
                 active=false;
                 sent=true;
+
             }
         });
     }
