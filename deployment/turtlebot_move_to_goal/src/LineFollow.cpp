@@ -24,9 +24,9 @@
 nav_msgs::Path path;
 geometry_msgs::Pose turtlePose;
 const float stopx = 100.0;
-const float ks = 0.2;  // Forward velocity
-const float ka = 0.5;//0.5;                                                                            
-const float kb = -0.2;//-1;
+const float ks = 0.1;  // Forward velocity
+const float ka = 0.2;//0.5;                                                                            
+const float kb = -1.0;//-1;
 const float kc = 1.0;
 bool haspath = false;
 
