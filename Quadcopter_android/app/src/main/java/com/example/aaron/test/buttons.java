@@ -77,7 +77,7 @@ import std_msgs.Char;
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 255f, 255f, 255f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
     public buttons(final Context activityContext, int s)
     {
@@ -146,7 +146,7 @@ import std_msgs.Char;
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.dot);
         }
         else if (s==3){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearbutton);
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton);
         }
         else if (s==4){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearallbutton);
@@ -237,8 +237,8 @@ import std_msgs.Char;
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.dot);
         }
         else if (s==3){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearbutton);
-            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.clearbutton);
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton);
         }
         else if (s==4){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearallbutton);

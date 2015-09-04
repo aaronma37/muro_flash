@@ -145,7 +145,7 @@ import javax.microedition.khronos.opengles.GL10;
         GLES20.glLinkProgram(shaderProgram);
 
         //Load the texture
-        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.gauss);
+        mTextureDataHandle = loadTexture(mActivityContext, R.drawable.frame);
     }
 
     public void Draw(float[] mvpMatrix)

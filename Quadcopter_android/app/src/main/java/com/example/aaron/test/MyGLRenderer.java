@@ -219,12 +219,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.05f;spriteCoords[7]=-.75f;
 
         commit = new buttons(context,spriteCoords,5,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
+
+
         spriteCoords[0]=-(width-115)/(height*2)-.4f;spriteCoords[1]=-.75f;
         spriteCoords[2]=-(width-115)/(height*2)-.4f;spriteCoords[3]=-.85f;
         spriteCoords[4]=-(width-115)/(height*2)-.2f;spriteCoords[5]=-.85f;
         spriteCoords[6]=-(width-115)/(height*2)-.2f;spriteCoords[7]=-.75f;
 
         clear = new buttons(context, spriteCoords, 3, spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
+
+
+
+
 
         spriteCoords[0]=-(width-115)/(height*2)-.75f;spriteCoords[1]=-.75f;
         spriteCoords[2]=-(width-115)/(height*2)-.75f;spriteCoords[3]=-.85f;

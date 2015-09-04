@@ -80,7 +80,7 @@ public class toggles
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 255f, 255f, 255f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
     public toggles(final Context activityContext)
     {
