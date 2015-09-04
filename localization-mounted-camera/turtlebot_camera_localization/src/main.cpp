@@ -135,7 +135,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		//Get coordinates of the center
 		cv::Point2f marker_centroid = Markers[i].getCenter();
 		camPose.pose.pose.position.x = marker_centroid.x*SCALING_FACTOR_X;
-		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
+		camPose.pose.pose.position.y = (PIXEL_Y-marker_centroid.y)*SCALING_FACTOR_Y;
 
 		//calculate the heading
 		double myHeading;
@@ -183,7 +183,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom_trans.header.stamp = current_time;
 		odom_trans.header.frame_id = "/map";
 		odom_trans.transform.translation.x = marker_centroid.x*SCALING_FACTOR_X;
-		odom_trans.transform.translation.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
+		odom_trans.transform.translation.y = (PIXEL_Y-marker_centroid.y)*SCALING_FACTOR_Y;
 		//odom_trans.transform.translation.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
 		//For debug		
 		//odom_trans.transform.translation.x = marker_centroid.x;
