@@ -4,6 +4,7 @@
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
 #include <tf/tf.h>
 
+#define TOPIXELS 231
 using namespace std;
 
 int main(int argc, char **argv)
@@ -27,8 +28,8 @@ int main(int argc, char **argv)
 	cin >> theta;
     
 	//store the position in proper format
-	goalPose_.pose.position.x = x;
-	goalPose_.pose.position.y = y;   
+	goalPose_.pose.position.x = x * TOPIXELS;
+	goalPose_.pose.position.y = y * TOPIXELS;   
 	//goalPose_.pose.orientation.w = theta;   
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 	goalPose_.pose.orientation = odom_quat;
