@@ -103,16 +103,21 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(turtlebot_move_to_goal_node src/turtlebot_move_to_goal_node.cpp)
+add_executable(move_to_goal_node src/main.cpp)
+add_executable(first_turn_then_move src/first_turn_then_move.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(turtlebot_move_to_goal_node turtlebot_move_to_goal_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(turtlebot_move_to_goal_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(move_to_goal_node
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(first_turn_then_move
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
