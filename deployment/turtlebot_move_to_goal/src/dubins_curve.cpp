@@ -15,9 +15,9 @@
 #define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
 
 //TODO find the minimum turning radius
-const double mtr = TOPIXELS(0.1);
+const double mtr = TOPIXELS * (0.1);
 //TODO find the best step size of the path sample
-const double stepSize = TOPIXELS(0.004);
+const double stepSize = TOPIXELS * (0.004);
 //counter to determine when to publish the complete path
 int counter = 0;
 
