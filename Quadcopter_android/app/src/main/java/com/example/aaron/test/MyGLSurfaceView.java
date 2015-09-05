@@ -167,7 +167,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
         WifiInfo wifiInfo =getWifi(context1);
         NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(wifiInfo.getSupplicantState());
 
-        mRenderer.textListSINFO.get(1).setText("Latency: " + wifiInfo.getLinkSpeed());
+        mRenderer.textListSINFO.get(1).setText("Strength: " + wifiInfo.getRssi());
         if (state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
             mRenderer.textListSINFO.get(2).setText("Network: " + wifiInfo.getSSID());
         }
