@@ -446,7 +446,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     //mRenderer.setGaussValues(xGL, yGL, gInd);
                     //mRenderer.setGaussScale(1f);
                     if (gInd<99){
-                        mRenderer.addGaussStuff(xGL, yGL, 1f,gInd);
+                        //mRenderer.addGaussStuff(xGL, yGL, 1f,gInd);
+                        //TEMP FIX
+                        mRenderer.addGaussStuff(xGL, yGL, 1f,0);
                     }
                     gInd++;
                 }
@@ -473,7 +475,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         gaussScale = dgauss/.2f;
                         //System.out.println("SCALE");
                         //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
-                        mRenderer.setGaussScale(gInd-1, gaussScale);
+                        //mRenderer.setGaussScale(gInd-1, gaussScale);
+                        //TEMP FIX
+                        mRenderer.setGaussScale(0, gaussScale);
                     }
                 }
 
@@ -564,7 +568,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     pY=yGL;
                     gFlag2=1;
                     mRenderer.setpToggle2(gFlag2);
-                    mRenderer.updateGauss(xGL, yGL, gInd-1);
+                    //TEMP FIX
+                    mRenderer.updateGauss(xGL, yGL, 0);
+                    //mRenderer.updateGauss(xGL, yGL, gInd-1);
                 }
 
 

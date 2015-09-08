@@ -413,6 +413,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
                 Matrix.rotateM(scratch, 0, turtleList[i].getRot(), 0, 0, 1f);
                 Matrix.scaleM(scratch, 0, scale, scale, scale);
+                System.out.println("DRAW: "+i);
+
                 if (i!=49){
                     if (turtleList[i].getType()==0){
                         myAr.Draw(scratch,turtleList[i].getState(),framecounter);
@@ -424,7 +426,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                         selected.Draw(scratch,1);
                     }
                 }
-                else{
+                else {
                     circ.Draw(scratch);
                 }
 
