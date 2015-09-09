@@ -247,6 +247,10 @@ public class toggles
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.voronoicentroid1off);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.voronoicentroid1on);
         }
+        else if (j==9){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.singlemode);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.multiplemode);
+        }
 
     }
 

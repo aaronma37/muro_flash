@@ -75,7 +75,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle, dragToggle;
+    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle, dragToggle, swarmToggle;
     private obstacle circ;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
@@ -321,6 +321,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.12f;
         dragToggle = new toggles(context, spriteCoords, 7,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
+
+        spriteCoords[0]=-(width-115)/(height*2)-.55f;
+        spriteCoords[2]=-(width-115)/(height*2)-.55f;
+        spriteCoords[4]=-(width-115)/(height*2)-.25f;
+        spriteCoords[6]=-(width-115)/(height*2)-.25f;
+        spriteCoords[1]=(height)/(height)+dheight-.3f;
+        spriteCoords[3]=(height)/(height)+dheight-.6f;
+        spriteCoords[5]=(height)/(height)+dheight-.6f;
+        spriteCoords[7]=(height)/(height)+dheight-.3f;
+        swarmToggle = new toggles(context, spriteCoords, 9,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
+
+
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
         spriteCoords[4]=-(width-115)/(height*2)+.05f;spriteCoords[5]=-(height)/(height);
@@ -413,7 +425,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
                 Matrix.rotateM(scratch, 0, turtleList[i].getRot(), 0, 0, 1f);
                 Matrix.scaleM(scratch, 0, scale, scale, scale);
-                System.out.println("DRAW: "+i);
+                System.out.println("DRAW: " + i);
 
                 if (i!=49){
                     if (turtleList[i].getType()==0){
@@ -526,6 +538,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         vorToggle.Draw(scratch, vToggle);
         freeDrawToggle.Draw(scratch, fToggle);
+        if (fToggle==1){
+            if (swarmToggle.active==true){
+                swarmToggle.Draw(scratch,1);
+            }
+            else {
+                swarmToggle.Draw(scratch,0);
+            }
+        }
         wayPointToggle.Draw(scratch,pToggle);
         ardronePrefToggle.Draw(scratch, APToggle);
         ardroneAddToggle.Draw(scratch, 0);

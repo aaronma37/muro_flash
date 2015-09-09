@@ -88,7 +88,7 @@ public class PathPublisher extends AbstractNodeMain {
                     }
                     flag=false;
                 }
-                Thread.sleep(100);
+                Thread.sleep(1000);
             }
         });
     }

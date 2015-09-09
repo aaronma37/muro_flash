@@ -54,6 +54,7 @@ public class MainActivity extends RosActivity {
     private multipleGoalListener MultipleGoalListener;
     private allPositionsPublisher SelectedPositionsPublisher;
     private pingListener pinging;
+    private float meanCentroid[]= new float[3];
     private float width1,height1;
     private messager message;
     final int maxBots=50;
@@ -182,7 +183,7 @@ public class MainActivity extends RosActivity {
         message = new messager();
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
-
+        nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
 
 
         num=poseview.getX();
@@ -271,16 +272,14 @@ public class MainActivity extends RosActivity {
         ScheduledThreadPoolExecutor exec3 = new ScheduledThreadPoolExecutor(5);
         exec3.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                if (mGLView.pathPublisherFlag==true){
-                    nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
-                    pathPublisher.active=1;
+                if (mGLView.pathPublisherFlag==true && mGLView.newAction==true){
                     pathPublisher.setPathArray(mGLView.passPathArray());
+                    pathPublisher.active=1;
                     pathPublisher.flag=true;
-                    mGLView.pathPublisherFlag=false;
+                    mGLView.newAction=false;
                 }
                 else{
                     pathPublisher.active=0;
-                    nodeMainExecutor.shutdownNodeMain(pathPublisher);
                 }
 
 
@@ -362,6 +361,25 @@ public class MainActivity extends RosActivity {
 
             }
         }, 0, 500000, TimeUnit.MICROSECONDS);*/
+
+    }
+
+    public void calculateCentroid(){
+        meanCentroid[0]=0;
+        meanCentroid[1]=0;
+        meanCentroid[2]=0;
+
+
+        for (int i=0;i<maxBots;i++) {
+            if (turtleList[i].getOn()==1){
+                meanCentroid[0]=meanCentroid[0]+turtleList[i].getX();
+                meanCentroid[1]=meanCentroid[1]+turtleList[i].getY();
+                meanCentroid[2]=meanCentroid[2]+1;
+            }
+        }
+
+        meanCentroid[0]=meanCentroid[0]/meanCentroid[2];
+        meanCentroid[1]=meanCentroid[1]/meanCentroid[2];
 
     }
 }

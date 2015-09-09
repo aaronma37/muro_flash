@@ -272,9 +272,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     if (xGL<mRenderer.commit.left- mRenderer.slider&& xGL>mRenderer.commit.right-mRenderer.slider&& yGL > mRenderer.commit.down && yGL < mRenderer.commit.up)
                         if (mRenderer.commit.active==true) {
                             mRenderer.commit.active=false;
+                            newAction=true;
                             v.vibrate(50);
                         } else {
                             mRenderer.commit.active=true;
+                            newAction=true;
                             v.vibrate(50);
                         }
 
@@ -306,6 +308,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             firstPointFreeDraw[0]=-1000;
                             firstPointFreeDraw[1]=-1000;
                             fFlag = mRenderer.getfToggle();
+                            v.vibrate(50);
+                        }
+
+                    //Toggable swarm for Path Follower
+                    if (mRenderer.getfToggle()==1 && xGL<mRenderer.swarmToggle.left- mRenderer.slider&& xGL>mRenderer.swarmToggle.right-mRenderer.slider&& yGL > mRenderer.swarmToggle.down && yGL < mRenderer.swarmToggle.up)
+                        if (mRenderer.swarmToggle.active == true) {
+                            mRenderer.swarmToggle.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.swarmToggle.active =  true;
                             v.vibrate(50);
                         }
 
