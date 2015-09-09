@@ -18,10 +18,11 @@ goal pose in order to execute a path following algorithm.
 #include <std_msgs/Float64.h>
 #include <std_msgs/Bool.h>
 #include <sstream>
+#include <tf2_msgs/TFMessage.h>
 #include <tf/tf.h> 
 
 // Position data
-geometry_msgs::PoseStamped poseEst; 
+geometry_msgs::PoseStamped poseEst, tempPoseEst; 
 
 // Path data
 geometry_msgs::PoseArray pathPose;
@@ -30,17 +31,21 @@ int lastPointOnPathIndex;
 // Controller data
 geometry_msgs::PoseStamped goalPose;
 geometry_msgs::Twist constVelTerm;
+geometry_msgs::PoseArray gauss;
+geometry_msgs::PoseStamped gPos;
 
 // Constants
 const double PI = 3.141592653589793238463;
 const double BOUNDARY_RADIUS = 0.1;
+const int num=50;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
-const double PATH_VEL = .1;
+const double PATH_VEL = 1;
 const double LINE_DIST_RANGE = .9;
 
 // Interpolation data
 int closestPointIndex = 0;
+int swarmCount=0;
 int prevClosestPointIndex = 0;
 geometry_msgs::PoseStamped closestPointOnLine; // pose of closest point on interpolation line
 geometry_msgs::PoseStamped nextPointClosest; // pose of next point on path
@@ -53,7 +58,28 @@ bool isOpenLoop;
 // Updates current position estimate sent by the ekf
 void poseEstCallback(const geometry_msgs::PoseStamped::ConstPtr& posePtr)
 {
-    poseEst.pose = posePtr -> pose;
+	if (pathPose.header.frame_id.compare("SWARM")!=0){
+    		poseEst.pose = posePtr -> pose;
+	}
+}
+
+void centroidEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
+{
+	if (pathPose.header.frame_id.compare("SWARM")==0){
+	swarmCount=0;
+	
+		for (int i =0;i<num;i++){
+				if (posePtr -> transforms[i].transform.translation.x !=0 && posePtr -> transforms[i].transform.translation.x !=0 && posePtr -> transforms[i].transform.translation.z!=0){
+					poseEst.pose.position.x=poseEst.pose.position.x+posePtr -> transforms[i].transform.translation.x;
+					poseEst.pose.position.y=poseEst.pose.position.y+posePtr -> transforms[i].transform.translation.y;
+					poseEst.pose.position.z=poseEst.pose.position.z+posePtr -> transforms[i].transform.translation.z;
+					swarmCount++;
+				}
+		}    
+		poseEst.pose.position.x=poseEst.pose.position.x/swarmCount;
+		poseEst.pose.position.y=poseEst.pose.position.y/swarmCount;
+		poseEst.pose.position.z=poseEst.pose.position.z/swarmCount;
+	}
 }
 
 // Determine type of path and unpack array of pose
@@ -67,11 +93,17 @@ void pathCallback(const geometry_msgs::PoseArray::ConstPtr& pathPtr)
     isOpenLoop = true;
     pathPose = *pathPtr;
   }
-  else
+  else if ((pathPtr ->header.frame_id).compare("SWARM")==0){
+	isOpenLoop=true;
+	pathPose = *pathPtr;
+  }
+	else
   {
     isOpenLoop = false;
     pathPose = *pathPtr;
   }
+
+
 }
 
 double distanceFormula (double x3, double x2, double y3, double y2)
@@ -276,13 +308,19 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Subscriber pathSub;
     ros::Subscriber poseEstSub;
+    ros::Subscriber centroidEstSub;
     ros::Publisher goalPub;
     ros::Publisher velPub;
+    ros::Publisher centroidPub;
+    ros::Publisher gaussPosition;
 
     pathSub = n.subscribe<geometry_msgs::PoseArray>("/path", 1, pathCallback);
     poseEstSub = n.subscribe<geometry_msgs::PoseStamped>("/poseEstimation", 1, poseEstCallback);
+    centroidEstSub = n.subscribe<tf2_msgs::TFMessage>("/poseEstimationC", 1,  centroidEstCallback);
     goalPub = n.advertise<geometry_msgs::PoseStamped>("/goal_pose", 1000, true);
+    centroidPub = n.advertise<geometry_msgs::PoseArray>("/gauss", 1000, true);
     velPub = n.advertise<geometry_msgs::Twist>("/path_vel", 1000, true);
+    gaussPosition = n.advertise<geometry_msgs::PoseStamped>("/poseEstimation", 1000, true);
    
     // Initialize msgs and flags
     newPath = false;
@@ -294,6 +332,8 @@ int main(int argc, char **argv)
     constVelTerm.angular.x = 0;
     constVelTerm.angular.y = 0;
     constVelTerm.angular.z = 0;
+    gauss.poses.resize(50);
+    gPos.header.frame_id="gauss";
 
     while (ros::ok()) 
     {
@@ -307,7 +347,18 @@ int main(int argc, char **argv)
                 newPath = false; // reset flag
                 goalPose.pose = (pathPose.poses)[0]; // publish first point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-                goalPub.publish(goalPose);
+		if (pathPose.header.frame_id.compare("SWARM")==0){
+			gauss.poses[0]=goalPose.pose;
+			gauss.poses[0].position.z=.25;
+			gPos.pose=goalPose.pose;
+			gPos.pose.position.z=.25;
+			centroidPub.publish(gauss);
+			gaussPosition.publish(gPos);
+		}
+		else {
+			goalPub.publish(goalPose);
+		}
+                
                 while( distanceFormula(pathPose.poses[0].position.x, poseEst.pose.position.x, 
                                         pathPose.poses[0].position.y, poseEst.pose.position.y) >= BOUNDARY_RADIUS ) // FIXME: Implement this sleep cycle as a function
                     {
@@ -325,14 +376,24 @@ int main(int argc, char **argv)
                     {
                         break;
                     }
-                    ROS_INFO("on interpolation loop OPEN\n");
+                    //ROS_INFO("on interpolation loop OPEN\n");
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
-                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
-                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                   // std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                    //std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                     velPub.publish(constVelTerm);
-                    goalPub.publish(closestPointOnLine);
+                    if (pathPose.header.frame_id.compare("SWARM")==0){
+			gauss.poses[0]=goalPose.pose;
+			gauss.poses[0].position.z=.25;
+			gPos.pose=goalPose.pose;
+			gPos.pose.position.z=.25;
+			centroidPub.publish(gauss);
+			gaussPosition.publish(gPos);
+		}
+		else {
+			goalPub.publish(goalPose);
+		}
                     //pathPose.poses[closestPointIndex].position.x = 0;
                     //pathPose.poses[closestPointIndex].position.y = 0;
                     calcClosestPointOnPath();
@@ -341,7 +402,17 @@ int main(int argc, char **argv)
                 }
                 goalPose.pose = (pathPose.poses)[lastPointOnPathIndex]; // publish final point on path
                 goalPose.pose.orientation = tf::createQuaternionMsgFromYaw(0);
-                goalPub.publish(goalPose);
+                if (pathPose.header.frame_id.compare("SWARM")==0){
+			gauss.poses[0]=goalPose.pose;
+			gauss.poses[0].position.z=.25;
+			gPos.pose=goalPose.pose;
+			gPos.pose.position.z=.25;
+			centroidPub.publish(gauss);
+			gaussPosition.publish(gPos);
+		}
+		else {
+			goalPub.publish(goalPose);
+		}
                 //pathPose.poses[closestPointIndex].position.x = 0;
                 //pathPose.poses[closestPointIndex].position.y = 0;
 		constVelTerm.linear.x = 0;
@@ -358,12 +429,12 @@ int main(int argc, char **argv)
                 closestPointIndex = 0;
                 while( !newPath || ros::ok() ) // while no new path has been published
                 {
-                    ROS_INFO("on interpolation loop CLOSED");
+                    //ROS_INFO("on interpolation loop CLOSED");
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);
                     calcConstVelTerm();
-                    std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
-                    std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
+                    //std::cout << "Goal pose:\n" << closestPointOnLine << "\n\n";
+                    //std::cout << "Constant vel:\n" << constVelTerm << "\n\n";
                     velPub.publish(constVelTerm);
                     goalPub.publish(closestPointOnLine);
                     calcClosestPointOnPath();
@@ -377,7 +448,7 @@ int main(int argc, char **argv)
                 constVelTerm.linear.x = 0;
 		constVelTerm.linear.y = 0;
 		velPub.publish(constVelTerm);
-		ROS_INFO("finished CLOSED loop");
+		//ROS_INFO("finished CLOSED loop");
             }
         }
         

@@ -43,6 +43,7 @@ public class poseView<T> implements NodeMain {
     public String messageType,frame_id;
     public int newMeasurementFlag;
     final int maxBots=100;
+    public boolean gotgauss=false;
     public double x,y,z,k,w,id,i,j;
     public PoseStamped pose;
     public float poseData[]={0,0,0,0,0,0,0,0,0};
@@ -50,6 +51,7 @@ public class poseView<T> implements NodeMain {
     public Point p;
     public boolean newRobot=false;
     public turtle turtleList[]=new turtle[maxBots];
+    public turtle gauss = new turtle();
 
     public poseView() {
         this.y=1;
@@ -175,10 +177,20 @@ public class poseView<T> implements NodeMain {
                     else if(frame_id.equals("dummy 15")){poseData[4]=25;}
                     else if(frame_id.equals("dummy 16")){poseData[4]=26;}
                     else if(frame_id.equals("dummy 17")){poseData[4]=27;}
+                    else if(frame_id.equals("gauss")){poseData[4]=-1;}
                     else{poseData[4]=0;}
 
-                    turtleList[(int)poseData[4]].setData(poseData,frame_id,0);
-                    turtleList[(int)poseData[4]].setOrient(orientData);
+
+                    if (poseData[4]!=-1){
+                        turtleList[(int)poseData[4]].setData(poseData,frame_id,0);
+                        turtleList[(int)poseData[4]].setOrient(orientData);
+                        gotgauss=false;
+                    }
+                    else {
+                        gauss.setData(poseData,frame_id,0);
+                        gotgauss=true;
+                    }
+
                 }
 
 

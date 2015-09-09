@@ -195,7 +195,16 @@ public class MainActivity extends RosActivity {
         exec.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 if (poseview.newMeasurementFlag == 1) {
-                    turtleList = poseview.getTurtles();
+                    if (poseview.gotgauss==false){
+                        turtleList = poseview.getTurtles();
+                        mGLView.mRenderer.gaussArrayList.locX[0] = turtleList[11].getX();//poseview.gauss.getX();
+                        mGLView.mRenderer.gaussArrayList.locY[0] = turtleList[11].getY();//poseview.gauss.getY();
+                        mGLView.mRenderer.gaussArrayList.scaleG[0]= 1;//poseview.gauss.getZ();
+                    }
+                    else {
+
+                    }
+
                     poseview.newMeasurementFlag = 0;
 
                     mGLView.updateRen(turtleList);
@@ -274,6 +283,7 @@ public class MainActivity extends RosActivity {
             public void run() {
                 if (mGLView.pathPublisherFlag==true && mGLView.newAction==true){
                     pathPublisher.setPathArray(mGLView.passPathArray());
+                    pathPublisher.swarm=mGLView.mRenderer.swarmToggle.active;
                     pathPublisher.active=1;
                     pathPublisher.flag=true;
                     mGLView.newAction=false;

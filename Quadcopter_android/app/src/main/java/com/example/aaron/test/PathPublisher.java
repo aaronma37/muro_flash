@@ -22,6 +22,7 @@ public class PathPublisher extends AbstractNodeMain {
     public geometry_msgs.PoseArray pose;
     public geometry_msgs.Pose intPose;
     public dummyPoseArray dPose;
+    public boolean swarm=false;
     public boolean flag= false;
 
 
@@ -81,6 +82,11 @@ public class PathPublisher extends AbstractNodeMain {
                     }
 
                     pose.getHeader().setFrameId(dPose.header);
+
+                    if (swarm==true){
+                        pose.getHeader().setFrameId("SWARM");
+                    }
+
                     pose.getHeader().setSeq(0);
                     pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
                     if (pose.getPoses().get(0).getPosition().getX()!=0  && pose.getPoses().get(0).getPosition().getY()!=0  ){

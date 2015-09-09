@@ -55,7 +55,7 @@ package com.example.aaron.test;
 public class MyGLSurfaceView extends GLSurfaceView {
 
 
-    private final MyGLRenderer mRenderer;
+    public final MyGLRenderer mRenderer;
     public float poseData[];
     final int maxBots=50;
     public turtle tList[]=new turtle[maxBots];

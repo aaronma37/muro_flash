@@ -425,7 +425,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 Matrix.translateM(scratch, 0, turtleList[i].getX() * scale, turtleList[i].getY() * scale, 0);
                 Matrix.rotateM(scratch, 0, turtleList[i].getRot(), 0, 0, 1f);
                 Matrix.scaleM(scratch, 0, scale, scale, scale);
-                System.out.println("DRAW: " + i);
 
                 if (i!=49){
                     if (turtleList[i].getType()==0){
@@ -509,12 +508,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     float[] s = new float[16];
                     Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.scaleM(s, 0, gaussArrayList.scaleG[i]*scale, gaussArrayList.scaleG[i]*scale, gaussArrayList.scaleG[i]*scale);
+                    Matrix.scaleM(s, 0, gaussArrayList.scaleG[i] * scale, gaussArrayList.scaleG[i] * scale, gaussArrayList.scaleG[i] * scale);
                     Matrix.translateM(s, 0, gaussArrayList.locX[i] * scale, gaussArrayList.locY[i] * scale, 0);
 
 
                     gaussArrayList.Draw(s);
-                    //System.out.println("DRAW");
+                    System.out.println("LOCATION X" + gaussArrayList.locX[0]);
+                    System.out.println("LOCATION Y" + gaussArrayList.locY[0]);
+                    System.out.println("LOCATION Z" + gaussArrayList.scaleG[0]);
                 }
             }
         //}

@@ -59,9 +59,12 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 
 void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 {
-sigma=gaussPtr -> poses[0].position.z;
-muX=gaussPtr-> poses[0].position.x;
-muY=gaussPtr-> poses[0].position.y;
+	if (gaussPtr->poses[0].position.z!=0){
+	sigma=gaussPtr -> poses[0].position.z;
+	muX=gaussPtr-> poses[0].position.x;
+	muY=gaussPtr-> poses[0].position.y;
+}
+
 }
 
 Matrix uniqueVertices(50,2);
