@@ -426,11 +426,15 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         if(mRenderer.getgToggle()==1){
                             gInd = 0;
                             mRenderer.clearGauss();
+
                         }
                         if(mRenderer.dragToggle.active==true){
                             obsticle.on=0;
                         }
                         v.vibrate(75);
+                        mRenderer.clear.active = true;
+
+
                     }
 
                 }
@@ -589,6 +593,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
             case MotionEvent.ACTION_UP:
 
                 mRenderer.tToggle=1;
+                //mRenderer.clear.active = false;
+
         }
 
 

@@ -30,6 +30,7 @@ import std_msgs.Char;
     private int mTextureDataHandle, selectedTextureDataHandle;
     public float left,right,up,down;
     public boolean active=false;
+    public int s;
 
 
     private final String vertexShaderCode =
@@ -79,9 +80,10 @@ import std_msgs.Char;
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 1f, 1f, 1f, 1.0f };
 
-    public buttons(final Context activityContext, int s)
+    public buttons(final Context activityContext, int k)
     {
         mActivityContext = activityContext;
+        s = k;
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -162,7 +164,7 @@ import std_msgs.Char;
 
 
 
-    public buttons(final Context activityContext, float c[],int s, float left1, float right1, float up1, float down1)
+    public buttons(final Context activityContext, float c[],int k, float left1, float right1, float up1, float down1)
     {
         mActivityContext = activityContext;
         left=left1;
@@ -170,6 +172,8 @@ import std_msgs.Char;
         up=up1;
         down=down1;
         spriteCoords=c;
+
+        s = k;
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -238,7 +242,7 @@ import std_msgs.Char;
         }
         else if (s==3){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton);
-            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton_pressed);
         }
         else if (s==4){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearallbutton);
@@ -248,9 +252,14 @@ import std_msgs.Char;
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.checkmark);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.checkmarkb);
         }
+        else if (s==6){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton_pressed);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton_pressed);
+        }
 
 
     }
+
 
     public float getUp(){
         return up;

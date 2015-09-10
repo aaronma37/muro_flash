@@ -85,6 +85,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private FloatBuffer textureBuffer;
     public Context context;
 
+    private boolean isPressed = false;
+
     private int g = 1;
     private boolean gaussFlag = false;
 
@@ -580,15 +582,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.translateM(scratch, 0, -slider, 0, 0);
         commit.Draw(scratch, commit.active);
 
+
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, -slider, 0, 0);
         //Matrix.scaleM(scratch, 0, 7f, 3f, 0);
-        clear.Draw(scratch, false);
+        clear.Draw(scratch, clear.active);
+
 
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
         Matrix.translateM(scratch, 0, -slider, 0, 0);
         //Matrix.scaleM(scratch, 0, 1.3f, 1f, 0);
         clearAll.Draw(scratch, false);
+
 
 
 
@@ -891,17 +896,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         return glCoord;
     }
 
-    public void setScale(float s){
-        scale=s;
-    }
 
     public void setGaussScale(int i, float x) {
         gaussArrayList.scaleG[i] = x/scale;
     }
 
-    public void setgInd(int i){
-        g = i;
-    }
 
     public void addGaussStuff(float xPos, float yPos, float s, int gInd){
         gaussArrayList.locY[gInd]=yPos/scale;
@@ -933,6 +932,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             gaussArrayList.scaleG[i] = 0;
         }
     }
+
 
 
 
