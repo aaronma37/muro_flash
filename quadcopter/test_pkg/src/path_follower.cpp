@@ -40,7 +40,7 @@ const double BOUNDARY_RADIUS = 0.1;
 const int num=50;
 const int T = 50;
 const int NUM_ITERATIONS = 10;
-const double PATH_VEL = 0;
+const double PATH_VEL = .1	;
 const double LINE_DIST_RANGE = .9;
 
 // Interpolation data
@@ -77,7 +77,7 @@ void centroidEstCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
 					poseEst.pose.position.y=poseEst.pose.position.y+posePtr -> transforms[i].transform.translation.y;
 					poseEst.pose.position.z=poseEst.pose.position.z+posePtr -> transforms[i].transform.translation.z;
 					swarmCount++;
-std::cout << "Pose " << poseEst <<"\n";
+//std::cout << "Pose " << poseEst <<"\n";
 				}
 		}    
 		poseEst.pose.position.x=poseEst.pose.position.x/swarmCount;
@@ -381,7 +381,7 @@ int main(int argc, char **argv)
                     {
                         break;
                     }
-			std::cout << "goalPose" <<  gPos <<"\n\n";
+			//std::cout << "goalPose" <<  gPos <<"\n\n";
                     //ROS_INFO("on interpolation loop OPEN\n");
                     findClosestPointOnLine();
                     closestPointOnLine.pose.orientation = tf::createQuaternionMsgFromYaw(0);

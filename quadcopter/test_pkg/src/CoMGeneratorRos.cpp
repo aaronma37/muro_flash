@@ -45,7 +45,7 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 	//centroidPositions = *pose;
 	gotPose=true;
 
-	for (int i=0;i<maxNum;i++)
+	for (int i=0;i<maxNum;i++)	
 	{
 		if ( (pose ->poses[i].position.x!=0 || pose ->poses[i].position.y!=0) && pose ->poses[i].position.x > minX & pose -> poses[i].position.x < maxX && pose ->poses[i].position.y < maxY && pose ->poses[i].position.y > minY){
 			xValues[i]=pose ->poses[i].position.x;	
@@ -64,7 +64,11 @@ void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 	muX=gaussPtr-> poses[0].position.x;
 	muY=gaussPtr-> poses[0].position.y;
 }
+minX=-10+muX;
+maxX=10+muX;
 
+minY=-10+muY;
+maxY=10+muY;
 }
 
 Matrix uniqueVertices(50,2);
@@ -542,6 +546,14 @@ int main(int argc, char **argv)
 			centroidPositions.transforms[i].transform.rotation.w=1;
 			centroidPositions.transforms[i].child_frame_id=cfi;
 		}
+
+		cout << "min X: " << minX << "\n";
+		cout << "max X: " << maxX << "\n";
+		cout << "mean X: " << muX << "\n";
+
+		cout << "min Y: " << minY << "\n";
+		cout << "max Y: " << maxY << "\n";
+		cout << "mean Y: " << muY << "\n";
 			     	
 		centroid_pub_.publish(centroidPositions);
 		gotPose=false;
