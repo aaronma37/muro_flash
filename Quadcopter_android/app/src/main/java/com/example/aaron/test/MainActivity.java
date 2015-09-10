@@ -197,12 +197,12 @@ public class MainActivity extends RosActivity {
                 if (poseview.newMeasurementFlag == 1) {
                     if (poseview.gotgauss==false){
                         turtleList = poseview.getTurtles();
-                        mGLView.mRenderer.gaussArrayList.locX[0] = turtleList[11].getX();//poseview.gauss.getX();
-                        mGLView.mRenderer.gaussArrayList.locY[0] = turtleList[11].getY();//poseview.gauss.getY();
-                        mGLView.mRenderer.gaussArrayList.scaleG[0]= 1;//poseview.gauss.getZ();
+
                     }
                     else {
-
+                        mGLView.mRenderer.gaussArrayList.locX[0] = poseview.gauss.getX()/mGLView.mRenderer.scale;
+                        mGLView.mRenderer.gaussArrayList.locY[0] = poseview.gauss.getY()/mGLView.mRenderer.scale;
+                        mGLView.mRenderer.gaussArrayList.scaleG[0]= poseview.gauss.getZ()/mGLView.mRenderer.scale;
                     }
 
                     poseview.newMeasurementFlag = 0;
