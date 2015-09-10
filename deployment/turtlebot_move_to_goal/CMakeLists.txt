@@ -95,6 +95,8 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}      // add .hpp files
+  ${GSTREAMER_INCLUDE_DIRS}  // add .hpp files
 )
 
 ## Declare a cpp library
@@ -105,6 +107,8 @@ include_directories(
 ## Declare a cpp executable
 add_executable(move_to_goal_node src/main.cpp)
 add_executable(first_turn_then_move src/first_turn_then_move.cpp)
+add_executable(dubins_curve src/dubins.cpp src/dubins_curve.cpp)
+add_executable(LineFollow src/LineFollow.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
@@ -117,6 +121,14 @@ target_link_libraries(move_to_goal_node
 
 target_link_libraries(first_turn_then_move
   ${catkin_LIBRARIES}
+)
+
+target_link_libraries(dubins_curve
+   ${catkin_LIBRARIES}
+)
+
+target_link_libraries(LineFollow
+   ${catkin_LIBRARIES}
 )
 
 #############
@@ -166,3 +178,9 @@ target_link_libraries(first_turn_then_move
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+## Keyboard input for goal position
+add_executable(keyboard src/keyboard.cpp)
+target_link_libraries(keyboard
+   ${catkin_LIBRARIES}
+)
