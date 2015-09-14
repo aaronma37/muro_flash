@@ -342,7 +342,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         interfacePull = new interfaceImage(context,spriteCoords);
 
         textSystem = new textclass(context, "A");
-        textList.add(new toText(-.85f,.25f,0,"UCSD Distributed Robotics Lab",0,1));
+        textList.add(new toText(-.85f,.22f,0,"Multi-Agent Robotics Lab",0,1));
         textList.add(new toText(-.85f,1f,0,"Scale: "+scale+"x",0,1));
         textList.add(new toText(-.78f,.94f,0,2/scale+" ft",0,1));
 
