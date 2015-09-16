@@ -33,9 +33,9 @@
     <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
       <param name="move_base/local_costmap/robot_base_frame" value="base_footprint"/>
       <param name="move_base/global_costmap/robot_base_frame" value="base_footprint"/>
-
-	<!-- <param name="move_base/local_costmap/global_frame" value="/map"/>
-	<param name="move_base/global_costmap/global_frame" value="/map"/> -->
+    
+    <!-- <param name="move_base/local_costmap/global_frame" value="/map"/>
+    <param name="move_base/global_costmap/global_frame" value="/map"/> -->
 
 
 </group>
