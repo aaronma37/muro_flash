@@ -15,6 +15,12 @@
     <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
     <param name="mobile_base/base_frame" value="$(arg robot)/base_footprint"/>
     <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
+    
+    <!-- 3d sensor -->
+    <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
+      <arg name="depth_registration" value="false"/>
+      <arg name="scan_topic" value="scan"/>
+    </include>
 
     <!-- Communication node -->
     <node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
@@ -34,8 +40,11 @@
       <param name="move_base/local_costmap/robot_base_frame" value="base_footprint"/>
       <param name="move_base/global_costmap/robot_base_frame" value="base_footprint"/>
     
-    <!-- <param name="move_base/local_costmap/global_frame" value="/map"/>
-    <param name="move_base/global_costmap/global_frame" value="/map"/> -->
+    <param name="move_base/local_costmap/global_frame" value="/map"/>
+    <param name="move_base/global_costmap/global_frame" value="/map"/>
+    
+    <param name="move_base/local_costmap/transform_tolerance" value="5"/>
+    <param name="move_base/global_costmap/transform_tolerance" value="5"/>
 
 
 </group>
