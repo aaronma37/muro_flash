@@ -1,0 +1,29 @@
+#! /bin/bash
+
+# Start roscore
+
+roscore
+
+# start joystick
+
+rosrun joy joy_node
+
+echo "Started joystick node" 
+
+# start camera system
+
+cd ~/git_catkin_ws/src/ucsd_ros_project/localization-mounted-camera/turtlebot_camera_localization/launch
+
+roslaunch localization_demo.launch &
+
+echo "Started localization node"
+
+# ssh into a robot
+
+sshpass -p turtlebot ssh -X turtlebot@boticellibot.dynamic.ucsd.edu 'roslaunch turtlebot_bringup minimal.launch' &
+sshpass -p turtlebot ssh -X turtlebot@boticellibot.dynamic.ucsd.edu 'roslaunch turtlebot_bringup 3dsensor.launch' &
+sshpass -p turtlebot ssh -X turtlebot@boticellibot.dynamic.ucsd.edu 'roslaunch turtlebot_deployment joystick_teleop_mstrcmptr.launch' &
+
+echo "ssh-ed into leonardobot, and started script"
+
+exit

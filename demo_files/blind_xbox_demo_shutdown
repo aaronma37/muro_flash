@@ -1,0 +1,17 @@
+#! /bin/bash
+
+killall -9 uvc_camera_node
+
+echo "shutdown_demo- shutdown uvc_camera_node"
+
+killall -9 camera_localization
+
+echo "shutdown_demo- shutdown camera_localization"
+
+killall -9 map_server
+
+echo "shutdown_demo- shutdown map_server"
+
+sshpass -p turtlebot ssh -X turtlebot@leonardobot.dynamic.ucsd.edu 'killall -9 simple_deployment; killall -9 inter_robot_communication; killall -9 first_turn_then_move'
+
+exit
