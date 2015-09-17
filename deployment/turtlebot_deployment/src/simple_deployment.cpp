@@ -178,6 +178,7 @@ void SimpleDeployment::publish()
     if ( got_map_ && got_me_ ) {
         double factor = map_.info.resolution / resolution_; // zoom factor for openCV visualization
 
+	// ROS_DEBUG("height is %d, width is %d", map_.info.height, map_.info.width);
         ROS_DEBUG("SimpleDeployment: Map received, determining Voronoi cells and publishing goal");
 
         removeOldAgents();
