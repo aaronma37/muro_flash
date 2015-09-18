@@ -59,16 +59,16 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 
 void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 {
-	if (gaussPtr->poses[0].position.z!=0){
-	sigma=gaussPtr -> poses[0].position.z;
-	muX=gaussPtr-> poses[0].position.x;
-	muY=gaussPtr-> poses[0].position.y;
-}
-minX=-10+muX;
-maxX=10+muX;
+		if (gaussPtr->poses[0].position.z!=0){
+		sigma=gaussPtr -> poses[0].position.z;
+		muX=gaussPtr-> poses[0].position.x;
+		muY=gaussPtr-> poses[0].position.y;
+		}
+	minX=-10+muX;
+	maxX=10+muX;
 
-minY=-10+muY;
-maxY=10+muY;
+	minY=-10+muY;
+	maxY=10+muY;
 }
 
 Matrix uniqueVertices(50,2);
@@ -312,7 +312,7 @@ void CoMGenerator::getTriangleCOM(double &Mass, double &c_x, double &c_y, double
         //Density Funtion!!!!!
         //||----------------||
         //||----------------||
-        DENSITY = 1/(sigma*sqrt(2*3.14))  *  exp(-sqrt((x-muX)*(x-muX)+(y-muY)*(y-muY))/(2*pow(sigma,2)));  
+	DENSITY =1/(sigma*sqrt(2*3.14))  *  exp(-sqrt((x-muX)*(x-muX)+(y-muY)*(y-muY))/(2*pow(sigma,2))); 
         //||----------------||
         //||----------------||
         
@@ -372,7 +372,7 @@ void CoMGenerator::getCenterOfMass(double &Mass, double &c_x, double &c_y, Matri
         xpoints[0] = localVertices.elements[i][0];  ypoints[0] = localVertices.elements[i][1];
         xpoints[1] = localVertices.elements[i+1][0];    ypoints[1] = localVertices.elements[i+1][1];
         
-        //Get Each Triangle's Center of Mass
+        //Get Each Triangle's Center of Mass,poseCallbac
         getTriangleCOM(Mass, c_x, c_y, xpoints, ypoints, nGaussPoints);
         MassVector[i] = Mass;
         c_xVector[i] = c_x;
@@ -477,7 +477,7 @@ int main(int argc, char **argv)
     while (ros::ok())
     {
 	ros::spinOnce();
-	if (gotPose==true)
+	if (gotPose==true|| gotPose==false)
 	{	
 		float xValuesT[countD];
 		float yValuesT[countD];  
