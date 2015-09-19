@@ -75,7 +75,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public float slider=0;
     //private ArrayList<textclass> textSystem= new ArrayList<textclass>();
     private textclass textSystem;
-    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle, dragToggle, swarmToggle;
+    public toggles vorToggle, freeDrawToggle,wayPointToggle,exit,ardronePrefToggle, ardroneAddToggle, gaussToggle,temptoggle,voronoiDeploymentToggle, dragToggle, swarmToggle, centroidTrackingOption;
+    public algorithms centroidTrackingEquation, lloyds;
     private obstacle circ;
     private float textPosition[]= {-.95f, .5f};
     public ArrayList<toText> textList = new ArrayList<toText>();
@@ -209,6 +210,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         arrows= new buttons(context,2);
         circ = new obstacle(context);
 
+        lloyds = new algorithms(context,0,width,height,dheight);
+        centroidTrackingEquation = new algorithms(context,1,width,height,dheight);
+
         float spriteCoords[] = {
                 -0.05f,  0.05f,   // top left
                 -0.05f, -0.05f,   // bottom left
@@ -221,6 +225,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[6]=-(width-115)/(height*2)-.05f;spriteCoords[7]=-.75f;
 
         commit = new buttons(context,spriteCoords,5,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
+
+
 
 
         spriteCoords[0]=-(width-115)/(height*2)-.4f;spriteCoords[1]=-.75f;
@@ -334,6 +340,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         spriteCoords[7]=(height)/(height)+dheight-.3f;
         swarmToggle = new toggles(context, spriteCoords, 9,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
+        spriteCoords[0]=-(width-115)/(height*2)-.55f;
+        spriteCoords[2]=-(width-115)/(height*2)-.55f;
+        spriteCoords[4]=-(width-115)/(height*2)-.25f;
+        spriteCoords[6]=-(width-115)/(height*2)-.25f;
+        spriteCoords[1]=(height)/(height)+dheight-.3f;
+        spriteCoords[3]=(height)/(height)+dheight-.6f;
+        spriteCoords[5]=(height)/(height)+dheight-.6f;
+        spriteCoords[7]=(height)/(height)+dheight-.3f;
+
+        centroidTrackingOption= new toggles(context,spriteCoords,10,spriteCoords[4],spriteCoords[0],spriteCoords[1],spriteCoords[3]);
 
         spriteCoords[0]=-(width-115)/(height*2);spriteCoords[1]=(height)/(height);
         spriteCoords[2]=-(width-115)/(height*2);spriteCoords[3]=-(height)/(height);
@@ -510,14 +526,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                     float[] s = new float[16];
                     Matrix.setRotateM(mRotationMatrix, 0, 0, 0, 0, 1.0f);
                     Matrix.multiplyMM(s, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-                    Matrix.scaleM(s, 0, gaussArrayList.scaleG[i] * scale, gaussArrayList.scaleG[i] * scale, gaussArrayList.scaleG[i] * scale);
+
                     Matrix.translateM(s, 0, gaussArrayList.locX[i] * scale, gaussArrayList.locY[i] * scale, 0);
-
-
+                    Matrix.scaleM(s, 0, gaussArrayList.scaleG[i], gaussArrayList.scaleG[i], gaussArrayList.scaleG[i]);
                     gaussArrayList.Draw(s);
-                    System.out.println("LOCATION X" + gaussArrayList.locX[0]);
-                    System.out.println("LOCATION Y" + gaussArrayList.locY[0]);
-                    System.out.println("LOCATION Z" + gaussArrayList.scaleG[0]);
                 }
             }
         //}
@@ -549,6 +561,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 swarmToggle.Draw(scratch,0);
             }
         }
+        if (gToggle==1){
+            if (centroidTrackingOption.active==true){
+                centroidTrackingOption.Draw(scratch, 1);
+                centroidTrackingEquation.Draw(scratch);
+            }
+            else {
+                centroidTrackingOption.Draw(scratch,0);
+                //lloyds.Draw(scratch);
+            }
+        }
+
+
+
         wayPointToggle.Draw(scratch,pToggle);
         ardronePrefToggle.Draw(scratch, APToggle);
         ardroneAddToggle.Draw(scratch, 0);

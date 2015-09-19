@@ -251,6 +251,14 @@ public class toggles
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.singlemode);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.multiplemode);
         }
+        else if (j==10){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.centroidtrackingoption1);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.centroidtrackingoption2);
+        }
+        else if (j==11){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.timevaryingdensityfunction);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.lloyds);
+        }
 
     }
 

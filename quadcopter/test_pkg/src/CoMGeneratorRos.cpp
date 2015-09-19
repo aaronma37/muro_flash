@@ -27,6 +27,7 @@
 using namespace std;
 double T=50;
 bool gotPose=false;
+bool trackingFlag=false;
 const int maxNum=50;
 int countD;
 float xValues[maxNum];
@@ -44,6 +45,7 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 	countD=0;
 	//centroidPositions = *pose;
 	gotPose=true;
+	
 
 	for (int i=0;i<maxNum;i++)	
 	{
@@ -59,16 +61,20 @@ void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 
 void gCallback(const geometry_msgs::PoseArray::ConstPtr& gaussPtr)
 {
+		trackingFlag=false;
 		if (gaussPtr->poses[0].position.z!=0){
 		sigma=gaussPtr -> poses[0].position.z;
 		muX=gaussPtr-> poses[0].position.x;
 		muY=gaussPtr-> poses[0].position.y;
+		if (gaussPtr->poses[0].orientation.w==1){
+		trackingFlag=true;
 		}
-	minX=-10+muX;
-	maxX=10+muX;
+		}
+	minX=-3+muX;
+	maxX=3+muX;
 
-	minY=-10+muY;
-	maxY=10+muY;
+	minY=-3+muY;
+	maxY=3+muY;
 }
 
 Matrix uniqueVertices(50,2);
@@ -453,7 +459,11 @@ int main(int argc, char **argv)
     
     //Store the position of the sites in a Matrix
 	tf2_msgs::TFMessage centroidPositions;
+	tf2_msgs::TFMessage lastCentroidPositions;
+	tf2_msgs::TFMessage cDot;
     	centroidPositions.transforms.resize(maxNum);
+	lastCentroidPositions.transforms.resize(maxNum);
+	cDot.transforms.resize(maxNum);
     int nSites = Matrix_Size(xValues);
     Matrix sitesPos(nSites,2);
     for(int i=0; i<Matrix_Size(xValues);i++){
@@ -467,17 +477,19 @@ int main(int argc, char **argv)
 		ros::NodeHandle nh_;
 		ros::Subscriber pos_sub_ ,g_sub_;
 		ros::Publisher centroid_pub_ ;
+		ros::Publisher cDot_pub_;
 
 		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
 		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
                 g_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/gauss", 1000,gCallback);
 		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
+		cDot_pub_ = nh_.advertise<tf2_msgs::TFMessage>("cDot", 1000, true);
 
     while (ros::ok())
     {
 	ros::spinOnce();
-	if (gotPose==true|| gotPose==false)
+	if (gotPose==true)
 	{	
 		float xValuesT[countD];
 		float yValuesT[countD];  
@@ -545,17 +557,31 @@ int main(int argc, char **argv)
 			centroidPositions.transforms[i].transform.translation.y=tempY;
 			centroidPositions.transforms[i].transform.rotation.w=1;
 			centroidPositions.transforms[i].child_frame_id=cfi;
+			if (trackingFlag==true){
+			cDot.transforms[i].transform.translation.x=(centroidPositions.transforms[i].transform.translation.x-lastCentroidPositions.transforms[i].transform.translation.x)*T/7;
+			cDot.transforms[i].transform.translation.y=(centroidPositions.transforms[i].transform.translation.y-lastCentroidPositions.transforms[i].transform.translation.y)*T/7;
+			cDot.transforms[i].transform.translation.z=(centroidPositions.transforms[i].transform.translation.z-lastCentroidPositions.transforms[i].transform.translation.z)*T/7;
+			}
+			else {
+			cDot.transforms[i].transform.translation.x=0;
+			cDot.transforms[i].transform.translation.y=0;
+			cDot.transforms[i].transform.translation.z=0;
+			}
 		}
 
-		cout << "min X: " << minX << "\n";
-		cout << "max X: " << maxX << "\n";
-		cout << "mean X: " << muX << "\n";
+		//cout << "min X: " << minX << "\n";
+		//cout << "max X: " << maxX << "\n";
+		//cout << "mean X: " << muX << "\n";
 
-		cout << "min Y: " << minY << "\n";
-		cout << "max Y: " << maxY << "\n";
-		cout << "mean Y: " << muY << "\n";
-			     	
+		//cout << "min Y: " << minY << "\n";
+		//cout << "max Y: " << maxY << "\n";
+		//cout << "mean Y: " << muY << "\n";
+		cout << "xdot: " << cDot.transforms[11].transform.translation.x << "\n\n";
+
+		lastCentroidPositions=centroidPositions;
 		centroid_pub_.publish(centroidPositions);
+		cDot_pub_.publish(cDot);
+		
 		gotPose=false;
 	}
 

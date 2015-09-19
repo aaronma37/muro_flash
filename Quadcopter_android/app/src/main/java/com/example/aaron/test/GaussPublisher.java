@@ -24,6 +24,8 @@ public class GaussPublisher extends AbstractNodeMain {
     private float[] yLocs = new float [num];
     private float[] scales = new float[num];
     private float[] stdDevs= new float[num];
+    public long activeSleep=1000;
+    public boolean tracking=false;
     public geometry_msgs.Pose intPose;
     private float OGsize = 0.25f;
     public int active=0;
@@ -52,6 +54,7 @@ public class GaussPublisher extends AbstractNodeMain {
             stdDevs[i] = scales[i]*OGsize;
         }
     }
+
 
     @Override
     public GraphName getDefaultNodeName() {
@@ -95,11 +98,19 @@ public class GaussPublisher extends AbstractNodeMain {
                     pose.getPoses().get(i).getPosition().setY(yLocs[i]);
                     pose.getPoses().get(i).getPosition().setZ(stdDevs[i]);
 
+                    if (tracking==true){
+                        pose.getPoses().get(i).getOrientation().setW(1);
+                    }
+                    else{
+                        pose.getPoses().get(i).getOrientation().setW(0);
+                    }
+
+
                     publisher.publish(pose);
 
 
                 }
-                Thread.sleep(1000);
+                Thread.sleep(activeSleep);
             }
         });
     }

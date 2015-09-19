@@ -59,6 +59,7 @@ geometry_msgs::Twist velEstimation[num];
 geometry_msgs::PoseStamped poseGoal[num]; // Where the Quadcopter should be
 geometry_msgs::PoseStamped poseError[num]; // Difference between desired pose and current pose
 tf2_msgs::TFMessage velocity; // Velocity command needed to rectify the error
+tf2_msgs::TFMessage cDot; // Velocity command needed to rectify the error
 geometry_msgs::Vector3 pidGain; // Store pid gain values
 geometry_msgs::Vector3 poseSysId[num]; // Store best pose estimations to use for the system id
 geometry_msgs::Vector3 velPoseEstX; // Used for modeling purposes
@@ -219,6 +220,11 @@ void pidGainZCallback(const geometry_msgs::Vector3::ConstPtr& gainPtr)
 void pathVelCallback(const geometry_msgs::Twist::ConstPtr& pathVelPtr)
 {
     pathVel = *pathVelPtr;
+}
+
+void cDotCallback(const tf2_msgs::TFMessage::ConstPtr& cDotPtr)
+{
+    cDot= *cDotPtr;
 }
 
 void aVelCallback(const geometry_msgs::TwistStamped::ConstPtr& aVelPtr)
@@ -384,7 +390,7 @@ void PID(int i)
     
     calcMoveAvg(sX[i] - sXprev, sY[i] - sYprev, sZ[i] - sZprev, poseErrYaw[i] - poseErrYawPrev[i]);
       
-    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x;//+tempVel.linear.x;
+    velocity.transforms[i].transform.translation.x = sX[i]*(-sliderGain) + (kd*T*(maResults[0])) + pathVel.linear.x+cDot.transforms[i].transform.translation.x;//+tempVel.linear.x;
     if (velocity.transforms[i].transform.translation.x > 1){
       velocity.transforms[i].transform.translation.x = 1;
     }
@@ -392,7 +398,7 @@ void PID(int i)
       velocity.transforms[i].transform.translation.x = -1;
     }
     
-    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y;//+tempVel.linear.y;
+    velocity.transforms[i].transform.translation.y = sY[i]*sliderGain + (kd*T*(maResults[1])) + pathVel.linear.y-cDot.transforms[i].transform.translation.y;//+tempVel.linear.y;
     if (velocity.transforms[i].transform.translation.y > 1){
       velocity.transforms[i].transform.translation.y = 1;
     }
@@ -404,9 +410,22 @@ void PID(int i)
     if (velocity.transforms[i].transform.translation.z > 1){
       velocity.transforms[i].transform.translation.z = 1;
     }
-    else if (velocity.transforms[i].transform.translation.z < -1){
+    else if (velocity.transforms[i].transform.transla	tion.z < -1){
       velocity.transforms[i].transform.translation.z = -1;
     }
+
+   if(velocity.transforms[i].transform.translation.x!=velocity.transforms[i].transform.translation.x){
+		velocity.transforms[i].transform.translation.x=0;
+		cout<<"NAN X= TRUE";
+	}
+if(velocity.transforms[i].transform.translation.y!=velocity.transforms[i].transform.translation.y){
+		velocity.transforms[i].transform.translation.y=0;
+cout<<"NAN Y= TRUE";
+	}
+if(velocity.transforms[i].transform.translation.z!=velocity.transforms[i].transform.translation.z){
+		velocity.transforms[i].transform.translation.z=0;
+cout<<"NAN Z= TRUE";
+	}
     
     velocity.transforms[i].transform.rotation.z = (kpYaw*poseErrYaw[i]) + (kiYaw*pastYawErr[i]) + (kdYaw*T*(maResults[3]));
     
@@ -438,6 +457,7 @@ int main(int argc, char **argv)
     ros::Subscriber velEstSub;
     ros::Subscriber pidGainSub;
     ros::Subscriber pidGainZSub;
+    ros::Subscriber cDotSub;
     ros::Subscriber pathVelSub;
     ros::Subscriber aVelSub;
     ros::Publisher velPub, AR1Pub;
@@ -451,6 +471,7 @@ int main(int argc, char **argv)
     poseGoalSub = n.subscribe<tf2_msgs::TFMessage>("/Centroids", 1, poseGoalCallback);
     poseGoalAllSub = n.subscribe<geometry_msgs::PoseStamped>("/goal_pose", 1, poseGoalCallAllback);
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
+   cDotSub = n.subscribe<tf2_msgs::TFMessage>("cDot", 1, cDotCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
     pathVelSub = n.subscribe<geometry_msgs::Twist>("\path_vel", 1, pathVelCallback);
     aVelSub = n.subscribe<geometry_msgs::TwistStamped>("/aVel", 1, aVelCallback);
@@ -473,6 +494,7 @@ int main(int argc, char **argv)
 
     velPoseEstX.z = 0;
 velocity.transforms.resize(num);
+cDot.transforms.resize(num);
     velocity.transforms[0].header.frame_id="Gypsy Danger";
     velocity.transforms[1].header.frame_id="Typhoon";
 

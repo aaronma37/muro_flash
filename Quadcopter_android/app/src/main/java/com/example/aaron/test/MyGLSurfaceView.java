@@ -321,6 +321,16 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
+                    //Toggable swarm for Path Follower
+                    if (mRenderer.getgToggle()==1 && xGL<mRenderer.centroidTrackingOption.left- mRenderer.slider&& xGL>mRenderer.centroidTrackingOption.right-mRenderer.slider&& yGL > mRenderer.centroidTrackingOption.down && yGL < mRenderer.centroidTrackingOption.up)
+                        if (mRenderer.centroidTrackingOption.active == true) {
+                            mRenderer.centroidTrackingOption.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.centroidTrackingOption.active =  true;
+                            v.vibrate(50);
+                        }
+
                     //Turn on Way Point Toggle
                     if (xGL<mRenderer.wayPointToggle.left- mRenderer.slider&& xGL>mRenderer.wayPointToggle.right-mRenderer.slider&& yGL > mRenderer.wayPointToggle.down && yGL < mRenderer.wayPointToggle.up)
                         if (mRenderer.getpToggle() == 1) {

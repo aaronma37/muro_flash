@@ -184,6 +184,7 @@ public class MainActivity extends RosActivity {
         nodeMainExecutor.execute(poseview, nodeConfiguration);
         nodeMainExecutor.execute(dummy, nodeConfiguration);
         nodeMainExecutor.execute(pathPublisher, nodeConfiguration);
+        nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
 
 
         num=poseview.getX();
@@ -339,14 +340,15 @@ public class MainActivity extends RosActivity {
 
                 if (mGLView.gFlag==1){
                     gaussPublisher.getGaussData(mGLView.getGausses());
+                    gaussPublisher.tracking=mGLView.mRenderer.centroidTrackingOption.active;
+                    gaussPublisher.activeSleep=20;
                     if(gaussPublisher.active==0){
-                        nodeMainExecutor.execute(gaussPublisher, nodeConfiguration);
                         gaussPublisher.active=1;
                     }
                 }
                 else{
-                    nodeMainExecutor.shutdownNodeMain(gaussPublisher);
                     gaussPublisher.active=0;
+                    gaussPublisher.activeSleep=1000;
                 }
 
 
