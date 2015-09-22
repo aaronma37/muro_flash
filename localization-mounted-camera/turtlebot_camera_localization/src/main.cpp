@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 
         pub = it.advertise("camera/image_processed", 1);
 
-	CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
+	CParam.readFromXMLFile("camera_old.yml");
 	MDetector.setThresholdParams(7,7);
         
 	ros::spin();
