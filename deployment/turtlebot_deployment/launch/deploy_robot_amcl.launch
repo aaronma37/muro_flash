@@ -31,13 +31,28 @@
 
     <!-- Deployment node 
     <node pkg="turtlebot_deployment" type="simple_deployment" name="deployment" output="screen">
-        <param name="robot_name" value="$(arg robot)"/>
-        <param name="hold_time" value="$(arg hold_time)"/>
-        <param name="resolution" value="$(arg resolution)"/>
+      <param name="robot_name" value="$(arg robot)"/>
+      <param name="hold_time" value="$(arg hold_time)"/>
+      <param name="resolution" value="$(arg resolution)"/>
     </node>  -->
 
-    <!-- Navigation Stack -->
+    <!-- AMCL -->
     <remap from="map" to="/map" />
+    <arg name="initial_pose_x" default="17.0"/> <!-- Use 17.0 for willow's map in simulation -->
+    <arg name="initial_pose_y" default="17.0"/> <!-- Use 17.0 for willow's map in simulation -->
+    <arg name="initial_pose_a" default="0.0"/>
+    <include file="$(find turtlebot_navigation)/launch/includes/amcl.launch.xml">
+      <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+      <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+      <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+      <arg name="scan_topic" value="scan"/>
+      <arg name="odom_frame_id" value="$(arg robot)/odom"/>
+      <arg name="base_frame_id" value="$(arg robot)/base_footprint"/>
+      <arg name="global_frame_id" value="/map"/>
+    </include>
+
+
+    <!-- Move Base 
     <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml"/>
     <param name="move_base/local_costmap/robot_base_frame" value="$(arg robot)/base_footprint"/>
     <param name="move_base/global_costmap/robot_base_frame" value="$(arg robot)/base_footprint"/>
@@ -45,7 +60,7 @@
     <param name="move_base/global_costmap/global_frame" value="/map"/>
     <param name="move_base/local_costmap/transform_tolerance" value="5"/>
     <param name="move_base/global_costmap/transform_tolerance" value="5"/>
-    
+    -->
 
 
 
