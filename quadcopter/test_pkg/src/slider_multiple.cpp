@@ -410,7 +410,7 @@ void PID(int i)
     if (velocity.transforms[i].transform.translation.z > 1){
       velocity.transforms[i].transform.translation.z = 1;
     }
-    else if (velocity.transforms[i].transform.transla	tion.z < -1){
+    else if (velocity.transforms[i].transform.translation.z < -1){
       velocity.transforms[i].transform.translation.z = -1;
     }
 
