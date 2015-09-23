@@ -30,12 +30,22 @@ const float kb = -1.0;//-1;
 const float kc = 1.0;
 bool haspath = false;
 
+// Conversion from pixels to meter
+double xToMeter(double x)
+{
+	return (x - 310)/200;
+}
+
+double yToMeter(double y)
+{
+	return (x - 178)/200;
+}
 
 // Callback to return turtle's pose
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
 {
-  turtlePose.position.x = msg->pose.pose.position.x;
-  turtlePose.position.y = msg->pose.pose.position.y;
+  turtlePose.position.x = xToMeter(msg->pose.pose.position.x);
+  turtlePose.position.y = yToMeter(msg->pose.pose.position.y);
  // geometry_msgs::Quaternion pose_quat = tf::createQuaternionMsgFromYaw(msg->theta);
   double theta = tf::getYaw(msg->pose.pose.orientation);
   if (theta < 0) theta += 2*pi;
@@ -129,6 +139,7 @@ int closest(const float p0x, const float p0y)
   }
   return lowestIndex;
 }
+
 
 
 // Test of line following
