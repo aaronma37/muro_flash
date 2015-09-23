@@ -410,7 +410,7 @@ void PID(int i)
     if (velocity.transforms[i].transform.translation.z > 1){
       velocity.transforms[i].transform.translation.z = 1;
     }
-    else if (velocity.transforms[i].transform.transla	tion.z < -1){
+    else if (velocity.transforms[i].transform.translation.z < -1){
       velocity.transforms[i].transform.translation.z = -1;
     }
 
@@ -473,7 +473,7 @@ int main(int argc, char **argv)
     pidGainSub = n.subscribe<geometry_msgs::Vector3>("/pid_gain", 1, pidGainCallback);
    cDotSub = n.subscribe<tf2_msgs::TFMessage>("cDot", 1, cDotCallback);
     pidGainZSub = n.subscribe<geometry_msgs::Vector3>("/pid_gainZ", 1, pidGainZCallback);
-    pathVelSub = n.subscribe<geometry_msgs::Twist>("\path_vel", 1, pathVelCallback);
+    pathVelSub = n.subscribe<geometry_msgs::Twist>("/path_vel", 1, pathVelCallback);
     aVelSub = n.subscribe<geometry_msgs::TwistStamped>("/aVel", 1, aVelCallback);
     velPub = n.advertise<tf2_msgs::TFMessage>("/cmd_vel", 1000, true);
     AR1Pub = n.advertise<geometry_msgs::Twist>("/ardrone1/cmd_vel", 1000, true);
