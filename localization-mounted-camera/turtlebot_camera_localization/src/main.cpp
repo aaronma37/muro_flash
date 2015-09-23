@@ -29,8 +29,8 @@
 //Define robot markers
 static const int _BOTICELLI = 5;
 static const int _LEONARDO = 20;
-static const int _RAPHAEL = 4;
-static const int _DONATELLO = 6;
+static const int _RAPHAEL = 6;
+static const int _DONATELLO = 4;
 static const int _TITIAN = 7;
 static const int _MASACCIO = 3;
 static const int _MICHELANGELO = 15;
@@ -270,7 +270,7 @@ int main(int argc, char **argv)
 
         pub = it.advertise("camera/image_processed", 1);
 
-	CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
+	CParam.readFromXMLFile("camera_old.yml");
 	MDetector.setThresholdParams(7,7);
         
 	ros::spin();
