@@ -15,8 +15,7 @@
     <param name="tf_prefix" value="$(arg robot)"/>
 
     <!-- Minimal -->
-    <include file="$(find turtlebot_bringup)/launch/minimal.launch">
-    </include>
+    <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
     <param name="mobile_base/base_frame" value="$(arg robot)/base_footprint"/>
     <param name="mobile_base/odom_frame" value="$(arg robot)/odom"/>
 
@@ -24,14 +23,13 @@
     <node pkg="turtlebot_deployment" type="inter_robot_communication" name="communication">
         <param name="robot_name" value="$(arg robot)"/>
         <param name="EKF_switch" value="$(arg EKF_on)"/>
-
     </node>
     
     <!-- EKF -->
-<node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
-<param name="robot_name"	value="$(arg robot)"/>
-<param name="sendAll"	value="$(arg send)"/>
-</node>
+    <node pkg="turtlebot_deployment" type="ekf" name="ekf_filter" output="screen">
+      <param name="robot_name"	value="$(arg robot)"/>
+      <param name="sendAll"	value="$(arg send)"/>
+    </node>
 
     <!-- Deployment node -->
     <node pkg="turtlebot_deployment" type="simple_deployment" name="deployment" output="screen">
