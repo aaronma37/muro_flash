@@ -145,7 +145,7 @@ int main(int argc, char **argv)
   
   
   // Publisher and Subscriber
-  ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
+  ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>("cmd_vel_mux/input/navi", 1, true);
 
   ros::Subscriber sub = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose",10, poseCallback);
   ros::Subscriber pathsub = nh.subscribe<nav_msgs::Path>("amcl_path", 10, pathCallback);
