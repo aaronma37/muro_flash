@@ -146,11 +146,11 @@ ${catkin_LIBRARIES}
 
 
 
-add_executable(CoM_sample_input_test src/CoM_sample_input_test.cpp)
-add_dependencies(CoM_sample_input_test ${catkin_EXPORTED_TARGETS})
-target_link_libraries(CoM_sample_input_test
-${catkin_LIBRARIES}
-)
+#add_executable(CoM_sample_input_test src/CoM_sample_input_test.cpp)
+#add_dependencies(CoM_sample_input_test ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(CoM_sample_input_test
+#${catkin_LIBRARIES}
+#)
 
 	
 
