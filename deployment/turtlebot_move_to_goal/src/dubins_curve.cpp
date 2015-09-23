@@ -160,7 +160,7 @@ double xToMeter(double x)
 
 double yToMeter(double y)
 {
-	return (x - 178)/200;
+	return (y - 178)/200;
 }
 
 int main(int argc, char **argv)
