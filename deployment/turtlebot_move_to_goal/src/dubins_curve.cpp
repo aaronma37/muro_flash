@@ -68,8 +68,8 @@ class DubinsCurve
 
 DubinsCurve::DubinsCurve():
 	cmd_vel_(new geometry_msgs::Twist),
-	angle_tolerance_(0.1),
-	distance_tolerance_(0.05),
+	angle_tolerance_(3.14),             // aka. angle doesn't matter
+	distance_tolerance_(0.25),
 	got_goal_(false),
 	path_size_(1)
 {
