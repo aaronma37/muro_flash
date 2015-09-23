@@ -16,7 +16,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   /home/kliu/aruco-1.2.4/src
-  /home/evan/OpenCV/aruco-1.3.0/src
+#  /home/evan/OpenCV/aruco-1.3.0/src
 )
 
 catkin_package(
@@ -31,5 +31,5 @@ target_link_libraries(camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
   /home/kliu/aruco-1.2.4/build/src/libaruco.so
-  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
+#  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 )
