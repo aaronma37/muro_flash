@@ -12,12 +12,12 @@
 #include "dubins.h"
 #include "nav_msgs/Path.h"
 
-#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
+//#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
 
 //TODO find the minimum turning radius
-const double mtr = TOPIXELS * (0.1);
+const double mtr = 0.1;
 //TODO find the best step size of the path sample
-const double stepSize = TOPIXELS * (0.004);
+const double stepSize = 0.004;
 //counter to determine when to publish the complete path
 int counter = 0;
 
@@ -45,7 +45,9 @@ class DubinsCurve
 		// Methods
 		void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr&);
 		void goalCallback(const geometry_msgs::PoseStampedConstPtr&);
-
+                double xToMeter(double);
+                double yToMeter(double);
+                
 		// ROS 
 		ros::NodeHandle ph_, nh_;
 		ros::Subscriber pos_sub_;
@@ -95,12 +97,12 @@ void DubinsCurve::poseCallback(const geometry_msgs::PoseWithCovarianceStamped::C
 {
 	if ( got_goal_ ){
 
-		double cur_pose[3] = { pose->pose.pose.position.x,
-			                   pose->pose.pose.position.y,
-			                   tf::getYaw(pose->pose.pose.orientation)};
+		double cur_pose[3] = { xToMeter(pose->pose.pose.position.x),
+			               yToMeter(pose->pose.pose.position.y),
+			               tf::getYaw(pose->pose.pose.orientation)};
 		double goal_pose[3] = {	goalPose_.pose.position.x,
-			                    goalPose_.pose.position.y,
-			                    tf::getYaw(goalPose_.pose.orientation)};
+			                goalPose_.pose.position.y,
+			                tf::getYaw(goalPose_.pose.orientation)};
 
 		//std::cout << "heading = " << orientation << "\n";
 		//std::cout << "my_x = " << pose->pose.pose.position.x << " ;my_y = " << pose->pose.pose.position.y << "\n";
@@ -149,6 +151,16 @@ void DubinsCurve::poseCallback(const geometry_msgs::PoseWithCovarianceStamped::C
 	else {
 		//ROS_WARN("No goal received yet");
 	}
+}
+
+double xToMeter(double x)
+{
+	return (x - 310)/200;
+}
+
+double yToMeter(double y)
+{
+	return (x - 178)/200;
 }
 
 int main(int argc, char **argv)
