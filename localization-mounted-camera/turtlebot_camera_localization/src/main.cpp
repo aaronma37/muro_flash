@@ -270,7 +270,10 @@ int main(int argc, char **argv)
 
         pub = it.advertise("camera/image_processed", 1);
 
-	CParam.readFromXMLFile("camera_old.yml");
+	// Reads from the camera calibration file
+	CParam.readFromXMLFile("/tmp/camera_old.yml");
+	
+	// Defines threshold parameters for detecting aruco markers, from 0-25 and 0-13, see aruco_test
 	MDetector.setThresholdParams(7,7);
         
 	ros::spin();
