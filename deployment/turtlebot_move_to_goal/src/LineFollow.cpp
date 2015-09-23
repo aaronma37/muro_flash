@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 
     ros::spinOnce();
 
-    //loop_rate.sleep();
+    loop_rate.sleep();
   }
 
 
