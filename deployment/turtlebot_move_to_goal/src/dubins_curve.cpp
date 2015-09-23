@@ -153,12 +153,12 @@ void DubinsCurve::poseCallback(const geometry_msgs::PoseWithCovarianceStamped::C
 	}
 }
 
-double xToMeter(double x)
+double DubinsCurve::xToMeter(double x)
 {
 	return (x - 310)/200;
 }
 
-double yToMeter(double y)
+double DubinsCurve::yToMeter(double y)
 {
 	return (y - 178)/200;
 }
