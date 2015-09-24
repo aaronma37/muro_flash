@@ -11,6 +11,7 @@
 #include <tf/tf.h>
 #include "dubins.h"
 #include "nav_msgs/Path.h"
+#include <turtlebot_deployment/PoseWithName.h>
 
 //#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
 
@@ -43,7 +44,7 @@ class DubinsCurve
 	private:
 
 		// Methods
-		void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr&);
+		void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr&);
 		void goalCallback(const geometry_msgs::PoseStampedConstPtr&);
                 double xToMeter(double);
                 double yToMeter(double);
@@ -69,13 +70,13 @@ class DubinsCurve
 DubinsCurve::DubinsCurve():
 	cmd_vel_(new geometry_msgs::Twist),
 	angle_tolerance_(3.14),             // aka. angle doesn't matter
-	distance_tolerance_(0.25),
+	distance_tolerance_(0.01),
 	got_goal_(false),
 	path_size_(1)
 {
 
 	// ROS publisher and subscribers
-	pos_sub_ = nh_.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose", 1, &DubinsCurve::poseCallback, this);
+	pos_sub_ = nh_.subscribe<turtlebot_deployment::PoseWithName>("afterKalman", 1, &DubinsCurve::poseCallback, this);
 	goal_sub_ = nh_.subscribe<geometry_msgs::PoseStamped>("move_base_simple/goal",1, &DubinsCurve::goalCallback, this);
 	path_pub_ = nh_.advertise<nav_msgs::Path>("amcl_path", 1, true); 
 }
@@ -93,13 +94,13 @@ void DubinsCurve::goalCallback(const geometry_msgs::PoseStampedConstPtr& goalPos
  * This Callback function gets the current position use it in conjunction with
  * goalPose_ to create a dubins path. The path is then published.
  */
-void DubinsCurve::poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& pose)
+void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& pose)
 {
 	if ( got_goal_ ){
 
-		double cur_pose[3] = { xToMeter(pose->pose.pose.position.x),
-			               yToMeter(pose->pose.pose.position.y),
-			               tf::getYaw(pose->pose.pose.orientation)};
+		double cur_pose[3] = { xToMeter(pose->pose.position.x),
+			               yToMeter(pose->pose.position.y),
+			               tf::getYaw(pose->pose.orientation)};
 		double goal_pose[3] = {	goalPose_.pose.position.x,
 			                goalPose_.pose.position.y,
 			                tf::getYaw(goalPose_.pose.orientation)};
@@ -110,8 +111,8 @@ void DubinsCurve::poseCallback(const geometry_msgs::PoseWithCovarianceStamped::C
 
 		// Recalculate if the goal changed
 		if (abs(goal_pose[0] - prev_goal_[0]) >= distance_tolerance_ ||
-		    abs(goal_pose[1] - prev_goal_[1]) >= distance_tolerance_ ||
-		    abs(goal_pose[2] - prev_goal_[2]) >= angle_tolerance_  ) {
+		    abs(goal_pose[1] - prev_goal_[1]) >= distance_tolerance_ ){
+		    //abs(goal_pose[2] - prev_goal_[2]) >= angle_tolerance_  ) {
 
 			// save the prev_goal_ to check if goal change in next iteration
 			prev_goal_[0] = goal_pose[0];
