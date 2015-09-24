@@ -169,11 +169,11 @@ X<<1,2,3;
 Xv.push_back(X);
 XT=X;
 XTv.push_back(XT);std::cout<<"Measured: \n"<<Z<<"\n\n";
-agentVector[iTemp].velo=ipt->linear.x;
+agentVector[iTemp].velo=ipt->-linear.x;
 agentVector[iTemp].omega=ipt->angular.z;
 }
 else{
-agentVector[iTemp].velo=ipt->linear.x;
+agentVector[iTemp].velo=-ipt->linear.x;
 agentVector[iTemp].omega=ipt->angular.z;
 }
 }
