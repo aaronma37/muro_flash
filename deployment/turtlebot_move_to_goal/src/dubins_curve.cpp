@@ -128,6 +128,8 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 			// sample the path to get a vector of positions
 			dubins_path_sample_many( &(path), makePath, stepSize, &dubinsPath );	
 
+                        //publish the path
+			path_pub_.publish(dubinsPath); 
 			// save the prev_goal_ to check if goal change in next iteration
 			prev_goal_[0] = goal_pose[0];
 			prev_goal_[1] = goal_pose[1];
@@ -135,6 +137,7 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 		}
 
 		//add the goal position to the end of the path
+		/*
 		if (dubinsPath.poses.size() == path_size_ ){
 			//printf("(%f,%f,%f)\n", goal_pose[0], goal_pose[1], goal_pose[2]);
 			counter = dubinsPath.poses.size();
@@ -144,14 +147,18 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 			geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(goal_pose[2]);
 			dubinsPath.poses[counter].pose.orientation = odom_quat;
 		}
-
+		*/
+		
+		/*
 		//when a path is built completely, publish
 		if (counter >= path_size_){
 			path_pub_.publish(dubinsPath); 
 		}
+		*/
 	}
 	else {
 		//ROS_WARN("No goal received yet");
+		got_goal_ = false;
 	}
 }
 
