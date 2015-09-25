@@ -70,7 +70,7 @@ class DubinsCurve
 DubinsCurve::DubinsCurve():
 	cmd_vel_(new geometry_msgs::Twist),
 	angle_tolerance_(3.14),             // aka. angle doesn't matter
-	distance_tolerance_(0.01),
+	distance_tolerance_(0.1),
 	got_goal_(false),
 	path_size_(1)
 {
@@ -110,14 +110,10 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 		//std::cout << "goal_x = " << goalPose_.pose.position.x << " ;goal_y = " << goalPose_.pose.position.y << "\n";
 
 		// Recalculate if the goal changed
-		if (abs(goal_pose[0] - prev_goal_[0]) >= distance_tolerance_ ||
-		    abs(goal_pose[1] - prev_goal_[1]) >= distance_tolerance_ ){
+		if ( fabs(goal_pose[0] - prev_goal_[0]) >= distance_tolerance_ 
+                  || fabs(goal_pose[1] - prev_goal_[1]) >= distance_tolerance_ ){
 		    //abs(goal_pose[2] - prev_goal_[2]) >= angle_tolerance_  ) {
 
-			// save the prev_goal_ to check if goal change in next iteration
-			prev_goal_[0] = goal_pose[0];
-			prev_goal_[1] = goal_pose[1];
-			prev_goal_[2] = goal_pose[2];
 
 			counter = 0;
 
@@ -131,6 +127,11 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 
 			// sample the path to get a vector of positions
 			dubins_path_sample_many( &(path), makePath, stepSize, &dubinsPath );	
+
+			// save the prev_goal_ to check if goal change in next iteration
+			prev_goal_[0] = goal_pose[0];
+			prev_goal_[1] = goal_pose[1];
+			prev_goal_[2] = goal_pose[2];
 		}
 
 		//add the goal position to the end of the path
@@ -156,12 +157,12 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 
 double DubinsCurve::xToMeter(double x)
 {
-	return (x - 310)/200;
+	return (x - 310.0)/200.0;
 }
 
 double DubinsCurve::yToMeter(double y)
 {
-	return (y - 178)/200;
+	return (y - 178.0)/200.0;
 }
 
 int main(int argc, char **argv)
