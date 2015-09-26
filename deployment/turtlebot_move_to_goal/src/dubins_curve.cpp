@@ -16,9 +16,9 @@
 //#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
 
 //TODO find the minimum turning radius
-const double mtr = 0.1;
+const double mtr = 0.02222222222222;
 //TODO find the best step size of the path sample
-const double stepSize = 0.004;
+const double stepSize = 0.0008888888888;
 //counter to determine when to publish the complete path
 int counter = 0;
 
@@ -70,7 +70,8 @@ class DubinsCurve
 DubinsCurve::DubinsCurve():
 	cmd_vel_(new geometry_msgs::Twist),
 	angle_tolerance_(3.14),             // aka. angle doesn't matter
-	distance_tolerance_(0.1),
+	distance_tolerance_(0.025),
+
 	got_goal_(false),
 	path_size_(1)
 {
@@ -164,12 +165,12 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 
 double DubinsCurve::xToMeter(double x)
 {
-	return (x - 310.0)/200.0;
+	return (x - 301.0)/900.0;
 }
 
 double DubinsCurve::yToMeter(double y)
 {
-	return (y - 178.0)/200.0;
+	return (y - 247.0)/900.0;
 }
 
 int main(int argc, char **argv)

@@ -27,9 +27,9 @@ geometry_msgs::Pose turtlePose;
 const float stopx = 100.0;
 const float ks = 0.05;    // Forward velocity
 const float ks_max = 0.15;  // Max Forward velocity
-const float ka = 0.3;//0.5;                                                                            
-const float kb = -1.8;//-1;
-const float kc = 1.0;
+const float ka = 1;//0.5;                                                                            
+const float kb = -3.6;//-1;
+const float kc = 0.2;
 bool haspath = false;
 const float acc_rate = ks/10;
 
@@ -37,12 +37,12 @@ const float acc_rate = ks/10;
 // Conversion from pixels to meter
 double xToMeter(double x)
 {
-	return (x - 310)/200;
+	return (x - 301)/900;
 }
 
 double yToMeter(double y)
 {
-	return (y - 178)/200;
+	return (y - 247)/900;
 }
 
 // Callback to return turtle's pose
