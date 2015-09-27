@@ -28,7 +28,13 @@ const float ks = 0.1;  // Forward velocity
 const float ka = 0.2;//0.5;                                                                            
 const float kb = -1.0;//-1;
 const float kc = 1.0;
+/*
+const int ON_LINE = 2;
+const int LINE_TO_CURVE = 1;
+const int ON_CURVE = 0;
+*/
 bool haspath = false;
+//int* vel_density // Linear velocity desnity along the path
 
 // Conversion from pixels to meter
 double xToMeter(double x)
@@ -40,6 +46,32 @@ double yToMeter(double y)
 {
 	return (y - 178)/200;
 }
+
+/*
+// This function calculates the linear velocity density of the path.
+void linear_vel_density(void)
+{
+	bool on_line = false; // used to keep track of the indexes when the boundary changes
+
+	for(int i = 0; i < path.poses.size(); i++)
+	{
+		if(i == path.poses.size() - 1) // avoid index out of bounds error
+			break;
+			
+		if(getYaw(&path.poses[i].quaternion) == getYaw(&path.poses[i + 1].quaternion)) // on a straight line
+		{ // FIXME; Make sure that "&" is actually needed
+			vel_density[i] = ON_LINE;
+		}
+		else 
+		{
+			if(getYaw(&path.poses[i].quaternion) == getYaw(&path.poses[i - 1].quaternion) && i != 0)
+				vel_density[i] = ON_LINE;
+			else vel_density[i] = ON_CURVE;
+		}
+	}
+	vel_density[i] = ON_CURVE; // last point
+}
+*/
 
 // Callback to return turtle's pose
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
@@ -58,6 +90,8 @@ void pathCallback(const nav_msgs::Path::ConstPtr& msg)
   path = *msg;
   //ROS_INFO("Path Received");
   haspath = true;
+  // vel_density = new int[path.poses.size()]; // Use delete[] to free memory 
+  // linear_vel_density();
 }
 
 // sinc(x) function.  Required for control law
@@ -224,6 +258,7 @@ int main(int argc, char **argv)
     loop_rate.sleep();
   }
 
+  // delete[] vel_density;
 
   return 0;
 }
