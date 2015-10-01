@@ -13,6 +13,7 @@
 #include "nav_msgs/Path.h"
 #include <turtlebot_deployment/PoseWithName.h>
 
+#define PI 3.14159265358978
 //#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
 
 //TODO find the minimum turning radius
@@ -70,7 +71,7 @@ class DubinsCurve
 DubinsCurve::DubinsCurve():
 	cmd_vel_(new geometry_msgs::Twist),
 	angle_tolerance_(3.14),             // aka. angle doesn't matter
-	distance_tolerance_(0.025),
+	distance_tolerance_(0.075),
 
 	got_goal_(false),
 	path_size_(1)
@@ -116,6 +117,16 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 		    //abs(goal_pose[2] - prev_goal_[2]) >= angle_tolerance_  ) {
 
 
+                    //automatically assign goal orientation
+                    goal_pose[2] = atan( (goal_pose[1] - cur_pose[1])/
+                                         (goal_pose[0] - cur_pose[0]) );
+
+                    if ( goal_pose[0] - cur_pose[0] < 0 ){
+                      goal_pose[2] += PI;
+                    }
+                      
+		    
+
 			counter = 0;
 
 			// create a dubins path (see dubins.cpp)
@@ -136,26 +147,6 @@ void DubinsCurve::poseCallback(const turtlebot_deployment::PoseWithName::ConstPt
 			prev_goal_[1] = goal_pose[1];
 			prev_goal_[2] = goal_pose[2];
 		}
-
-		//add the goal position to the end of the path
-		/*
-		if (dubinsPath.poses.size() == path_size_ ){
-			//printf("(%f,%f,%f)\n", goal_pose[0], goal_pose[1], goal_pose[2]);
-			counter = dubinsPath.poses.size();
-			dubinsPath.poses.resize(counter + 1);
-			dubinsPath.poses[counter].pose.position.x = goal_pose[0];
-			dubinsPath.poses[counter].pose.position.y = goal_pose[1];
-			geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(goal_pose[2]);
-			dubinsPath.poses[counter].pose.orientation = odom_quat;
-		}
-		*/
-		
-		/*
-		//when a path is built completely, publish
-		if (counter >= path_size_){
-			path_pub_.publish(dubinsPath); 
-		}
-		*/
 	}
 	else {
 		//ROS_WARN("No goal received yet");
