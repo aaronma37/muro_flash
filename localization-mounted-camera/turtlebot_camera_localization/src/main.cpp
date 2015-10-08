@@ -147,7 +147,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		//Get coordinates of the center
 		cv::Point2f marker_centroid = Markers[i].getCenter();
 		camPose.pose.pose.position.x = marker_centroid.x*SCALING_FACTOR_X;
-		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y-500;
+		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
 
 		//calculate the heading
 		double myHeading;
