@@ -1,7 +1,3 @@
-//Katherine Liu
-//UCSD, Dynamics Systems and Controls
-//2014
-
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -156,7 +152,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		//Get coordinates of the center
 		cv::Point2f marker_centroid = Markers[i].getCenter();
 		camPose.pose.pose.position.x = marker_centroid.x*SCALING_FACTOR_X;
-		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
+		camPose.pose.pose.position.y = (PIXEL_Y-marker_centroid.y)*SCALING_FACTOR_Y;
+
 
 		//calculate the heading
 		double myHeading;
@@ -219,6 +216,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom_trans.child_frame_id = robot_name_map[Markers[i].id]+"/odom";
 
 if (Markers[i].id == _BOTICELLI || Markers[i].id == _LEONARDO || Markers[i].id == _DONATELLO || Markers[i].id == _RAPHAEL  || Markers[i].id == _TITIAN || Markers[i].id == _MASACCIO || Markers[i].id == _MICHELANGELO || Markers[i].id == _GHIBERTI || Markers[i].id == _BELLINI || Markers[i].id == _GIOTTO){
+
 
 
 		ghost[Markers[i].id]=ghost[Markers[i].id]+1;
