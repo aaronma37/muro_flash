@@ -1,3 +1,7 @@
+//Katherine Liu
+//UCSD, Dynamics Systems and Controls
+//2014
+
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
