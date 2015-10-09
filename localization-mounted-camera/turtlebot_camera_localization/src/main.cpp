@@ -29,12 +29,18 @@
 //Define robot markers
 static const int _BOTICELLI = 6;
 static const int _LEONARDO = 20;
-static const int _RAPHAEL = 5;
 static const int _DONATELLO = 4;
+static const int _RAPHAEL = 5;
 static const int _TITIAN = 7;
 static const int _MASACCIO = 3;
 static const int _MICHELANGELO = 15;
 static const int _GHIBERTI = 80;
+static const int _BERNINI = 10;
+static const int _BELLINI = 2;
+
+//AARON WAS HERE
+int ghost[100];
+bool active[100];
 
 
 //Try maps
@@ -69,6 +75,12 @@ ros::Publisher particleCloudPub_michelangelo;
 ros::Publisher odom_pub_ghiberti;
 ros::Publisher camPose_pub_ghiberti;
 ros::Publisher particleCloudPub_ghiberti;
+ros::Publisher camPose_pub_bernini;
+ros::Publisher particleCloudPub_bernini;
+ros::Publisher odom_pub_bellini;
+ros::Publisher camPose_pub_bellini;
+ros::Publisher particleCloudPub_bellini;
+
 tf::TransformBroadcaster *odom_broadcaster = NULL;
 
 //Store all constants for image encodings in the enc namespace to be used later.
@@ -135,7 +147,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		//Get coordinates of the center
 		cv::Point2f marker_centroid = Markers[i].getCenter();
 		camPose.pose.pose.position.x = marker_centroid.x*SCALING_FACTOR_X;
-		camPose.pose.pose.position.y = (PIXEL_Y-marker_centroid.y)*SCALING_FACTOR_Y;
+		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
 
 		//calculate the heading
 		double myHeading;
@@ -183,7 +195,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom_trans.header.stamp = current_time;
 		odom_trans.header.frame_id = "/map";
 		odom_trans.transform.translation.x = marker_centroid.x*SCALING_FACTOR_X;
-		odom_trans.transform.translation.y = (PIXEL_Y-marker_centroid.y)*SCALING_FACTOR_Y;
+		odom_trans.transform.translation.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
 		//odom_trans.transform.translation.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
 		//For debug		
 		//odom_trans.transform.translation.x = marker_centroid.x;
@@ -196,10 +208,23 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom.header.frame_id = robot_name_map[Markers[i].id]+"/odom";
 		camPose.header.frame_id = robot_name_map[Markers[i].id]+"/pose"; 
 		odom_trans.child_frame_id = robot_name_map[Markers[i].id]+"/odom";
-		odom_pub_map[Markers[i].id].publish(odom);
-		camPose_pub_map[Markers[i].id].publish(camPose);
-		odom_broadcaster->sendTransform(odom_trans);
-		particleCloudPub_map[Markers[i].id].publish(particleCloud); 
+
+if (Markers[i].id == _BOTICELLI || Markers[i].id == _LEONARDO || Markers[i].id == _DONATELLO || Markers[i].id == _RAPHAEL  || Markers[i].id == _TITIAN || Markers[i].id == _MASACCIO || Markers[i].id == _MICHELANGELO || Markers[i].id == _GHIBERTI || Markers[i].id == _BERNINI || Markers[i].id == _BELLINI){
+
+
+		ghost[Markers[i].id]=ghost[Markers[i].id]+1;
+			if(ghost[Markers[i].id]>100){
+				active[Markers[i].id]=true;
+			}
+			
+			if (active[Markers[i].id]==true){				
+				odom_pub_map[Markers[i].id].publish(odom);
+				camPose_pub_map[Markers[i].id].publish(camPose);
+				cout << "REACHED";	
+				particleCloudPub_map[Markers[i].id].publish(particleCloud); 
+			}
+}
+
 		cv::putText(cv_ptr->image,robot_name_map[Markers[i].id],cv::Point(marker_centroid.x,marker_centroid.y+20),1,1, cv::Scalar(0,255,0));
              }
 	}
@@ -225,7 +250,7 @@ int main(int argc, char **argv)
 
         cv::namedWindow(WINDOW, CV_WINDOW_AUTOSIZE); //another option is: CV_WINDOW_NORMAL
  
-        image_transport::Subscriber sub = it.subscribe("camera/image_raw", 1, imageCallback);
+        image_transport::Subscriber sub = it.subscribe("/camera_2/image_raw", 1, imageCallback);
 
 	robot_name_map[_BOTICELLI]="boticelli";
 	robot_name_map[_LEONARDO]="leonardo";
@@ -234,46 +259,54 @@ int main(int argc, char **argv)
 	robot_name_map[_TITIAN]="titian";
 	robot_name_map[_MASACCIO]="masaccio"; 
 	robot_name_map[_MICHELANGELO]="michelangelo";   
+	robot_name_map[_BERNINI]="bernini";   
+	robot_name_map[_BELLINI]="bellini"; 
 
-	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 2);
+	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 10);
 	camPose_pub_map[_BOTICELLI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("boticelli/amcl_pose", 1, true);
 	particleCloudPub_map[_BOTICELLI] = nh.advertise<geometry_msgs::PoseArray>("boticelli/particlecloud",1,true);
 	particleCloud.poses.resize(1);
 
-	odom_pub_map[_TITIAN] = nh.advertise<nav_msgs::Odometry>("titian/odom", 2);
+	odom_pub_map[_TITIAN] = nh.advertise<nav_msgs::Odometry>("titian/odom", 10);
 	camPose_pub_map[_TITIAN] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("titian/amcl_pose", 1, true);
 	particleCloudPub_map[_TITIAN] = nh.advertise<geometry_msgs::PoseArray>("titian/particlecloud",1,true);
 
-	odom_pub_map[_RAPHAEL] = nh.advertise<nav_msgs::Odometry>("raphael/odom", 2);
+	odom_pub_map[_RAPHAEL] = nh.advertise<nav_msgs::Odometry>("raphael/odom", 10);
 	camPose_pub_map[_RAPHAEL] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("raphael/amcl_pose", 1, true);
 	particleCloudPub_map[_RAPHAEL] = nh.advertise<geometry_msgs::PoseArray>("raphael/particlecloud",1,true);
 
-	odom_pub_map[_DONATELLO] = nh.advertise<nav_msgs::Odometry>("donatello/odom", 2);
+	odom_pub_map[_DONATELLO] = nh.advertise<nav_msgs::Odometry>("donatello/odom", 10);
 	camPose_pub_map[_DONATELLO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("donatello/amcl_pose", 1, true);
 	particleCloudPub_map[_DONATELLO] = nh.advertise<geometry_msgs::PoseArray>("donatello/particlecloud",1,true);
 
-	odom_pub_map[_LEONARDO] = nh.advertise<nav_msgs::Odometry>("leonardo/odom", 2);
+	odom_pub_map[_LEONARDO] = nh.advertise<nav_msgs::Odometry>("leonardo/odom", 10);
 	camPose_pub_map[_LEONARDO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("leonardo/amcl_pose", 1, true);
 	particleCloudPub_map[_LEONARDO] = nh.advertise<geometry_msgs::PoseArray>("leonardo/particlecloud",1,true);
 
-	odom_pub_map[_MASACCIO] = nh.advertise<nav_msgs::Odometry>("masaccio/odom", 2);
+	odom_pub_map[_MASACCIO] = nh.advertise<nav_msgs::Odometry>("masaccio/odom", 10);
 	camPose_pub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("masaccio/amcl_pose", 1, true);
 	particleCloudPub_map[_MASACCIO] = nh.advertise<geometry_msgs::PoseArray>("masaccio/particlecloud",1,true);
 
-	odom_pub_map[_MICHELANGELO] = nh.advertise<nav_msgs::Odometry>("michelangelo/odom", 2);
+	odom_pub_map[_MICHELANGELO] = nh.advertise<nav_msgs::Odometry>("michelangelo/odom", 10);
 	camPose_pub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("michelangelo/amcl_pose", 1, true);
 	particleCloudPub_map[_MICHELANGELO] = nh.advertise<geometry_msgs::PoseArray>("michelangelo/particlecloud",1,true);   
 
-	odom_pub_map[_GHIBERTI] = nh.advertise<nav_msgs::Odometry>("ghiberti/odom", 2);
+	odom_pub_map[_GHIBERTI] = nh.advertise<nav_msgs::Odometry>("ghiberti/odom", 10);
 	camPose_pub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("ghiberti/amcl_pose", 1, true);
 	particleCloudPub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseArray>("ghiberti/particlecloud",1,true);  
 
-        pub = it.advertise("camera/image_processed", 1);
-
-	// Reads from the camera calibration file
-	CParam.readFromXMLFile("/tmp/camera_old.yml");
+odom_pub_map[_BERNINI] = nh.advertise<nav_msgs::Odometry>("bernini/odom", 2);
+	camPose_pub_map[_BERNINI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("bernini/amcl_pose", 1, true);
+	particleCloudPub_map[_BERNINI] = nh.advertise<geometry_msgs::PoseArray>("bernini/particlecloud",1,true);  
 	
-	// Defines threshold parameters for detecting aruco markers, from 0-25 and 0-13, see aruco_test
+	odom_pub_map[_BELLINI] = nh.advertise<nav_msgs::Odometry>("bellini/odom", 2);
+	camPose_pub_map[_BELLINI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("bellini/amcl_pose", 1, true);
+	particleCloudPub_map[_BELLINI] = nh.advertise<geometry_msgs::PoseArray>("bellini/particlecloud",1,true);  
+
+        pub = it.advertise("/camera_2/image_processed", 1);
+
+	//CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
+	CParam.readFromXMLFile("/home/aaron/catkin_ws/src/aruco/build/utils/camera_old.yml");
 	MDetector.setThresholdParams(7,7);
         
 	ros::spin();
@@ -281,4 +314,3 @@ int main(int argc, char **argv)
     	ROS_INFO("tutorialROSOpenCV::main.cpp::No error.");
 	cv::destroyWindow(WINDOW);
  }
-
