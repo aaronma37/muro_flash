@@ -24,14 +24,15 @@
 // Global Variables
 nav_msgs::Path path;
 geometry_msgs::Pose turtlePose;
+geometry_msgs::Pose goalPose;
 const float stopx = 100.0;
 const float ks = 0.05;    // Forward velocity
-const float ks_max = 0.15;  // Max Forward velocity
-const float ka = 0.75;//0.5;                                                                            
+const float km = 1;  // Max Forward velocity
+const float ka = 1;//0.5;                                                                            
 const float kb = -3.0;//-1;
 const float kc = 0.2;
 bool haspath = false;
-const float acc_rate = ks/50;
+const float acc_rate = ks/10;
 
 
 // Conversion from pixels to meter
@@ -61,6 +62,7 @@ void pathCallback(const nav_msgs::Path::ConstPtr& msg)
 {
   path = *msg;
   //ROS_INFO("Path Received");
+  goalPose = msg->poses[msg->poses.size()-1].pose;
   haspath = true;
 }
 
@@ -145,7 +147,7 @@ int closest(const float p0x, const float p0y)
 }
 
 bool isTurning(double avel){
-  if ( abs(avel) >= 0.01 ){
+  if ( abs(avel) >= 0.0001 ){
     return true;
   }
   else {
@@ -220,8 +222,16 @@ int main(int argc, char **argv)
         avel = -ka*v*l*sinc(dtheta) - kb*dtheta + kc*v*cos(dtheta)*c/(1+c*l); // normally (1-c*l)
 
         if ( !isTurning(avel) ){
-          if ( lacc < ks_max ){
+	  // calculate distance from goal
+	  double dfg = distance(turtlePose.position.x,
+                                turtlePose.position.y,
+                                goalPose.position.x,
+                                goalPose.position.y );
+          if ( lacc < km * dfg ){
             lacc += acc_rate;
+          }
+          else {
+            lacc = km * dfg;
           }
         }
         else {
@@ -234,6 +244,7 @@ int main(int argc, char **argv)
 
         if (!isnan(velocity.angular.z) && (index < path.poses.size()-1))
           pub.publish(velocity);
+
         if (index >= path.poses.size()-1)
         {
           velocity.angular.z = 0;
@@ -249,7 +260,5 @@ int main(int argc, char **argv)
 
     loop_rate.sleep();
   }
-
-
   return 0;
 }
