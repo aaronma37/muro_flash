@@ -31,6 +31,7 @@ public class toggles
     private int mTextureCoordinateHandle;
     private final int mTextureCoordinateDataSize = 2;
     private int mTextureDataHandle, selectedTextureDataHandle;
+    public float left,right,up,down;
 
     private final String vertexShaderCode =
 //Test
@@ -79,7 +80,7 @@ public class toggles
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 255f, 255f, 255f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
     public toggles(final Context activityContext)
     {
@@ -146,10 +147,14 @@ public class toggles
 
 
 
-    public toggles(final Context activityContext, float s[], int j)
+    public toggles(final Context activityContext, float s[], int j, float left1, float right1, float up1, float down1)
     {
         spriteCoords=s;
         mActivityContext = activityContext;
+        left=left1;
+        right=right1;
+        up=up1;
+        down=down1;
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -242,23 +247,35 @@ public class toggles
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.voronoicentroid1off);
             selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.voronoicentroid1on);
         }
+        else if (j==9){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.singlemode);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.multiplemode);
+        }
+        else if (j==10){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.centroidtrackingoption1);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.centroidtrackingoption2);
+        }
+        else if (j==11){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.timevaryingdensityfunction);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.lloyds);
+        }
 
     }
 
     public float getUp(){
-        return spriteCoords[1];
+        return up;
     }
 
     public float getDown(){
-        return spriteCoords[3];
+        return down;
     }
 
     public float getLeft(){
-        return spriteCoords[4];
+        return left;
     }
 
     public float getRight(){
-        return spriteCoords[0];
+        return right;
     }
 
     public void Draw(float[] mvpMatrix, int s)

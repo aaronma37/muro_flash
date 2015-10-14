@@ -77,7 +77,7 @@ void poseCallback(const tf2_msgs::TFMessage::ConstPtr& posePtr)
     if (msg.transforms[0].header.frame_id.compare("ORB_SLAM/World")==0){
     
     std::cout<<"pass";
-    if(msg.transforms[0].child_frame_id.compare("Gypsy Danger")==0){
+    if(msg.transforms[0].child_frame_id.compare("ORB_SLAM/Camera")==0){
         k=0;
     }
     else if (msg.transforms[0].child_frame_id.compare("Typhoon")==0){
@@ -327,6 +327,9 @@ int main(int argc, char **argv)
 			 Z << measurementPose[i].pose.position.x,measurementPose[i].pose.position.y,measurementPose[i].pose.position.z,yaw[i];
 			// X << X(0)+ V(0)/T,X(1)+V(1)/T,X(2)+V(2)/T,X(3)+twist.angular.z/T;
 			Xx << Xx(0)+ ux/T,Xx(1)+uy/T,Xx(2)+uz/T,Xx(3)+twist[i].angular.z/T;
+
+
+
 			//Stage 2
 			if (got_pose_[i] == true)
 			{
@@ -347,8 +350,10 @@ int main(int argc, char **argv)
 			    V(2)=vZTot;
 			}
 
-			V(0)=ux;
-			V(1)=uy;
+			if (i>10){
+				V(0)=ux;
+				V(1)=uy;
+			}
 
 
 			    twistEstimation.transforms[i].transform.translation.x=V(0);

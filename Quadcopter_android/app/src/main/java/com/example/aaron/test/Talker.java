@@ -83,6 +83,8 @@ public class Talker extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
 
+
+                if (flag==1){
                 geometry_msgs.PoseStamped pose = publisher.newMessage();
                 pose.getHeader().setFrameId("s");
                 pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
@@ -95,9 +97,8 @@ public class Talker extends AbstractNodeMain {
                 pose.getPose().getPosition().setZ(0);
 
 
-                if (flag==1){
-                    publisher.publish(pose);
 
+                    publisher.publish(pose);
                 }
 
             }

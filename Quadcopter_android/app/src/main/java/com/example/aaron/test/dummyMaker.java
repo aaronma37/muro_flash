@@ -96,7 +96,7 @@ public class dummyMaker extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
 
-
+                if (flag==1){
                 tf2_msgs.TFMessage pose = publisher.newMessage();
 
                 geometry_msgs.TransformStamped tf = connectedNode.getTopicMessageFactory().newFromType(geometry_msgs.TransformStamped._TYPE);
@@ -113,11 +113,12 @@ public class dummyMaker extends AbstractNodeMain {
 
                 pose.getTransforms().add(tf);
                 pose.getTransforms().set(0,tf);
-                if (flag==1){
+
                     publisher.publish(pose);
+                    flag=0;
                 }
-                flag=0;
-/*                Thread.sleep(10000);*/
+
+               Thread.sleep(500);
             }
         });
     }

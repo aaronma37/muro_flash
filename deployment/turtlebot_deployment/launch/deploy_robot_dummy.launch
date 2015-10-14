@@ -2,7 +2,7 @@
 
 <arg name="robot" default="$(env ROBOT)"/>
 <arg name="hold_time" default="8.0"/>
-<arg name="resolution" default="0.01"/>
+<arg name="resolution" default="1"/>
 <arg name="turn_speed" 		default="0.3"/>
 <arg name="drive_speed" 	default="0.2"/>
 <arg name="angle_tolerance" 	default="0.5"/>

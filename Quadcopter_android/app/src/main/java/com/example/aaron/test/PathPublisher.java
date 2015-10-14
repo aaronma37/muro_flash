@@ -18,9 +18,11 @@ import geometry_msgs.PoseArray;
 public class PathPublisher extends AbstractNodeMain {
 
     public double x,y;
+    public int active=0;
     public geometry_msgs.PoseArray pose;
     public geometry_msgs.Pose intPose;
     public dummyPoseArray dPose;
+    public boolean swarm=false;
     public boolean flag= false;
 
 
@@ -64,6 +66,7 @@ public class PathPublisher extends AbstractNodeMain {
             @Override
             protected void loop() throws InterruptedException {
 
+
                 if (flag==true){
                     if (dPose.header.equals("OPEN")||dPose.header.equals("CLOSED")){
                         for (int i=0;i<200;i++){
@@ -79,6 +82,11 @@ public class PathPublisher extends AbstractNodeMain {
                     }
 
                     pose.getHeader().setFrameId(dPose.header);
+
+                    if (swarm==true){
+                        pose.getHeader().setFrameId("SWARM");
+                    }
+
                     pose.getHeader().setSeq(0);
                     pose.getHeader().setStamp(Time.fromMillis(System.currentTimeMillis()));
                     if (pose.getPoses().get(0).getPosition().getX()!=0  && pose.getPoses().get(0).getPosition().getY()!=0  ){
@@ -86,6 +94,7 @@ public class PathPublisher extends AbstractNodeMain {
                     }
                     flag=false;
                 }
+                Thread.sleep(1000);
             }
         });
     }

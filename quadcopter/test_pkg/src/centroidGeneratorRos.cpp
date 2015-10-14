@@ -40,19 +40,18 @@ int countD;
 float xValues[maxNum];
 float yValues[maxNum];   
 int selectedIndices[maxNum]; 
-float minX = -.25, maxX = .25;    
-float minY = -.25, maxY = .25;
+float minX = -.45, maxX = .45;    
+float minY = -.45, maxY = .45;
 //geometry_msgs::PoseArray centroidPositions;
 
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
 	countD=0;
-	//centroidPositions = *pose;
 	gotPose=true;
 
 	for (int i=0;i<maxNum;i++)
 	{
-		if (pose ->poses[i].position.x!=0 || pose ->poses[i].position.y!=0){
+		if ( (pose ->poses[i].position.x!=0 || pose ->poses[i].position.y!=0) && pose ->poses[i].position.x > minX & pose -> poses[i].position.x < maxX && pose ->poses[i].position.y < maxY && pose ->poses[i].position.y > minY){
 			xValues[i]=pose ->poses[i].position.x;	
 			yValues[i]=pose ->poses[i].position.y;
 			selectedIndices[countD]=i;	

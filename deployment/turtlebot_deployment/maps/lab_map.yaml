@@ -1,4 +1,4 @@
-image: /home/kliu/git_catkin_ws/src/ucsd_ros_project/deployment/turtlebot_deployment/maps/lab_map.png
+image: lab_map.png
 resolution: 1.0
 origin: [0.0, 0.0, 0.0]
 negate: 0

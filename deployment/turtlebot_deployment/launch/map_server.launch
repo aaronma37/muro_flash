@@ -1,6 +1,6 @@
 <launch>
 
-<arg name="map_file" default="$(find turtlebot_deployment)/maps/lab_map.yaml"/>
+<arg name="map_file" default="$(find turtlebot_deployment)/maps/lab_maze.yaml"/>
 
 <remap from="map" to="/map"/>
 

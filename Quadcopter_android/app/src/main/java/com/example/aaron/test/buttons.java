@@ -27,7 +27,10 @@ import std_msgs.Char;
     private int mTextureUniformHandle;
     private int mTextureCoordinateHandle;
     private final int mTextureCoordinateDataSize = 2;
-    private int mTextureDataHandle, mTextureDataHandleundercase;
+    private int mTextureDataHandle, selectedTextureDataHandle;
+    public float left,right,up,down;
+    public boolean active=false;
+    public int s;
 
 
     private final String vertexShaderCode =
@@ -75,11 +78,12 @@ import std_msgs.Char;
     private final int vertexStride = COORDS_PER_VERTEX * 4; //Bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 255f, 255f, 255f, 1.0f };
+    float color[] = { 1f, 1f, 1f, 1.0f };
 
-    public buttons(final Context activityContext, int s)
+    public buttons(final Context activityContext, int k)
     {
         mActivityContext = activityContext;
+        s = k;
 
         //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
         ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
@@ -92,23 +96,6 @@ import std_msgs.Char;
         //Set the Buffer to Read the first coordinate
         vertexBuffer.position(0);
 
-        // S, T (or X, Y)
-        // Texture coordinate data.
-        // Because images have a Y axis pointing downward (values increase as you move down the image) while
-        // OpenGL has a Y axis pointing upward, we adjust for that here by flipping the Y axis.
-        // What's more is that the texture coordinates are the same for every face.
-        /*final float[] cubeTextureCoordinateData =
-                {
-                        0f,  1f,
-                        .05f, 1f,
-                        .05f, 0f,
-                        0f, 0f
-
-                };*/
-            /*0f,  1f,
-            1f, 1f,
-            1f, 0f,
-            0f, 0f*/
 
         final float[] cubeTextureCoordinateData =
                 {
@@ -161,22 +148,142 @@ import std_msgs.Char;
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.dot);
         }
         else if (s==3){
-            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearbutton);
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton);
         }
         else if (s==4){
             mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearallbutton);
-
+        }
+        else if (s==5){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.checkmark);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.checkmarkb);
+        }
+        else if (s==6){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.centroidtrackingoption1);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.centroidtrackingoption2);
         }
 
 
     }
 
-    public void Draw(float[] mvpMatrix, int k)
+
+
+
+    public buttons(final Context activityContext, float c[],int k, float left1, float right1, float up1, float down1)
     {
-        int j=0;
-        j=k*8;
+        mActivityContext = activityContext;
+        left=left1;
+        right=right1;
+        up=up1;
+        down=down1;
+        spriteCoords=c;
+
+        s = k;
+
+        //Initialize Vertex Byte Buffer for Shape Coordinates / # of coordinate values * 4 bytes per float
+        ByteBuffer bb = ByteBuffer.allocateDirect(spriteCoords.length * 4);
+        //Use the Device's Native Byte Order
+        bb.order(ByteOrder.nativeOrder());
+        //Create a floating point buffer from the ByteBuffer
+        vertexBuffer = bb.asFloatBuffer();
+        //Add the coordinates to the FloatBuffer
+        vertexBuffer.put(spriteCoords);
+        //Set the Buffer to Read the first coordinate
+        vertexBuffer.position(0);
 
 
+        final float[] cubeTextureCoordinateData =
+                {
+                        //Front face
+            /*0.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f*/
+
+                        1f,  0f,
+                        1f, 1f,
+                        0f, 1f,
+                        0f, 0f
+                };
+
+
+
+        mCubeTextureCoordinates = ByteBuffer.allocateDirect(cubeTextureCoordinateData.length * 4).order(ByteOrder.nativeOrder()).asFloatBuffer();
+        mCubeTextureCoordinates.put(cubeTextureCoordinateData).position(0);
+
+        //Initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(spriteCoords.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
+
+        int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+
+        shaderProgram = GLES20.glCreateProgram();
+        GLES20.glAttachShader(shaderProgram, vertexShader);
+        GLES20.glAttachShader(shaderProgram, fragmentShader);
+
+        //Texture Code
+        GLES20.glBindAttribLocation(shaderProgram, 0, "a_TexCoordinate");
+
+        GLES20.glLinkProgram(shaderProgram);
+
+        //Load the texture
+        if (s==0){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.plus);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.plus);
+        }
+        else if (s==1){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.minus);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.minus);
+        }
+        else if (s==2){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.dot);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.dot);
+        }
+        else if (s==3){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton_pressed);
+        }
+        else if (s==4){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.clearallbutton);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.clearallbutton);
+        }
+        else if (s==5){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.checkmark);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.checkmarkb);
+        }
+        else if (s==6){
+            mTextureDataHandle = loadTexture(mActivityContext, R.drawable.newclearbutton_pressed);
+            selectedTextureDataHandle = loadTexture(mActivityContext,R.drawable.newclearbutton_pressed);
+        }
+
+
+    }
+
+
+    public float getUp(){
+        return up;
+    }
+
+    public float getDown(){
+        return down;
+    }
+
+    public float getLeft(){
+        return left;
+    }
+
+    public float getRight(){
+        return right;
+    }
+
+
+    public void Draw(float[] mvpMatrix, boolean k)
+    {
 
         GLES20.glUseProgram(shaderProgram);
 
@@ -201,9 +308,14 @@ import std_msgs.Char;
 
         //Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        j=j+8;
+
         //Bind the texture to this unit.
+        if (k==false){
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        }
+        else{
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, selectedTextureDataHandle);
+        }
 
         //Tell the texture uniform sampler to use this texture in the shader by binding to texture unit 0.
         GLES20.glUniform1i(mTextureUniformHandle, 0);

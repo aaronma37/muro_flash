@@ -19,6 +19,10 @@ package com.example.aaron.test;
         import com.example.aaron.simplevoronoi.src.main.java.be.humphreys.simplevoronoi.*;
         import android.content.Context;
         import android.graphics.Point;
+        import android.net.ConnectivityManager;
+        import android.net.NetworkInfo;
+        import android.net.wifi.WifiInfo;
+        import android.net.wifi.WifiManager;
         import android.opengl.GLSurfaceView;
         import android.util.DisplayMetrics;
         import android.view.Display;
@@ -26,6 +30,14 @@ package com.example.aaron.test;
         import android.view.View;
         import android.view.WindowManager;
         import android.os.Vibrator;
+
+        import org.apache.http.HttpResponse;
+        import org.apache.http.client.HttpClient;
+        import org.apache.http.client.methods.HttpGet;
+        import org.apache.http.impl.client.DefaultHttpClient;
+        import org.apache.http.params.BasicHttpParams;
+        import org.apache.http.params.HttpConnectionParams;
+        import org.apache.http.params.HttpParams;
 
         import java.math.BigDecimal;
         import java.text.DecimalFormat;
@@ -43,10 +55,11 @@ package com.example.aaron.test;
 public class MyGLSurfaceView extends GLSurfaceView {
 
 
-    private final MyGLRenderer mRenderer;
+    public final MyGLRenderer mRenderer;
     public float poseData[];
     final int maxBots=50;
     public turtle tList[]=new turtle[maxBots];
+    public turtle obsticle = new turtle();
     private float width1;
     private float height1;
     private float pX=0;
@@ -66,9 +79,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int i;
     public int pFlag=0;
     private boolean recievedTurtles=false;
+    public boolean newAction=false;
     public int pFlag2=0;
     public boolean pathPublisherFlag=false;
     public int antispam=0;
+    private Context context1;
 
     private int freeDrawCount=0;
     private int gaussDrawCount=0;
@@ -80,6 +95,11 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private double cd;
     private double cy;
 
+
+
+
+
+    String ssid = null;
 
 
 
@@ -95,9 +115,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
     private int state[]=new int[maxBots];
     public MyGLSurfaceView(Context context, float f[], turtle turtleList[]) {
         super(context);
-
-
-
+        context1=context;
         v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vor = new Voronoi(.001);
         DisplayMetrics metrics = new DisplayMetrics();
@@ -143,28 +161,47 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void tick(){
         antispam=antispam+1;
        count=0;
+
+
+
+        WifiInfo wifiInfo =getWifi(context1);
+        NetworkInfo.DetailedState state = WifiInfo.getDetailedStateOf(wifiInfo.getSupplicantState());
+
+        mRenderer.textListSINFO.get(1).setText("Strength: " + wifiInfo.getRssi());
+        if (state == NetworkInfo.DetailedState.CONNECTED || state == NetworkInfo.DetailedState.OBTAINING_IPADDR) {
+            mRenderer.textListSINFO.get(2).setText("Network: " + wifiInfo.getSSID());
+        }
+
+        if (mRenderer.voronoiDeploymentToggle.active==true) {
+            mRenderer.textListSINFO.get(3).setText("Deployment: Multi-agent Voronoi");
+        }
+        else if (pFlag==1) {
+            mRenderer.textListSINFO.get(3).setText("Go to Goal");
+        }
+
         for (int i=0;i<15;i++){
             if (tList[i].getState()==1){
                 count++;
                 if (count>1){
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("Multiple Robots Selected");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
+                    mRenderer.textListARINFO.get(0).setText("Multiple Robots Selected");
+                    mRenderer.textListARINFO.get(2).setText(" X:");
+                    mRenderer.textListARINFO.get(3).setText(" Y:");
+                    mRenderer.textListARINFO.get(4).setText(" Z:");
                 }
                 else{
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin).setText(tList[i].getIdentification());
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:" + truncateDecimal(tList[i].getX(),3));
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
-                    mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
+                    mRenderer.textListARINFO.get(0).setText(tList[i].getIdentification());
+                    mRenderer.textListARINFO.get(2).setText(" X:" + truncateDecimal(tList[i].getX(),3));
+                    mRenderer.textListARINFO.get(3).setText(" Y:" + truncateDecimal(tList[i].getY(),3));
+                    mRenderer.textListARINFO.get(4).setText(" Z:" + truncateDecimal(tList[i].getZ(),3));
                 }
             }
         }
+
         if (count==0){
-            mRenderer.textList.get(mRenderer.ardroneTextBegin).setText("No Robots Selected");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+2).setText(" X:");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+3).setText(" Y:");
-            mRenderer.textList.get(mRenderer.ardroneTextBegin+4).setText(" Z:");
+            mRenderer.textListARINFO.get(0).setText("No Robots Selected");
+            mRenderer.textListARINFO.get(2).setText(" X:");
+            mRenderer.textListARINFO.get(3).setText(" Y:");
+            mRenderer.textListARINFO.get(4).setText(" Z:");
         }
 
     }
@@ -216,8 +253,36 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 }
 
                 if (antispam>1) {
+
+                    if (xGL< .85 && xGL>.65 && yGL > -.95 && yGL < -.75 ){
+                        mRenderer.scale=mRenderer.scale+.5f;
+                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                        mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
+                        v.vibrate(75);
+                        break;
+                    }
+                    if (xGL< 1.2f && xGL>.95f && yGL > -.85f && yGL < -.75 && mRenderer.scale>.5f){
+                        mRenderer.scale=mRenderer.scale-.5f;
+                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
+                        mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
+                        v.vibrate(75);
+                        break;
+                    }
+
+                    if (xGL<mRenderer.commit.left- mRenderer.slider&& xGL>mRenderer.commit.right-mRenderer.slider&& yGL > mRenderer.commit.down && yGL < mRenderer.commit.up)
+                        if (mRenderer.commit.active==true) {
+                            mRenderer.commit.active=false;
+                            newAction=true;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.commit.active=true;
+                            newAction=true;
+                            v.vibrate(50);
+                        }
+
+
                     //Turn on voronoi toggle
-                    if (xGL<-(width1-115)/(height1*2)-.01f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.11f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.vorToggle.left- mRenderer.slider&& xGL>mRenderer.vorToggle.right-mRenderer.slider&& yGL > mRenderer.vorToggle.down && yGL < mRenderer.vorToggle   .up)
                     if (mRenderer.getvToggle() == 1) {
                         mRenderer.setvToggle(0);
                         v.vibrate(500);
@@ -228,7 +293,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
 
                     //Turn on Free Draw Toggle
-                    if (xGL<-(width1-115)/(height1*2)-.12f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.22f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f)
+                    if (xGL<mRenderer.freeDrawToggle.left- mRenderer.slider&& xGL>mRenderer.freeDrawToggle.right-mRenderer.slider&& yGL > mRenderer.freeDrawToggle.down && yGL < mRenderer.freeDrawToggle.up)
                         if (mRenderer.getfToggle() == 1) {
                             mRenderer.setfToggle(0);
                             mRenderer.eraseFreeLine();
@@ -246,41 +311,65 @@ public class MyGLSurfaceView extends GLSurfaceView {
                             v.vibrate(50);
                         }
 
+                    //Toggable swarm for Path Follower
+                    if (mRenderer.getfToggle()==1 && xGL<mRenderer.swarmToggle.left- mRenderer.slider&& xGL>mRenderer.swarmToggle.right-mRenderer.slider&& yGL > mRenderer.swarmToggle.down && yGL < mRenderer.swarmToggle.up)
+                        if (mRenderer.swarmToggle.active == true) {
+                            mRenderer.swarmToggle.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.swarmToggle.active =  true;
+                            v.vibrate(50);
+                        }
+
+                    //Toggable swarm for Path Follower
+                    if (mRenderer.getgToggle()==1 && xGL<mRenderer.centroidTrackingOption.left- mRenderer.slider&& xGL>mRenderer.centroidTrackingOption.right-mRenderer.slider&& yGL > mRenderer.centroidTrackingOption.down && yGL < mRenderer.centroidTrackingOption.up)
+                        if (mRenderer.centroidTrackingOption.active == true) {
+                            mRenderer.centroidTrackingOption.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.centroidTrackingOption.active =  true;
+                            v.vibrate(50);
+                        }
+
                     //Turn on Way Point Toggle
-                    if (xGL<-(width1-115)/(height1*2)-.23f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.32f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.wayPointToggle.left- mRenderer.slider&& xGL>mRenderer.wayPointToggle.right-mRenderer.slider&& yGL > mRenderer.wayPointToggle.down && yGL < mRenderer.wayPointToggle.up)
                         if (mRenderer.getpToggle() == 1) {
                             mRenderer.setpToggle(0);
                             pFlag2=0;
                             mRenderer.setpToggle2(pFlag2);
                             mRenderer.tToggle=1;
                             pX=0; pY=0;
+
                             v.vibrate(50);
                         } else {
                             mRenderer.tToggle=0;
                             mRenderer.setpToggle(1);
+                            mRenderer.voronoiDeploymentToggle.active=false;
                             pX=0; pY=0;
                             v.vibrate(50);
                         }
                     pFlag = mRenderer.getpToggle();
 
                     //Turn on AndroneToggle
-                    if (xGL<-(width1-115)/(height1*2)-.34f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.43f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.ardronePrefToggle.left- mRenderer.slider&& xGL>mRenderer.ardronePrefToggle.right-mRenderer.slider&& yGL > mRenderer.ardronePrefToggle.down && yGL < mRenderer.ardronePrefToggle.up)
                         if (mRenderer.getAPToggle() == 1) {
                             mRenderer.setAPToggle(0);
+                            mRenderer.SINFO_FLAG=true;
                             v.vibrate(50);
                         } else {
                             mRenderer.setAPToggle(1);
+                            mRenderer.SINFO_FLAG=false;
                             v.vibrate(50);
                         }
 
-                    if (xGL<-(width1-115)/(height1*2)-.45f-mRenderer.slider && xGL>-(width1 -115)/(height1*2)-.54f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.ardroneAddToggle.left- mRenderer.slider&& xGL>mRenderer.ardroneAddToggle.right-mRenderer.slider&& yGL > mRenderer.ardroneAddToggle.down && yGL < mRenderer.ardroneAddToggle.up)
                     {
                         dummyFlag=1;
                         v.vibrate(50);
                     }
 
                     //IF GAUSS TOGGLE SELECTED
-                    if (xGL<-(width1-115)/(height1*2)-.56f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.65f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.gaussToggle.left- mRenderer.slider&& xGL>mRenderer.gaussToggle.right-mRenderer.slider&& yGL > mRenderer.gaussToggle.down && yGL < mRenderer.gaussToggle.up)
                         if (mRenderer.getgToggle() == 1) {
                             mRenderer.setgToggle(0);
                             gFlag2 = 0;
@@ -297,7 +386,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gFlag = mRenderer.getgToggle();
 
                     //IF GAUSSPATH TOGGLE SELECTED
-                    if (xGL<-(width1-115)/(height1*2)-.66f-mRenderer.slider && xGL>-(width1-115)/(height1*2)-.76f-mRenderer.slider && yGL > (height1)/(height1)-.2f && yGL < (height1)/(height1)-.1f )
+                    if (xGL<mRenderer.temptoggle.left- mRenderer.slider&& xGL>mRenderer.temptoggle.right-mRenderer.slider&& yGL > mRenderer.temptoggle.down && yGL < mRenderer.temptoggle.up)
                         if (mRenderer.getgpToggle() == 1) {
                             mRenderer.setgpToggle(0);
                             mRenderer.eraseGaussLine();
@@ -310,38 +399,52 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     gpFlag = mRenderer.getgpToggle();
 
                     //Toggle for voronoi deployment
-                    if (xGL<mRenderer.voronoiDeploymentToggle.getLeft()-mRenderer.slider && xGL>mRenderer.voronoiDeploymentToggle.getRight()-mRenderer.slider && yGL > mRenderer.voronoiDeploymentToggle.getDown() && yGL < mRenderer.voronoiDeploymentToggle.getUp())
+                    if (xGL<mRenderer.voronoiDeploymentToggle.left- mRenderer.slider&& xGL>mRenderer.voronoiDeploymentToggle.right-mRenderer.slider&& yGL > mRenderer.voronoiDeploymentToggle.down && yGL < mRenderer.voronoiDeploymentToggle.up)
                         if (mRenderer.voronoiDeploymentToggle.active == true) {
                             mRenderer.voronoiDeploymentToggle.active =  false;
+                            newAction=true;
                             v.vibrate(50);
                         } else {
+                            newAction=true;
                             mRenderer.voronoiDeploymentToggle.active = true;
+                            mRenderer.setpToggle(0);
+                            mRenderer.setpToggle2(0);
                             v.vibrate(50);
                         }
+
+                    if (xGL<mRenderer.dragToggle.left- mRenderer.slider&& xGL>mRenderer.dragToggle.right-mRenderer.slider&& yGL > mRenderer.dragToggle.down && yGL < mRenderer.dragToggle.up){
+                        if (mRenderer.dragToggle.active == true) {
+                            mRenderer.dragToggle.active =  false;
+                            v.vibrate(50);
+                        } else {
+                            mRenderer.dragToggle.active = true;
+                            obsticle.on=1;
+                            v.vibrate(50);
+                        }
+                    }
+
 
 
 /*                    if (xGL<-(width1-90)/height1+.05f && xGL>-(width1-90)/height1 && yGL >-(height1-10)/(height1)-mRenderer.slider  && yGL < -(height1-10)/(height1)+05f-mRenderer.slider ){
 
                     }*/
 
-                    if (xGL< .85 && xGL>.65 && yGL > -.95 && yGL < -.75 ){
-                            mRenderer.scale=mRenderer.scale+.5f;
-                            mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
-                            mRenderer.textList.get(2).setText(truncateDecimal(2 / mRenderer.scale, 2) + " ft");
-                            v.vibrate(75);
-                        }
-                    if (xGL< 1.2f && xGL>.95f && yGL > -.85f && yGL < -.75 && mRenderer.scale>.5f){
-                        mRenderer.scale=mRenderer.scale-.5f;
-                        mRenderer.textList.get(1).setText("Scale: "+truncateDecimal(mRenderer.scale,1)+"x");
-                        mRenderer.textList.get(2).setText( truncateDecimal(2 / mRenderer.scale,2) + " ft");
-                        v.vibrate(75);
-                    }
+
 
                     //Clear button
-                    if (xGL< -1.05f && xGL> -1.35f && yGL > -.9f && yGL < -.65f && mRenderer.scale>.5f){
-                        gInd = 0;
-                        mRenderer.clearGauss();
+                    if (xGL<mRenderer.clear.left- mRenderer.slider&& xGL>mRenderer.clear.right-mRenderer.slider&& yGL > mRenderer.clear.down && yGL < mRenderer.clear.up){
+                        if(mRenderer.getgToggle()==1){
+                            gInd = 0;
+                            mRenderer.clearGauss();
+
+                        }
+                        if(mRenderer.dragToggle.active==true){
+                            obsticle.on=0;
+                        }
                         v.vibrate(75);
+                        mRenderer.clear.active = true;
+
+
                     }
 
                 }
@@ -369,19 +472,12 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     //mRenderer.setGaussValues(xGL, yGL, gInd);
                     //mRenderer.setGaussScale(1f);
                     if (gInd<99){
-                        mRenderer.addGaussStuff(xGL, yGL, 1f,gInd);
+                        //mRenderer.addGaussStuff(xGL, yGL, 1f,gInd);
+                        //TEMP FIX
+                        mRenderer.addGaussStuff(xGL, yGL, 1f,0);
                     }
                     gInd++;
                 }
-
-
-
-                /*if (yGL > -(height1)/(height1*2)-mRenderer.slider && yGL < -(height1-100)/(height1*2)-mRenderer.slider &&xGL>-(-200)/height1 && xGL < (200)/height1){
-                    grab=1;
-                }
-                else{
-                    grab=0;
-                }*/
 
             case MotionEvent.ACTION_POINTER_DOWN:
                 //System.out.println("GAUSS 0");
@@ -405,7 +501,9 @@ public class MyGLSurfaceView extends GLSurfaceView {
                         gaussScale = dgauss/.2f;
                         //System.out.println("SCALE");
                         //mRenderer.addGaussStuff(xGL, yGL, gaussScale,gInd-1);
-                        mRenderer.setGaussScale(gInd-1, gaussScale);
+                        //mRenderer.setGaussScale(gInd-1, gaussScale);
+                        //TEMP FIX
+                        mRenderer.setGaussScale(0, gaussScale);
                     }
                 }
 
@@ -415,6 +513,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 mRenderer.tToggle=1;
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
+
+
+                    if (mRenderer.dragToggle.active==true && xGL>workspace
+                    && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom){
+                        obsticle.x=xGL/getScale();
+                        obsticle.y=yGL/getScale();
+                        obsticle.Aw=1;
+                        obsticle.on=1;
+                    }
+
+
 
                 if (fFlag==1 && (Math.abs(xGL-previousx)> .03f || Math.abs(yGL -previousy)>.03f) && xGL>workspace
                         && xGL < mapLeft && yGL < mapTop  && yGL > mapBottom) {
@@ -485,13 +594,17 @@ public class MyGLSurfaceView extends GLSurfaceView {
                     pY=yGL;
                     gFlag2=1;
                     mRenderer.setpToggle2(gFlag2);
-                    mRenderer.updateGauss(xGL, yGL, gInd-1);
+                    //TEMP FIX
+                    mRenderer.updateGauss(xGL, yGL, 0);
+                    //mRenderer.updateGauss(xGL, yGL, gInd-1);
                 }
 
 
             case MotionEvent.ACTION_UP:
 
                 mRenderer.tToggle=1;
+                //mRenderer.clear.active = false;
+
         }
 
 
@@ -523,7 +636,7 @@ public class MyGLSurfaceView extends GLSurfaceView {
                 temp4[i]=temp2.get(i);
             }
 
-            voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / height1, width1 / height1, -height1 / (height1), height1 / height1);
+            voronoiEdges = vor.generateVoronoi(temp3, temp4, -width1 / (height1*mRenderer.scale), width1 / (height1*mRenderer.scale), -height1 / (height1*mRenderer.scale), height1 / (height1*mRenderer.scale));
             for(int i = 0; i < voronoiEdges.size(); i++) {
                 cd = Math.cos(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
                 cy = Math.sin(Math.atan((voronoiEdges.get(i).x1 - voronoiEdges.get(i).x2) / (voronoiEdges.get(i).y1 - voronoiEdges.get(i).y2)));
@@ -635,6 +748,31 @@ public class MyGLSurfaceView extends GLSurfaceView {
     public void setCentroids(dummyPoseArray tempArray){
         mRenderer.centroids=tempArray;
     }
+
+    public boolean getObsticleActivity(){
+        return mRenderer.dragToggle.active;
+    }
+
+
+    public gauss getGausses(){
+        return mRenderer.gaussArrayList;
+    }
+
+
+
+    //FOUND_ONLINE
+    public WifiInfo getWifi(Context context) {
+        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (manager.isWifiEnabled()) {
+            WifiInfo wifiInfo = manager.getConnectionInfo();
+            if (wifiInfo != null) {
+                return wifiInfo;
+            }
+        }
+        return null;
+    }
+
+
 
 }
 
