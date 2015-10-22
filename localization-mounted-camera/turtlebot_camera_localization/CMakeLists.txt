@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   cv_bridge
   tf
+  turtlesim
 )
 
 find_package(OpenCV REQUIRED)
@@ -36,3 +37,6 @@ target_link_libraries(camera_localization
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 
 )
+
+add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
