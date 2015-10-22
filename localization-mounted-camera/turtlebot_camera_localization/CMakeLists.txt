@@ -35,5 +35,5 @@ target_link_libraries(camera_localization
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 )
 
-add_executable(turtlebot_camera_localization src/tf_broadcaster.cpp)
-target_link_libraries(turtlebot_camera_localization ${catkin_LIBRARIES})
+add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
