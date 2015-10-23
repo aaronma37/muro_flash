@@ -35,7 +35,7 @@ static const int _TITIAN = 7;
 static const int _MASACCIO = 3;
 static const int _MICHELANGELO = 15;
 static const int _GHIBERTI = 80;
-static const int _BERNINI = 10;
+static const int _GIOTTO = 10;
 static const int _BELLINI = 2;
 
 //AARON WAS HERE
@@ -75,8 +75,9 @@ ros::Publisher particleCloudPub_michelangelo;
 ros::Publisher odom_pub_ghiberti;
 ros::Publisher camPose_pub_ghiberti;
 ros::Publisher particleCloudPub_ghiberti;
-ros::Publisher camPose_pub_bernini;
-ros::Publisher particleCloudPub_bernini;
+ros::Publisher odom_pub_giotto;
+ros::Publisher camPose_pub_giotto;
+ros::Publisher particleCloudPub_giotto;
 ros::Publisher odom_pub_bellini;
 ros::Publisher camPose_pub_bellini;
 ros::Publisher particleCloudPub_bellini;
@@ -259,7 +260,7 @@ int main(int argc, char **argv)
 	robot_name_map[_TITIAN]="titian";
 	robot_name_map[_MASACCIO]="masaccio"; 
 	robot_name_map[_MICHELANGELO]="michelangelo";   
-	robot_name_map[_BERNINI]="bernini";   
+	robot_name_map[_GIOTTO]="giotto";   
 	robot_name_map[_BELLINI]="bellini"; 
 
 	odom_pub_map[_BOTICELLI] = nh.advertise<nav_msgs::Odometry>("boticelli/odom", 10);
@@ -295,9 +296,9 @@ int main(int argc, char **argv)
 	camPose_pub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("ghiberti/amcl_pose", 1, true);
 	particleCloudPub_map[_GHIBERTI] = nh.advertise<geometry_msgs::PoseArray>("ghiberti/particlecloud",1,true);  
 
-odom_pub_map[_BERNINI] = nh.advertise<nav_msgs::Odometry>("bernini/odom", 2);
-	camPose_pub_map[_BERNINI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("bernini/amcl_pose", 1, true);
-	particleCloudPub_map[_BERNINI] = nh.advertise<geometry_msgs::PoseArray>("bernini/particlecloud",1,true);  
+	odom_pub_map[_GIOTTO] = nh.advertise<nav_msgs::Odometry>("giotto/odom", 2);
+	camPose_pub_map[_GIOTTO] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("giotto/amcl_pose", 1, true);
+	particleCloudPub_map[_GIOTTO] = nh.advertise<geometry_msgs::PoseArray>("giotto/particlecloud",1,true);  
 	
 	odom_pub_map[_BELLINI] = nh.advertise<nav_msgs::Odometry>("bellini/odom", 2);
 	camPose_pub_map[_BELLINI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("bellini/amcl_pose", 1, true);
