@@ -8,7 +8,8 @@ export TURTLEBOT_3D_SENSOR=kinect
 #export ROS_MASTER_URI=http://lambrusco.ucsd.edu:11311
 #export ROS_MASTER_URI=http://mencia.ucsd.edu:11311
 #export ROS_MASTER_URI=http://abrusco.ucsd.edu:11311
-export ROS_MASTER_URI=http://132.239.20.206:11311 # This is moscatto
+#export ROS_MASTER_URI=http://132.239.20.206:11311 # This is moscatto
+export ROS_MASTER_URI=http://192.168.1.99:11311 # moscatto on dronenet
 
 export ROS_HOSTNAME=${TURTLEBOT_NAME}bot.dynamic.ucsd.edu
 
