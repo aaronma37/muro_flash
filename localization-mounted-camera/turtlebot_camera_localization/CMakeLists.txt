@@ -31,7 +31,7 @@ add_executable(camera_localization src/main.cpp)
 target_link_libraries(camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
-  /home/kliu/aruco-1.2.4/build/src/libaruco.so
+  /home/evangravelle/catkin_ws/src/Aruco/build/src/libaruco.so
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 )
 
