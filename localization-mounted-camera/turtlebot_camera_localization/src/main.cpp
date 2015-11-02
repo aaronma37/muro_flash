@@ -310,9 +310,9 @@ int main(int argc, char **argv)
 	//CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
 	//CParam.readFromXMLFile("/home/aaron/catkin_ws/src/aruco/build/utils/camera_old.yml");
 
-    const char* pUser;
-    pUser = getenv("USER");
-    std::string yml_file = std::string("/home/") + *pUser + 
+    const char* pHome;
+    pUser = getenv("HOME");
+    std::string yml_file = *pHome + 
     	std::string("/catkin_ws/src/ucsd_ros_project/localization-mounted-camera/turtlebot_camera_localization/src/camera_old.yml");
 
     CParam.readFromXMLFile(yml_file);
