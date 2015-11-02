@@ -8,6 +8,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 #include "std_msgs/Int32.h"
 #include "nav_msgs/Odometry.h"
 #include <aruco/aruco.h>
