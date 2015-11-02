@@ -120,6 +120,12 @@ std::string intToString(int number){
     return ss.str();
 }
 
+std::string getEnvVar(std::string const& key)
+{
+    char const* val = getenv(key.c_str()); 
+    return val == NULL ? std::string() : std::string(val);
+}
+
 //This function is called everytime a new image is published
 void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 {
@@ -308,19 +314,16 @@ int main(int argc, char **argv)
 
     pub = it.advertise("/camera_2/image_processed", 1);
 
-	//CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
-	//CParam.readFromXMLFile("/home/aaron/catkin_ws/src/aruco/build/utils/camera_old.yml");
-
-    const char* pHome;
-    pHome = getenv("HOME");
-    std::string yml_file = *pHome + 
+    std::string home = getEnvVar(std::string("HOME"));
+    std::string yml_file = home + 
     	std::string("/catkin_ws/src/ucsd_ros_project/localization-mounted-camera/turtlebot_camera_localization/src/camera_old.yml");
 
-    CParam.readFromXMLFile(yml_file);
+    CParam.readFromXMLFile(yml_file.c_str());
+   	ROS_INFO_STREAM(yml_file);
 
 	MDetector.setThresholdParams(7,7);
 	ros::spin();
-   
+
     ROS_INFO("tutorialROSOpenCV::main.cpp::No error.");
 	cv::destroyWindow(WINDOW);
  }
