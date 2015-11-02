@@ -16,6 +16,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${aruco_INCLUDE_DIRS}
+  /usr/local/include/aruco
 #  /home/evan/OpenCV/aruco-1.3.0/src
 )
 
