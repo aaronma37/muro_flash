@@ -11,7 +11,7 @@
 #include <tf/tf.h>
 #include "dubins.h"
 #include "nav_msgs/Path.h"
-#include "turtlebot_deployment/PoseWithName.h"
+#include "turtlebot_deployment/src/PoseWithName.h"
 
 #define PI 3.14159265358978
 //#define TOPIXELS 231  //approximate pixels per meter at 2.7 meter high
