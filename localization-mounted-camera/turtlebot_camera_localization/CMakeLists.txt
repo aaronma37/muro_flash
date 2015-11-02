@@ -31,6 +31,7 @@ target_link_libraries(camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
   ${aruco_LIBRARIES}
+  /usr/local/lib/libaruco.so
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 
 )
