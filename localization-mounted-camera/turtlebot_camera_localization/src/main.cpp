@@ -8,6 +8,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 #include "std_msgs/Int32.h"
 #include "nav_msgs/Odometry.h"
 #include <aruco/aruco.h>
@@ -23,6 +24,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <stdlib.h> // getenv
 
 //INITIALIZE VARIABLES
 
@@ -118,6 +120,12 @@ std::string intToString(int number){
     return ss.str();
 }
 
+std::string getEnvVar(std::string const& key)
+{
+    char const* val = getenv(key.c_str()); 
+    return val == NULL ? std::string() : std::string(val);
+}
+
 //This function is called everytime a new image is published
 void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 {
@@ -210,7 +218,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		camPose.header.frame_id = robot_name_map[Markers[i].id]+"/pose"; 
 		odom_trans.child_frame_id = robot_name_map[Markers[i].id]+"/odom";
 
-if (Markers[i].id == _BOTICELLI || Markers[i].id == _LEONARDO || Markers[i].id == _DONATELLO || Markers[i].id == _RAPHAEL  || Markers[i].id == _TITIAN || Markers[i].id == _MASACCIO || Markers[i].id == _MICHELANGELO || Markers[i].id == _GHIBERTI || Markers[i].id == _BERNINI || Markers[i].id == _BELLINI){
+if (Markers[i].id == _BOTICELLI || Markers[i].id == _LEONARDO || Markers[i].id == _DONATELLO || Markers[i].id == _RAPHAEL  || Markers[i].id == _TITIAN || Markers[i].id == _MASACCIO || Markers[i].id == _MICHELANGELO || Markers[i].id == _GHIBERTI || Markers[i].id == _BELLINI || Markers[i].id == _GIOTTO){
 
 
 		ghost[Markers[i].id]=ghost[Markers[i].id]+1;
@@ -304,14 +312,18 @@ int main(int argc, char **argv)
 	camPose_pub_map[_BELLINI] = nh.advertise<geometry_msgs::PoseWithCovarianceStamped>("bellini/amcl_pose", 1, true);
 	particleCloudPub_map[_BELLINI] = nh.advertise<geometry_msgs::PoseArray>("bellini/particlecloud",1,true);  
 
-        pub = it.advertise("/camera_2/image_processed", 1);
+    pub = it.advertise("/camera_2/image_processed", 1);
 
-	//CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
-	CParam.readFromXMLFile("/home/aaron/catkin_ws/src/aruco/build/utils/camera_old.yml");
+    std::string home = getEnvVar(std::string("HOME"));
+    std::string yml_file = home + 
+    	std::string("/catkin_ws/src/ucsd_ros_project/localization-mounted-camera/turtlebot_camera_localization/src/camera_old.yml");
+
+    CParam.readFromXMLFile(yml_file.c_str());
+   	ROS_INFO_STREAM(yml_file);
+
 	MDetector.setThresholdParams(7,7);
-        
 	ros::spin();
-   
-    	ROS_INFO("tutorialROSOpenCV::main.cpp::No error.");
+
+    ROS_INFO("tutorialROSOpenCV::main.cpp::No error.");
 	cv::destroyWindow(WINDOW);
  }

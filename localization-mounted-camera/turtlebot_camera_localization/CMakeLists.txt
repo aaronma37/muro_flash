@@ -15,21 +15,24 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
-  /home/kliu/aruco-1.2.4/src
+  ${aruco_INCLUDE_DIRS}
+  /usr/local/include/aruco
 #  /home/evan/OpenCV/aruco-1.3.0/src
 )
 
 catkin_package(
 #  INCLUDE_DIRS
 #  LIBRARIES
-  CATKIN_DEPENDS roscpp cv_bridge opencv2 std_msgs image_transport tf
 #  DEPENDS
+  CATKIN_DEPENDS roscpp cv_bridge opencv2 std_msgs image_transport tf
 )
 
 add_executable(camera_localization src/main.cpp)
 target_link_libraries(camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
-  /home/kliu/aruco-1.2.4/build/src/libaruco.so
+  ${aruco_LIBRARIES}
+  /usr/local/lib/libaruco.so
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
+
 )
