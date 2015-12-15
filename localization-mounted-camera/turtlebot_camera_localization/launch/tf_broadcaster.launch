@@ -1,21 +1,14 @@
 <launch>
    
   <!-- Camera -->
-<<<<<<< HEAD
   <include file="$(find turtlebot_camera_localization)/launch/usb_cam.launch"/>
-=======
-  <include file="$(find turtlebot_camera_localization)/launch/uvcCameraLaunch.launch"/>
->>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
+
 
   <!-- Localization -->
   <node name="localization" pkg="turtlebot_camera_localization" type="camera_localization"/>
 
-<<<<<<< HEAD
   <node name="odom_quat" pkg="turtlebot_camera_localization" type="tf_broadcaster"
           args="/turtle1" />
-=======
-  <node pkg="turtlebot_camera_localization" type="tf_broadcaster"
-          args="/turtle1" name="odom_quat" />
->>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
+
  
  </launch>
