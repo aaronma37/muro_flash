@@ -16,8 +16,12 @@ include_directories(
   include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+<<<<<<< HEAD
   ${aruco_INCLUDE_DIRS}
   /usr/local/include/aruco
+=======
+  /home/kliu/aruco-1.2.4/src
+>>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
 #  /home/evan/OpenCV/aruco-1.3.0/src
 )
 
@@ -39,4 +43,19 @@ target_link_libraries(camera_localization
 )
 
 add_executable(tf_broadcaster src/tf_broadcaster.cpp)
+<<<<<<< HEAD
 target_link_libraries(tf_broadcaster ${catkin_LIBRARIES})
+=======
+target_link_libraries(tf_broadcaster
+  ${catkin_LIBRARIES}
+)
+
+
+add_executable(turtlebot_camera_localization src/main.cpp)
+target_link_libraries(turtlebot_camera_localization
+  ${OpenCV_LIBS}
+  ${catkin_LIBRARIES}
+  /home/evangravelle/catkin_ws/src/Aruco/build/src/libaruco.so
+#  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
+)
+>>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
