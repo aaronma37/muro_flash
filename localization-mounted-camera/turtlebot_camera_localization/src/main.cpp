@@ -77,9 +77,19 @@ ros::Publisher particleCloudPub_michelangelo;
 ros::Publisher odom_pub_ghiberti;
 ros::Publisher camPose_pub_ghiberti;
 ros::Publisher particleCloudPub_ghiberti;
+<<<<<<< .merge_file_JVRP6O
+<<<<<<< HEAD
 ros::Publisher odom_pub_giotto;
 ros::Publisher camPose_pub_giotto;
 ros::Publisher particleCloudPub_giotto;
+=======
+ros::Publisher camPose_pub_bernini;
+ros::Publisher particleCloudPub_bernini;
+>>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
+=======
+ros::Publisher camPose_pub_bernini;
+ros::Publisher particleCloudPub_bernini;
+>>>>>>> .merge_file_95p3rQ
 ros::Publisher odom_pub_bellini;
 ros::Publisher camPose_pub_bellini;
 ros::Publisher particleCloudPub_bellini;
@@ -156,7 +166,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		//Get coordinates of the center
 		cv::Point2f marker_centroid = Markers[i].getCenter();
 		camPose.pose.pose.position.x = marker_centroid.x*SCALING_FACTOR_X;
-		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y;
+		camPose.pose.pose.position.y = (420-marker_centroid.y)*SCALING_FACTOR_Y-500;
 
 		//calculate the heading
 		double myHeading;
@@ -217,6 +227,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& original_image)
 		odom.header.frame_id = robot_name_map[Markers[i].id]+"/odom";
 		camPose.header.frame_id = robot_name_map[Markers[i].id]+"/pose"; 
 		odom_trans.child_frame_id = robot_name_map[Markers[i].id]+"/odom";
+
 
 if (Markers[i].id == _BOTICELLI || Markers[i].id == _LEONARDO || Markers[i].id == _DONATELLO || Markers[i].id == _RAPHAEL  || Markers[i].id == _TITIAN || Markers[i].id == _MASACCIO || Markers[i].id == _MICHELANGELO || Markers[i].id == _GHIBERTI || Markers[i].id == _BELLINI || Markers[i].id == _GIOTTO){
 
@@ -320,6 +331,10 @@ int main(int argc, char **argv)
 
     CParam.readFromXMLFile(yml_file.c_str());
    	ROS_INFO_STREAM(yml_file);
+        pub = it.advertise("/camera_2/image_processed", 1);
+
+	//CParam.readFromXMLFile("/home/kliu/aruco-1.2.4/build/utils/camera_old.yml");
+	CParam.readFromXMLFile("/home/aaron/catkin_ws/src/aruco/build/utils/camera_old.yml");
 
 	MDetector.setThresholdParams(7,7);
 	ros::spin();

@@ -40,6 +40,19 @@ float muY=0;
 float minY = -3, maxY = 3;
 //geometry_msgs::PoseArray centroidPositions;
 
+// Turtlebot indexes
+const int MICHELANGELO_INDEX = 2;
+const int DONATELLO_INDEX = 3;
+const int BERNINI_INDEX = 4;
+const int LEONARDO_INDEX = 5;
+const int BOTICELLI_INDEX = 6;
+const int GIOTTO_INDEX = 7;
+const int BELLINI_INDEX = 8;
+const int GHIBERTI_INDEX = 9;
+const int MASACCIO_INDEX = 10;
+const int TITIAN_INDEX = 11;
+geometry_msgs::PoseStamped centroidPosesStamped[TITIAN_INDEX + 1]; 
+
 void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose)
 {
 	countD=0;
@@ -453,38 +466,63 @@ Matrix CoMGenerator::generateCenterOfMass(std::vector<float> allVertices, Matrix
     return centerOfMass;
 }
 
+void transform_to_pose(tf2_msgs::TFMessage centroidPositions)
+{
+	
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    
-    //Store the position of the sites in a Matrix
+	
+    	//Store the position of the sites in a Matrix
 	tf2_msgs::TFMessage centroidPositions;
 	tf2_msgs::TFMessage lastCentroidPositions;
 	tf2_msgs::TFMessage cDot;
     	centroidPositions.transforms.resize(maxNum);
 	lastCentroidPositions.transforms.resize(maxNum);
 	cDot.transforms.resize(maxNum);
-    int nSites = Matrix_Size(xValues);
-    Matrix sitesPos(nSites,2);
-    for(int i=0; i<Matrix_Size(xValues);i++){
-        sitesPos.setElement(i, 0, xValues[i]);      //sitePos.elements[i][0] = xValues[i];
-        sitesPos.setElement(i, 1, yValues[i]);
-    }
+    	int nSites = Matrix_Size(xValues);
+    	Matrix sitesPos(nSites,2);
+    	for(int i=0; i<Matrix_Size(xValues);i++){
+        	sitesPos.setElement(i, 0, xValues[i]);      //sitePos.elements[i][0] = xValues[i];
+        	sitesPos.setElement(i, 1, yValues[i]);
+    	}
     
-		ros::init(argc, argv, "Centroid_Generator"); 
-		ros::start();
-		ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
-		ros::NodeHandle nh_;
-		ros::Subscriber pos_sub_ ,g_sub_;
-		ros::Publisher centroid_pub_ ;
-		ros::Publisher cDot_pub_;
+	ros::init(argc, argv, "Centroid_Generator"); 
+	ros::start();
+	ros::Rate loop_rate(T); //Set Ros frequency to 50/s (fast)
+	ros::NodeHandle nh_;
+	ros::Subscriber pos_sub_ ,g_sub_;
+	ros::Publisher centroid_pub_ ;
+	ros::Publisher cDot_pub_;
+	ros::Publisher michel_pub;
+	ros::Publisher dona_pub;
+	ros::Publisher bern_pub;
+	ros::Publisher leo_pub;
+	ros::Publisher boti_pub;
+	ros::Publisher gio_pub;
+	ros::Publisher bel_pub;
+	ros::Publisher ghiber_pub;
+	ros::Publisher masa_pub;
+	ros::Publisher titi_pub;
 
-		void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
+	void poseCallback(const geometry_msgs::PoseArray::ConstPtr& pose);
 
-		pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
-                g_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/gauss", 1000,gCallback);
-		centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
-		cDot_pub_ = nh_.advertise<tf2_msgs::TFMessage>("cDot", 1000, true);
+	pos_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/toVoronoiDeployment", 1000,poseCallback);
+        g_sub_= nh_.subscribe<geometry_msgs::PoseArray>("/gauss", 1000,gCallback);
+	centroid_pub_ = nh_.advertise<tf2_msgs::TFMessage>("Centroids", 1000, true);
+	cDot_pub_ = nh_.advertise<tf2_msgs::TFMessage>("cDot", 1000, true);
+	michel_pub = nh_.advertise<geometry_msgs::PoseStamped>("/michelangelo/move_base_simple/goal", 1000, true);
+	dona_pub = nh_.advertise<geometry_msgs::PoseStamped>("/donatello/move_base_simple/goal", 1000, true);
+	bern_pub = nh_.advertise<geometry_msgs::PoseStamped>("/bernini/move_base_simple/goal", 1000, true);
+	leo_pub = nh_.advertise<geometry_msgs::PoseStamped>("/leonardo/move_base_simple/goal", 1000, true);
+	boti_pub = nh_.advertise<geometry_msgs::PoseStamped>("/boticelli/move_base_simple/goal", 1000, true);
+	gio_pub = nh_.advertise<geometry_msgs::PoseStamped>("/giotto/move_base_simple/goal", 1000, true);
+	bel_pub = nh_.advertise<geometry_msgs::PoseStamped>("/bellini/move_base_simple/goal", 1000, true);
+	ghiber_pub = nh_.advertise<geometry_msgs::PoseStamped>("/ghiberti/move_base_simple/goal", 1000, true);
+	masa_pub = nh_.advertise<geometry_msgs::PoseStamped>("/masaccio/move_base_simple/goal", 1000, true);
+	titi_pub = nh_.advertise<geometry_msgs::PoseStamped>("/titian/move_base_simple/goal", 1000, true);
 
     while (ros::ok())
     {
@@ -581,6 +619,20 @@ int main(int argc, char **argv)
 		lastCentroidPositions=centroidPositions;
 		centroid_pub_.publish(centroidPositions);
 		cDot_pub_.publish(cDot);
+		
+		/*
+		transform_to_pose(centroidPositions);
+		michel_pub.publish(centroidPosesStamped[MICHELANGELO_INDEX]);
+		dona_pub.publish(centroidPosesStamped[DONATELLO_INDEX]);
+		bern_pub.publish(centroidPosesStamped[BERNINI_INDEX]);
+		leo_pub.publish(centroidPosesStamped[LEONARDO_INDEX]);
+		boti_pub.publish(centroidPosesStamped[BOTICELLI_INDEX]);
+		gio_pub.publish(centroidPosesStamped[GIOTTO_INDEX]);
+		bel_pub.publish(centroidPosesStamped[BELLINI_INDEX]);
+		ghiber_pub.publish(centroidPosesStamped[GHIBERTI_INDEX]);
+		masa_pub.publish(centroidPosesStamped[MASACCIO_INDEX]);
+		//titi_pub.publish(centroidPosesStamped[TITIAN_INDEX]);
+		*/
 		
 		gotPose=false;
 	}
