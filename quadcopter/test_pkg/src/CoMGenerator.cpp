@@ -22,6 +22,13 @@ Matrix::Matrix(int r, int c, float data) {
 }
 Matrix::~Matrix(){
     //cout << endl << "End program" << endl;
+    /* use "delete" for dynamically allocated data
+    for(int i =0; i<rows; i++)
+    {
+        delete[] elements[i];
+    }
+    delete[] elements;
+    */
 }
 void Matrix::setMatrix(int r, int c, float data) {
     elements = new float*[r];
