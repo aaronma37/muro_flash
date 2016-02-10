@@ -28,8 +28,8 @@ int main(int argc, char **argv)
 	cin >> theta;
     
 	//store the position in proper format
-	goalPose_.pose.position.x = x * TOPIXELS;
-	goalPose_.pose.position.y = y * TOPIXELS;   
+	goalPose_.pose.position.x = x;
+	goalPose_.pose.position.y = y;   
 	//goalPose_.pose.orientation.w = theta;   
 	geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(theta);
 	goalPose_.pose.orientation = odom_quat;

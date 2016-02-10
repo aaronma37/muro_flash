@@ -11,6 +11,7 @@
 #include "nav_msgs/Path.h"
 #include "turtlesim/Pose.h"
 #include "tf/tf.h"
+#include "PoseWithName.h"
 
 #include <sstream>
 #include <iostream>
@@ -23,21 +24,67 @@
 // Global Variables
 nav_msgs::Path path;
 geometry_msgs::Pose turtlePose;
+geometry_msgs::Pose goalPose;
 const float stopx = 100.0;
-const float ks = 0.1;  // Forward velocity
-const float ka = 0.2;//0.5;                                                                            
-const float kb = -1.0;//-1;
-const float kc = 1.0;
-bool haspath = false;
+const float ks = 0.05;    // Forward velocity
+const float km = 1;  // Max Forward velocity
+const float ka = 1;//0.5;                                                                            
+const float kb = -3.0;//-1;
+const float kc = 0.2;
 
+/*
+const int ON_LINE = 2;
+const int LINE_TO_CURVE = 1;
+const int ON_CURVE = 0;
+*/
+bool haspath = false;
+const float acc_rate = ks/10;
+//int* vel_density // Linear velocity desnity along the path
+
+// Conversion from pixels to meter
+double xToMeter(double x)
+{
+	return (x - 301)/900;
+}
+
+double yToMeter(double y)
+{
+	return (y - 247)/900;
+}
+
+/*
+// This function calculates the linear velocity density of the path.
+void linear_vel_density(void)
+{
+	bool on_line = false; // used to keep track of the indexes when the boundary changes
+
+	for(int i = 0; i < path.poses.size(); i++)
+	{
+		if(i == path.poses.size() - 1) // avoid index out of bounds error
+			break;
+			
+		if(getYaw(&path.poses[i].quaternion) == getYaw(&path.poses[i + 1].quaternion)) // on a straight line
+		{ // FIXME; Make sure that "&" is actually needed
+			vel_density[i] = ON_LINE;
+		}
+		else 
+		{
+			if(getYaw(&path.poses[i].quaternion) == getYaw(&path.poses[i - 1].quaternion) && i != 0)
+				vel_density[i] = ON_LINE;
+			else vel_density[i] = ON_CURVE;
+		}
+	}
+	vel_density[i] = ON_CURVE; // last point
+}
+*/
 
 // Callback to return turtle's pose
-void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& msg)
+void poseCallback(const turtlebot_deployment::PoseWithName::ConstPtr& msg)
 {
-  turtlePose.position.x = msg->pose.pose.position.x;
-  turtlePose.position.y = msg->pose.pose.position.y;
+  turtlePose.position.x = xToMeter(msg->pose.position.x);
+  turtlePose.position.y = yToMeter(msg->pose.position.y);
  // geometry_msgs::Quaternion pose_quat = tf::createQuaternionMsgFromYaw(msg->theta);
-  double theta = tf::getYaw(msg->pose.pose.orientation);
+  double theta = tf::getYaw(msg->pose.orientation);
   if (theta < 0) theta += 2*pi;
   turtlePose.orientation.w = cos(theta/2.0);//pose_quat;
 }
@@ -47,7 +94,10 @@ void pathCallback(const nav_msgs::Path::ConstPtr& msg)
 {
   path = *msg;
   //ROS_INFO("Path Received");
+  goalPose = msg->poses[msg->poses.size()-1].pose;
   haspath = true;
+  // vel_density = new int[path.poses.size()]; // Use delete[] to free memory 
+  // linear_vel_density();
 }
 
 // sinc(x) function.  Required for control law
@@ -130,6 +180,14 @@ int closest(const float p0x, const float p0y)
   return lowestIndex;
 }
 
+bool isTurning(double avel){
+  if ( abs(avel) >= 0.0001 ){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
 
 // Test of line following
 int main(int argc, char **argv)
@@ -145,9 +203,9 @@ int main(int argc, char **argv)
   
   
   // Publisher and Subscriber
-  ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>("mobile_base/commands/velocity", 1, true);
+  ros::Publisher  pub = nh.advertise<geometry_msgs::Twist>("cmd_vel_mux/input/navi", 1, true);
 
-  ros::Subscriber sub = nh.subscribe<geometry_msgs::PoseWithCovarianceStamped>("amcl_pose",10, poseCallback);
+  ros::Subscriber sub = nh.subscribe<turtlebot_deployment::PoseWithName>("afterKalman",10, poseCallback);
   ros::Subscriber pathsub = nh.subscribe<nav_msgs::Path>("amcl_path", 10, pathCallback);
 
   // Resize path to prevent segfault during initialization.
@@ -161,12 +219,15 @@ int main(int argc, char **argv)
   int index;
   geometry_msgs::Pose p1;
   double l, dtheta, v, c;
+  double lacc, avel;
 
   int state = -1;
   
   while (ros::ok())
   {
   
+    ros::spinOnce();
+
     switch (state)
     {
       case -1: // Wait for path message
@@ -192,10 +253,32 @@ int main(int argc, char **argv)
         v = ks; // Make function of distance along path (index).  Would also have to scale angular velocity.
         c = curvature(index);  // Curvature
         ROS_INFO("c:          %f",c);
-        velocity.linear.x = v;
-        velocity.angular.z = -ka*v*l*sinc(dtheta) - kb*dtheta + kc*v*cos(dtheta)*c/(1+c*l); // normally (1-c*l)
+        avel = -ka*v*l*sinc(dtheta) - kb*dtheta + kc*v*cos(dtheta)*c/(1+c*l); // normally (1-c*l)
+
+        if ( !isTurning(avel) ){
+	  // calculate distance from goal
+	  double dfg = distance(turtlePose.position.x,
+                                turtlePose.position.y,
+                                goalPose.position.x,
+                                goalPose.position.y );
+          if ( lacc < km * dfg ){
+            lacc += acc_rate;
+          }
+          else {
+            lacc = km * dfg;
+          }
+        }
+        else {
+          lacc = 0;
+        }
+
+	// linear and angular vel
+        velocity.linear.x = v + lacc;
+        velocity.angular.z = avel;
+
         if (!isnan(velocity.angular.z) && (index < path.poses.size()-1))
           pub.publish(velocity);
+
         if (index >= path.poses.size()-1)
         {
           velocity.angular.z = 0;
@@ -208,11 +291,11 @@ int main(int argc, char **argv)
         
     }
 
-    ros::spinOnce();
 
-    //loop_rate.sleep();
+    loop_rate.sleep();
   }
 
+  // delete[] vel_density;
 
   return 0;
 }
