@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Cyclic Pursuit</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="../index.html">MURO</a>
+            </div>
+
+             <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="../Profiles/profiles.html">Team</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Capabilities/capabilities.html">Capabilities</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Products/products.html">Implementations</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Blog/blog.html">News</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Documents/login.html">Documents</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>Multi-Agent Cyclic Pursuit</h1>
+                <h2 class="subheading">    </h2>
+            </div>
+        </div>
+    </header>
+
+
+<!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+
+                  
+                	<h2 class="section-heading">About Cyclic Pursuit</h2>
+                	
+                	<p>In order for the TurtleBots to use the cyclic pursuit algorithm, they have to
+					be able to follow a prescribed circle in a robust way. "Global Path Following
+					for the Unicycle and Other Results" by Mohamed I. El-Hawwary and
+					Manfredi Maggiore, provides a robust method for unicycle (TurtleBot)
+					dynamics.</p>
+                  
+                        <img class="img-responsive" src="../img/cyclicpursuit.jpg" alt="">
+                    <br><br><hr>
+           
+ <h2 class="section-heading">Cyclic Pursuit and Circular Path Following</h2>          
+
+
+<p>
+There are many different kinds of cyclic pursuit algorithms that have been studied. One example of cyclic pursuit is the distribution of moving satellites in a plane around the Earth. The moving satellite would find a stable distance between neighboring satellites through this algorithm. Although there are many versions of cyclic pursuit, we implement a simple model as follows
+</p>
+
+
+                        <img class="img-responsive" src="../img/cyclicalgorith.png" alt="">
+                  
+
+<p>
+With this algorithm, the turtlebots will reach a steady state (equidistance) equilibrium.
+</p>
+<br><br><hr>
+ <h2 class="section-heading">Implementation</h2>  
+
+
+<p>
+In order to run cyclic pursuit, the TurtleBots first had to have the ability to drive in a circle with prescribed speed and radius. We have a couple of options to make this happen such as using a simple pid or sliding mode controller with a goal position. Instead we decided to test an algorithm, “Global Path Following for the Unicycle and Other Results”, by Mohamed I. El-Hawwary, and Manfredi Maggiore[1]. This paper introduces a non-linear controller which drives the TurtleBot to a stable velocity around a prescibed circle origin and radius.
+</p>
+
+
+                        <img class="img-responsive" src="../img/circularpathfollowing.png" alt="">
+            
+
+
+<p>
+The algorithm needs to know the desired velocity of the TurtleBot. Cyclic pursuit calculates the velocity based on the next TurtleBots distance ahead. Cyclic pursuit tells the circular path following algorithm a low velocity if the TurtleBot is too close to the next Turtlebot, and a high velocity if it is far away. After some time, the TurtleBots (who are all individually running a circular path following algorithm and cyclic pursuit) will reach an equidistant equilibrium.
+</p>
+<br><br><hr>
+ <h2 class="section-heading">In ROS</h2>  
+
+<p>
+The circular path following algorithm and the cyclic pursuit fits well into the ROS network. The Cyclic pursuit algorithm subscribes to a topic “afterKalman” and “all_positions” to receive the positions of the TurtleBot and it's neighbor. With the position data, cyclic pursuit publishes a velocity based on the previously described algorithm. Circular path following listens to the velocity and influences the TurtleBot to converge to the circle a the desired velocity.
+</p>
+
+
+
+                        <img class="img-responsive" src="../img/network.png" alt="">
+               
+<br><br><hr>
+ <h2 class="section-heading">Simulations</h2>  
+
+
+                        <img class="img-responsive" src="../img/simulation.png" alt="" width="2000">
+            
+<br><br><hr>
+ <h2 class="section-heading">Lab Results</h2>  
+		           <iframe width="700" height="450" src="https://www.youtube.com/embed/vQHJHIQrTl4" frameborder="0" allowfullscreen></iframe>
+                  <br>
+			<span class="caption text-muted">Demo of Cicylic Pursuit being implemented on turtleBots.</span><br><br>
+
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+ 
+ 
+    
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>

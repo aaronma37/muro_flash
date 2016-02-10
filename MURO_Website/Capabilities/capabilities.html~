@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Capabilities</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css_capabilities/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css_capabilities/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css_capabilities/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="../index.html">MURO</a>
+            </div>
+
+           <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="../Profiles/profiles.html">Team</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Capabilities/capabilities.html">Capabilities</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Products/products.html">Implementations</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Blog/blog.html">News</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Documents/login.html">Documents</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1></h1>
+               
+                <p></p>
+                
+            </div>
+        </div>
+    </header>
+    
+
+ 
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Capabilities
+                    <small>MURO</small>
+                </h1>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <a href="../DistributedRobotics/distributedrobotics.html">
+                    <img class="img-responsive" src="../img/ros_enabled.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../DistributedRobotics/distributedrobotics.html">Robotic Operating System</a>
+                </h3>
+                <p>Here you will find an explanation of ROS. The open source ROS has been chosen as the software platform to enable the network structure, relying on a publisher-subscriber model to allow for inter-robot communication and coordination.</p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <a href="../Localization/localization.html">
+                    <img class="img-responsive" src="../img/portfolio/localization_small.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../Localization/localization.html">Localization via top-mounted cameras</a>
+                </h3>
+                <p>This section explores our use of hardware and computer vision algorithms in relation to localization. The role of the localization subsystem is to provide state estimates of agents to the larger system. </p>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <a href="../TurtleBots/turtlebots.html">
+                    <img class="img-responsive" src="../img/turtleBot_logo.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../TurtleBots/turtlebots.html">turtleBots</a>
+                </h3>
+                <p>The MURO lab utilizes turtleBots created at Willow Garage. Turtelbots are the ground robots in our testbed. They are useful for verifying control algorithms performance on hardware. </p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <a href="../Quadrotors/quadrotors.html">
+                    <img class="img-responsive" src="../img/quadrotor.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../Quadrotors/quadrotors.html">Quadrotor</a>
+                </h3>
+                <p>This section explores our interest in drones. These drones or quadrotors differ from the turtleBots in that they provide relaxed dyanmic constraints, which leads to a more flexible testbed for implementing various multi-agent robotic algorithms. </p>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <a href="../SLAM/slam.html">
+                    <img class="img-responsive" src="../img/camera.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../SLAM/slam.html">SLAM</a>
+                </h3>
+                <p>Here you will find an expalnation of Simultaneous Localization and Mapping, which is otherwise known as SLAM. In short SLAM consists of a robot building of a map of its surroundings using an estimate of its location while simultaneously estimating its location using the map of its surroundings. </p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <a href="../AndroidApp/androidapp.html">
+                    <img class="img-responsive" src="../img/android.jpg" alt="">
+                </a>
+                <h3>
+                    <a href="../AndroidApp/androidapp.html">Android App</a>
+                </h3>
+                <p>The MURO lab utilizes an android tablet application as a tool for human-swarm interactions. Our android application uses ROS in order to communicate each of the active robots in the multi-agent network. This section explains the different applications where the app is useful.</p>
+            </div>
+        </div>
+        <!-- /.row -->
+        
+        <!-- Projects Row -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <a href="../Onboard/onboard.html">
+                    <img class="img-responsive" src="http://core0.staticworld.net/images/article/2013/04/turtlebot_xbox-100032985-large.jpg" alt="" height "400" width = "700">
+                </a>
+                <h3>
+                    <a href="../Onboard/onboard.html">Onboard Localization</a>
+                </h3>
+                <p>ORB-SLAM allows us to do what is sometimes difficult in the world of robotics - onboard localization. Read this section to find out more.</p>
+            </div>
+        </div>
+        <!-- /.row -->
+        
+        <hr>
+
+
+
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>
