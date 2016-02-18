@@ -58,61 +58,61 @@ file(GLOB_RECURSE HEADER_FILES include/*.h)
 #  ${catkin_LIBRARIES}
 #)
 
-add_executable(simple_deployment src/simple_deployment.cpp src/agent.cpp src/VoronoiDiagramGenerator.cpp ${HEADER_FILES})
-add_dependencies(simple_deployment turtlebot_deployment_gencpp)
-target_link_libraries(simple_deployment
-  ${OpenCV_LIBS}
-  ${catkin_LIBRARIES}
-)
+#add_executable(simple_deployment src/simple_deployment.cpp src/agent.cpp src/VoronoiDiagramGenerator.cpp ${HEADER_FILES})
+#add_dependencies(simple_deployment turtlebot_deployment_gencpp)
+#target_link_libraries(simple_deployment
+#  ${OpenCV_LIBS}
+#  ${catkin_LIBRARIES}
+#)
 
-add_executable(inter_robot_communication src/inter_robot_communication.cpp)
-add_dependencies(inter_robot_communication turtlebot_deployment_gencpp)
-target_link_libraries(inter_robot_communication
-  ${catkin_LIBRARIES}
-)
+#add_executable(inter_robot_communication src/inter_robot_communication.cpp)
+#add_dependencies(inter_robot_communication turtlebot_deployment_gencpp)
+#target_link_libraries(inter_robot_communication
+#  ${catkin_LIBRARIES}
+#)
 
-add_executable(simple_deployment_dummy src/simple_deployment_dummy.cpp src/agent.cpp src/VoronoiDiagramGenerator.cpp ${HEADER_FILES})
-add_dependencies(simple_deployment_dummy turtlebot_deployment_gencpp)
-target_link_libraries(simple_deployment_dummy
-  ${OpenCV_LIBS}
-  ${catkin_LIBRARIES}
-)
-
-
-add_executable(PathFollowing src/PathFollowing.cpp)
-add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
-target_link_libraries(PathFollowing
-${catkin_LIBRARIES}
-)
-
-add_executable(rosUnitsMove src/rosUnitsMove.cpp)
-add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
-target_link_libraries(rosUnitsMove
-${catkin_LIBRARIES}
-)
+#add_executable(simple_deployment_dummy src/simple_deployment_dummy.cpp src/agent.cpp src/VoronoiDiagramGenerator.cpp ${HEADER_FILES})
+#add_dependencies(simple_deployment_dummy turtlebot_deployment_gencpp)
+#target_link_libraries(simple_deployment_dummy
+#  ${OpenCV_LIBS}
+#  ${catkin_LIBRARIES}
+#)
 
 
-add_executable(cyclic_pursuit src/cyclic_pursuit.cpp)
-add_dependencies(cyclic_pursuit ${catkin_EXPORTED_TARGETS})
-target_link_libraries(cyclic_pursuit
-${catkin_LIBRARIES}
-)
+#add_executable(PathFollowing src/PathFollowing.cpp)
+#add_dependencies(PathFollowing ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(PathFollowing
+#${catkin_LIBRARIES}
+#)
 
-add_executable(ekf src/ekf.cpp)
-add_dependencies(ekf ${catkin_EXPORTED_TARGETS})
-target_link_libraries(ekf
-${catkin_LIBRARIES}
-)
+#add_executable(rosUnitsMove src/rosUnitsMove.cpp)
+#add_dependencies(rosUnitsMove ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(rosUnitsMove
+#${catkin_LIBRARIES}
+#)
 
-add_executable(movingCentroid src/movingCentroid.cpp)
-add_dependencies(movingCentroid ${catkin_EXPORTED_TARGETS})
-target_link_libraries(movingCentroid
-${catkin_LIBRARIES}
-)
 
-add_executable(centroidKeyboard src/centroidKeyboard.cpp)
-add_dependencies(centroidKeyboard  ${catkin_EXPORTED_TARGETS})
-target_link_libraries(centroidKeyboard 
-${catkin_LIBRARIES}
-)
+#add_executable(cyclic_pursuit src/cyclic_pursuit.cpp)
+#add_dependencies(cyclic_pursuit ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(cyclic_pursuit
+#${catkin_LIBRARIES}
+#)
+
+#add_executable(ekf src/ekf.cpp)
+#add_dependencies(ekf ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(ekf
+#${catkin_LIBRARIES}
+#)
+
+#add_executable(movingCentroid src/movingCentroid.cpp)
+#add_dependencies(movingCentroid ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(movingCentroid
+#${catkin_LIBRARIES}
+#)
+
+#add_executable(centroidKeyboard src/centroidKeyboard.cpp)
+#add_dependencies(centroidKeyboard  ${catkin_EXPORTED_TARGETS})
+#target_link_libraries(centroidKeyboard 
+#${catkin_LIBRARIES}
+#)
 
