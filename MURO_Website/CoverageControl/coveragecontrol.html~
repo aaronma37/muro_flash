@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Coverage Control</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="../index.html">MURO</a>
+            </div>
+
+             <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="../Profiles/profiles.html">Team</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Capabilities/capabilities.html">Capabilities</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Products/products.html">Implementations</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Blog/blog.html">News</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Documents/login.html">Documents</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>Multi-Agent Coverage Control</h1>
+                <h2 class="subheading">    </h2>
+            </div>
+        </div>
+    </header>
+
+
+<!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+
+                    <h2 class="section-heading">About</h2>
+ 		    <p>The purpose of multi-agent coverage control is to direct agents (robots) to cover a space as best they can. This can be a 2D area or 3D region in space, one main application is surveillance of an area of interest via mobile robots with sensors. The advantages of performing multi-agent coverage control in a distributed way include robustness to agents being added to or leaving the system, less information must be shared with each other agent, and there is no central point of failure. For these reasons, we have implemented Fortune's algorithm as our method to deploy robots.
+                    </p>
+                 
+			<hr>
+                    <h2 class="section-heading">Algorithms</h2>
+
+		    <h3 class="section-heading">Fortune's Algorithm and Voronoi Diagrams</h3>
+		<p>A Voronoi Diagram is the initial step in constructing an evenly spaced out region throughout which multiple agents can be distributed. A Voronoi Diagram is defined as shown on the wiki page <a href="https://en.wikipedia.org/wiki/Voronoi_diagram">Voronoi diagram</a>. That is, a Voronoi diagram is simply a domain broken up into cells. Each cell is defined around an agent. By using the eculidian distance the cells have the following property: that any point within an agent's cell has a distance to the agent that is less than or equal to any other agent in the domain. By using this definition, an example voronoi with six agents (denoted by the black dots) may look as shown in the following figure. </p>
+		<a href="#">
+                       <br> <br><img class="img-responsive" src="http://blog.alexbeutel.com/voronoi/basic-vor.png" alt="" height="520" width="520" align="middle">
+                    </a><br>
+			<span class="caption text-muted">Image of a Voronoi Diagram with 6 sites (agents).</span><br><br>
+
+		
+			<p>A famous algorithm for computing a Voronoi Diagram is Fortune's Algorithm named after Steven Fortune which was publish in his paper in 1986. This algorithm uses a sweepline approach. The algorithm uses a set of points in a plane using O(n log n) time and O(n) space. To read more see the wiki page <a href="https://en.wikipedia.org/wiki/Fortune%27s_algorithm">Fortune's Algorthim</a>.  An animation of this algorithm is shown below.</p>
+			
+			<br><br><img  height="320" width="520" src="https://upload.wikimedia.org/wikipedia/commons/2/25/Fortunes-algorithm.gif" alt="This will display an animated GIF"/>
+			<br><br>
+			<span class="caption text-muted">Animation of Fortune's Algorithm computing a Voronoi Diagram, taken from Wikipedia.</span><br><br>
+
+
+		    <h3 class="section-heading">Weighted Centroid Algorithm</h3>
+		    <p>In order to distribute the agents "evenly" over a given area, the Voronoi Diagram partition of regions or cells is not enough. A necesary component is moving the agents to the centroid or center of mass of their respective cells. This is especially important when prescribing an area of importance. 
+	            </p>
+
+		    <p>The way the centroids are computed are cell by cell. Once Fortune's algorithm is run, a Voronoi Diagram is returned. Which specifies the location of the agents within their cells. At this point the Weighted Centroids Algorithm computes the weighted centroid of each cell by further partitioning each cell up triangles formed with the vertices of the agent's cell and the position of the agent itself. This allows for the computation of the weighted centroid of each triangle and ultimately the cell itself. </p>
+
+<br>
+
+			<a href="#">
+                        <img class="img-responsive" src="../img/WCFlowChart.png" alt="">
+                    </a><br>
+ <span class="caption text-muted">Flow chart depicting how Fortune's Algorithm and Weighted Centroid Algorithm work together. </span>
+                    <br><br>
+
+<p>The computation over the triangles is done using a finite element scheme and the areas of importance of defined using gaussian distributions. Once the weighted centroids are found for all cells, the agents are moved towards their respective centroids. After moving, Fortune's algorithm is called to recalculate the Voronoi Diagram. This process is iterated until either it converges or the importance function is moved in which case it will continue to run iteratively.   
+		    </p>
+
+
+<iframe width="700" height="450" src="https://www.youtube.com/embed/hyNXJ5TmFfk" frameborder="0" allowfullscreen></iframe>
+		    <span class="caption text-muted"><br>This video shows, starting with a Voronoi Diagram computed with Fortune's Algorithm, how the triangles are formed using cell vertices and agent positions. The black lines denote the Vornoi Diagram, the  blue circles denote the position of the agents, the green lines denote the traingles of each cell, red x's denote weighted centroids of the triangles, the black dots denote the finial weighted centroid. The density function used is uniform throughout the domain.</span>
+<br>
+<br>
+<hr>
+ <h2 class="section-heading">Applications</h2>
+
+		    <h3 class="section-heading">Android App Use of Voronoi Weighted Centroid Algorithm</h3>
+			
+		    <p>With the android app we are able to show the use of the the Weighted Centroid Algorithm using a Gaussian distribution as the importance. The following is a video demonstrating a simulation of the agents finding their cetnroids using a guassian distribution.</p>
+
+		    <iframe width="700" height="450" src="https://www.youtube.com/embed/X23QdLRePt8" frameborder="0" allowfullscreen></iframe><br>This video shows a simulation of 5 agents being distributed over a domain using a gaussian function on the android app.</span><br><br>
+
+		   <p>In addition we have implemented a static agent as a strategy to enable the agents to move around obstacles by setting the location of the obstacles as the location of another agent that is nonmoving (hence the static agent). By using this strategy a cell is created for the obstacle itself and the other agents by definition do not interfere with the cell of the obstacle and thereby move around the obstacle. A video showing this implemenation is shown below.</p>
+
+                    <iframe width="700" height="450" src="https://www.youtube.com/embed/bZgCyuYOJpA?list=PL5f8QQvBnMemlsUtx7OqzvaD4jLCjRcew" frameborder="0" allowfullscreen></iframe><span class="caption text-muted"><br>This video shows a number of agent moving around the obstacle while simulatenously moving towards their resepctive centroids.</span><br><br>
+
+		<p>We are currently still in developmental phase in implementing these algorithms on the turtelBots for coverage control. The following video demonstates some of the current progress that is taking place.
+		</p>
+
+<iframe width="700" height="450" src="https://www.youtube.com/embed/syit_uRFPUc" frameborder="0" allowfullscreen></iframe><span class="caption text-muted"><br>This video shows the coverage control algorithms being tested on 3 turtleBots using the adroid app to control the gaussian distribution and the location of the mean. </span><br><br>
+
+<p>We are currenlty preparing for a demo at UCSD. The following is a video displaying a few updates we have made with the coverage control algorithm.
+		</p>
+
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4pqOPNC0qUQ" frameborder="0" allowfullscreen></iframe><span class="caption text-muted"><br>This video shows an updated version of the converage control algorithm deployment on four turtlebots using obstacles and path following. </span><br><br>
+
+                    
+                    <p>In this next video you will see an older version of the multi-agent coverage control implementation. This implementation had no human user interaction and used only a uniform distribution. 
+	            </p>
+                    <iframe width="700" height="459" src="https://www.youtube.com/embed/cQbiNEqvxpU" frameborder="0" allowfullscreen></iframe>
+		    <span class="caption text-muted"><br>Older converage control algorithm implementation. Uses a simple uniform distribution.</span><br><br>
+                 	
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+ 
+ 
+    
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>

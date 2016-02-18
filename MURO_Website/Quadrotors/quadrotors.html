@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Quadrotors</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="../index.html">MURO</a>
+            </div>
+
+             <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="../Profiles/profiles.html">Team</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Capabilities/capabilities.html">Capabilities</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Products/products.html">Implementations</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Blog/blog.html">News</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Documents/login.html">Documents</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>Quadrotors</h1>
+                <h2 class="subheading">    </h2>
+            </div>
+        </div>
+    </header>
+
+
+<!-- Post Content -->
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <br>
+                    <h1 class="section-heading">Task</h1>
+                    <p>Why we are interested in AR-Parrot Drone 2 and quadrotor use for our lab?
+                    </p>
+	
+					<p>The MURO lab uses the AR-Parrot Drone 2, a quadcopter with strong ROS 
+					communication capabilities and multiple cameras.  We are using AR-Parrot
+					 Drone 2's so that we can provide ourselves with a flexible testbed for
+					  implementing various multi-agent robotic algorithms, such as swarming,
+					   formation control, cyclic pursuit, and so on.  Quadrotors in particular 
+					   gives us more relaxed dynamic constraints because they are omnidirectional,
+					    meaning that we can now work along the z-axis allowing us to extend 
+					    experiments for our 3D multi-agent algorithms.  The MURO lab's research
+					     is mostly on multi-agent robotics with either unicycle or omni-directional
+					      dynamics so quadrotors is a perfect fit for our lab.  </p>
+					      
+					<hr>
+                    
+                    <h1 class="section-heading">Quadrotor Capabilities</h1>
+                    
+                    <h2 class="subheading">Communications</h2>
+                     
+					<p>
+					The MURO lab utilizes ROS (Robot Operating System) which is a software 
+					library which allows for strong communication capabilities accross a wifi
+					 network using a hybrid systems that run linux, android, windows or Max OS. 
+					 The AR-Parrot Drone 2 is an even stronger fit for our lab because of the 
+					 extensive ROS package "Ardrone Autonomy" developed by AutonomyLab, making 
+					 us capable of controlling quadcopters with the same algorithms we use for 
+					 the turtlebots, or any other system in the future.  
+					 </p>
+
+					<h2 class="subheading">Localization</h2>
+					
+					<p>
+					The quadcopters also come equipped with both a front and bottom facing camera.  
+					We currently utilize the front facing camera to run ORB-SLAM (Oriented FAST and 
+					Rotated BRIEF - Simultaneous Localization and Mapping), a monocular SLAM algorithm 
+					which provides a local point cloud map of the quadcopters surroundings and online 
+					estimations of the quadcopters location with respect to the map.  Our lab has 
+					developed modifications to ORB-SLAM that allows us to run multiple Quadcopters 
+					capable exploring and localizing in the same map.  The AR-Parrot Drone 2's 
+					video stream and ROS capabilities make it possible for the quadcopters to 
+					build and share a map, where they can execute location based multi-agent 
+					robot algorithms unrestricted to lab the lab environment.
+					</p>
+
+<br><br>
+
+<iframe width="700" height="450" src="https://www.youtube.com/embed/_m48MLtIKo4" frameborder="0" allowfullscreen></iframe>      <br>
+			<span class="caption text-muted">Controller test on quadrotor. </span><br><br>
+
+<br><br>
+					
+					<hr>
+					
+					<h1 class="section-heading">Applications</h1>
+					
+					<p>
+					The AR-Parrot Drone 2's are capable of being used outside of the lab 
+					due to their ability to localize themselves, meaning we don't need extra 
+					equipment such as external cameras for localization.  In the future we 
+					are interested in using the AR-Parrot Drone 2's outside or in large 
+					indoor areas with walls and obsticles which will add complexity to our 
+					deployment algorithms.
+                    </p>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+ 
+ 
+    
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>
