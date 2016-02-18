@@ -17,7 +17,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${aruco_INCLUDE_DIRS}
-  /usr/local/include/aruco
+#  /usr/local/include/aruco
 #  /home/evan/OpenCV/aruco-1.3.0/src
 )
 
@@ -32,8 +32,8 @@ add_executable(camera_localization src/main.cpp)
 target_link_libraries(camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
-  ${aruco_LIBRARIES}
-  /usr/local/lib/libaruco.so
+  $ENV{aruco_LIBRARIES}
+#  /usr/local/lib/libaruco.so
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 
 )
@@ -46,6 +46,7 @@ add_executable(turtlebot_camera_localization src/main.cpp)
 target_link_libraries(turtlebot_camera_localization
   ${OpenCV_LIBS}
   ${catkin_LIBRARIES}
-  /home/evangravelle/catkin_ws/src/Aruco/build/src/libaruco.so
+  $ENV{aruco_LIBRARIES}
+#  /home/evangravelle/catkin_ws/src/Aruco/build/src/libaruco.so
 #  /home/evan/OpenCV/aruco-1.3.0/build/src/libaruco.so
 )

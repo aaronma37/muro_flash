@@ -77,19 +77,9 @@ ros::Publisher particleCloudPub_michelangelo;
 ros::Publisher odom_pub_ghiberti;
 ros::Publisher camPose_pub_ghiberti;
 ros::Publisher particleCloudPub_ghiberti;
-<<<<<<< .merge_file_JVRP6O
-<<<<<<< HEAD
 ros::Publisher odom_pub_giotto;
 ros::Publisher camPose_pub_giotto;
 ros::Publisher particleCloudPub_giotto;
-=======
-ros::Publisher camPose_pub_bernini;
-ros::Publisher particleCloudPub_bernini;
->>>>>>> 3b6e649f23dca4a81a9e97344bc2cb9606541647
-=======
-ros::Publisher camPose_pub_bernini;
-ros::Publisher particleCloudPub_bernini;
->>>>>>> .merge_file_95p3rQ
 ros::Publisher odom_pub_bellini;
 ros::Publisher camPose_pub_bellini;
 ros::Publisher particleCloudPub_bellini;
