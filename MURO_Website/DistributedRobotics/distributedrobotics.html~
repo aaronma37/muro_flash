@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ROS </title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="css_distributedrobotics/bootstrap.min.css" type="text/css">
+
+    <!-- Custom Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="css_distributedrobotics/animate.min.css" type="text/css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css_distributedrobotics/creative.css" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="../index.html">Home</a>
+            </div>
+
+             <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="../Profiles/profiles.html">Team</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Capabilities/capabilities.html">Capabilities</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Products/products.html">Implementations</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Blog/blog.html">News</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../Documents/login.html">Documents</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="../index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                
+            </div>
+        </div>
+    </header>
+
+
+<!-- Post Content -->
+    <article>
+    
+        <div class="container">
+        
+            <div class="row">
+            
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <h1>Robotics Operating System (ROS)</h1>
+                <h2 class="subheading">Multi-Agent Robotic Platform</h2>
+                 
+                    <p>Realization of control algorithms in the physical world necessitates a  readily deployable system. The Cortes and Martinez labs at UCSD  currently possess ten TurtleBot platforms to be integrated into a  multi-agent robotic network. The open source ROS has been chosen as the  software platform to enable the network structure, relying on a  publisher-subscriber model to allow for inter-robot communication and  coordination.The objective of the ROS TurtleBot project is to provide a  stable system to which distributed control algorithms can be readily  deployed for testing and validation on hardware. There are a plethora of  interesting algorithms that could potentially be deployed using the  TurtleBot network, such as cooperative task completion. Of particular  interest to the group is cooperative simultaneous localization and  mapping (SLAM).    </p>
+
+                    <a href="#">
+                        <img class="img-responsive" src="../img/ROS.jpg" alt="">
+                    </a>
+
+					<p></p>
+                    <p>The open-source  Robot Operating System, otherwise known as ROS, is a Linux based  framework for robotic control. Advantages include the  publisher-subscriber nature of communication, which allows for  interesting distributed algorithms. The group uses the C++ version of  the system. For more information, visit the <a href="http://www.ros.org/">ROS</a> website.</p>
+	           
+                    <a href="#">
+                        <img class="img-responsive" src="../img/screenshot.png" alt="">
+                    </a><br>
+		   <span class="caption text-muted">Screenshot of monitor while working with ROS</span> <br><br><br>
+
+
+                    <p>The publisher-subscriber nature of ROS allows for a master computer to  communicate with other computers that serve at the robotic processing  units. In the set-up described here, the master computer shares  information by publishing on specific topics, which each robot can  selectively choose to listen to. </p>
+                     <a href="#">
+                        <img class="img-responsive" src="../img/SystemDynamics.jpg" alt="">
+                    </a>
+                    <span class="caption text-muted">High Level System Diagram: Blue and green cells indicate computational processes that happen on the master computer and individual robots, respectively.</span>
+
+					<p></p>
+                   
+                   	<!--
+                    <p>To find out more about the localization system, click <a href="Localization.html">here</a>.</p>
+
+
+                    <h2 class="section-heading">Distributed Path and Motion Planning</h2>
+                    <p>In simple terms, the path planning algorithm system makes big-picture goals for each of the individual agents based on various sources of information. These goals are fed to the motion planning system.The motion planning subsystem receives goal positions and must determine  the commands to the robotic base to complete the objective. This  specific subsystem is flexible and under continuous improvement.  Currently a primitive control algorithm is used, but work is currently underway to integrate the motion planning tools implemented by ROS and  other motion planning algorithms using the unicycle model. </p>
+
+                     <h2 class="section-heading">Deployment and Experiments</h2>
+                    <p>With all these systems integrated, different distributed controls algorithms can be implemented. For example, the following video demonstrates five Turtlebots  collaboratively dividing the floor space of the lab, which is taken to  have a uniform importance function.</p>
+                    <iframe width="780" height="500" src="https://www.youtube.com/embed/cQbiNEqvxpU" frameborder="0" allowfullscreen></iframe>
+					-->
+                </div>
+            </div>
+        </div>
+    </article>
+
+ 
+ 
+    
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="js/jquery.easing.min.js"></script>
+    <script src="js/jquery.fittext.js"></script>
+    <script src="js/wow.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/creative.js"></script>
+
+</body>
+
+</html>
