@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+   
+  <!-- This assumes roscore is running on donatello 
+  <env name="ROS_MASTER_URI" value="http://137.110.62.11:11311"/>-->
+
+
+
+
+<arg name="turtlebot_name" default="$(env TURTLEBOT_NAME)" />
+
+<arg name="ns" default="$(arg turtlebot_name)" />
+
+	<group ns="$(arg ns)">
+	    
+
+
+		<!-- Kinect:	 3dsensor_bringup 
+			......			-->
+
+		<!-- Exteroceptive Sensor -->
+		<node name="exteroceptive_sensor" pkg="coop_localization" 
+			output="screen" type="exteroceptive_sensor"> 
+			<param name="RobotName" type="string" value="$(arg turtlebot_name)" />
+		</node>
+
+		<!-- Proprioceptive Sensor -->
+		<node name="proprioceptive_sensor" pkg="coop_localization" 
+			output="screen" type="proprioceptive_sensor"> 
+			<param name="RobotName" type="string" value="$(arg turtlebot_name)" />
+		</node>
+	</group>
+
+
+</launch>
+
