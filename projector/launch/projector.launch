@@ -1,0 +1,5 @@
+<launch>
+
+  <node pkg="projector" type="projector_viz" name="projector_viz" />
+
+</launch>

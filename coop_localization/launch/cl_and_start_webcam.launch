@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+   
+  <!-- Camera -->
+  <include file="$(find turtlebot_camera_localization)/launch/uvcCameraLaunch.launch"/>
+
+
+  <!-- Localization -->
+  <node name="localization" pkg="turtlebot_camera_localization" output="screen" type="camera_localization"/>
+
+ <!-- <node name="odom_quat" pkg="turtlebot_camera_localization" type="tf_broadcaster"
+          args="/titian" />
+
+ output="screen"-->
+ </launch>
